@@ -9,6 +9,7 @@
 
 .text-gray {
     color: gray;
+    margin-top: 150px;
 }
 
 .vertical-title {
@@ -122,11 +123,12 @@ main hr {
 .second {
     max-width: 80vw;
     margin: auto;
-    height: 80vh;
+    height: 55vh;
 }
 
 .second h1 {
     font-size: 1.9rem;
+    margin-bottom: 80px;
 }
 
 .second .box {
@@ -144,8 +146,6 @@ main hr {
     margin: 0 100px;
 }
 
-
-
 .image-top {
     width: 23px;
     position: relative;
@@ -153,8 +153,31 @@ main hr {
     left: -79px;
 }
 
-footer {
+.third h3 {
+    margin: 50px 0 70px 105px;
+    font-size: 30.4px;
+}
+
+.about h4 {
+    font-size: 18px;
+    margin: 17px;
+}
+
+.about p {
+    margin: 25px 80px;
+}
+
+.about #p {
+    margin: 25px 55px;
+}
+
+
+
+/* footer {
+    margin-top: 100px;
     background-color: #0e0e1a;
+    height: 500px;
+    padding-top: 100px;
 }
 
 .footer {
@@ -164,7 +187,138 @@ footer {
     padding: 23px 122px;
 }
 
-.foooter-rights {
+.footer-rights {
     text-align: center;
     color: grey;
+    margin-top: 50px;
+} */
+
+.past-projects .projects {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.past-projects h4 {
+    font-size: 30.4px;
+    margin: 95px 0px 42px 59px;
+}
+
+.past-projects .projects a {
+    text-decoration: none;
+    color: white;
+    font-size: 18px;
+    margin: 10px 0px 70px -3px;
+}
+
+.past-projects .projects a:hover {
+    font-size: 1rem;
+    color:rgb(158, 82, 229);
+}
+
+.contact h4 {
+    font-size: 30.4px;
+}
+
+.form {
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+form {
+    text-align: center;
+    height: 80vh;
+    width: 400px;
+    gap: 20px;
+    border: 6px double white;
+    border-radius: 2rem;
+    margin: 31px 0px 110px 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px 0;
+}
+
+form input, textarea {
+    color:rgb(144, 68, 214);
+    border: none;
+    border-radius: 4px;
+}
+
+form input {
+    height: 30px;
+    width: 164px;
+}
+
+form h6 {
+    font-size: 1.1rem;
+}
+
+form #submit {
+    border: none;
+    border-radius: 1rem;
+    background-color: rgb(144, 68, 214);
+    color: white;
+    width: 7rem;
+}
+
+
+
+footer {
+    background-color: #070532;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+}
+
+.contact-info,
+.social-media,
+.copyright {
+    margin-bottom: 20px;
+}
+
+.contact-info h3,
+.social-media h3 {
+    border-bottom: 1px solid #fff;
+    padding-bottom: 10px;
+}
+
+.contact-info p,
+.social-media ul,
+.copyright p {
+    margin: 10px 0;
+}
+
+.social-media ul {
+    list-style: none;
+    padding: 0;
+}
+
+.social-media li {
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.social-media a {
+    color: #fff;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.social-media a:hover {
+    color: rgb(144, 68, 214);
+}
+
+#email a{
+    color: white;
+    text-decoration: none;
+}
+
+#email :hover {
+    color: rgb(144, 68, 214);
+    text-decoration: underline;
 }
