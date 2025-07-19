@@ -7,7 +7,7 @@ import github from "./github.png";
 import menu from "./menu.svg";
 import close from "./close.svg";
 
-import javascript from "./tech/typescript.png";
+import javascript from "./tech/javascript.png";
 import socketio from "./tech/socketio.png";
 import typescript from "./tech/typescript.png";
 import reactjs from "./tech/reactjs.png";
