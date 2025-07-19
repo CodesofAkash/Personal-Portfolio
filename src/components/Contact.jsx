@@ -6,6 +6,7 @@ import { styles } from '../styles'
 import { EarthCanvas } from './canvas'
 import { SectionWrapper } from '../hoc'
 import { slideIn } from '../utils/motion'
+import { toast } from 'react-toastify';
 
 const Contact = () => {
   const formRef = useRef();
@@ -25,6 +26,13 @@ const Contact = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    
+    // Basic form validation
+    if (!form.name.trim() || !form.email.trim() || !form.message.trim()) {
+      toast.error('Please fill in all fields.');
+      return;
+    }
+
     setLoading(true);
 
     emailjs.send(
@@ -35,23 +43,24 @@ const Contact = () => {
         to_name: 'Akash Sharma',
         from_email: form.email,
         to_email: 'akashcodesharma@gmail.com',
-        message: form.message,
+        message: `From: ${form.name} (${form.email})\n\nMessage:\n${form.message}`,
+        reply_to: form.email,
       },
       '3-eFGhotqAWABe54T'
     )
-    .then(()=>{
+    .then(() => {
       setLoading(false);
-      alert('Thank you. I will get back to you as soon as possible.');
+      toast.success('Thank you. I will get back to you as soon as possible.');
       setForm({
         name: "",
-        email:"",
+        email: "",
         message: "",
-      })
+      });
     }, (error) => {
       setLoading(false);
       console.log(error);
-      alert('Something went wrong.')
-    })
+      toast.error('Something went wrong. Please try again.');
+    });
   }
 
   return (
@@ -65,18 +74,46 @@ const Contact = () => {
         <form ref={formRef} onSubmit={handleSubmit} className='mt-12 flex flex-col gap-8'>
           <label className='flex flex-col'>
             <span className='text-white font-medium mb-4'>Your Name</span>
-            <input type="text" name="name" value={form.name} onChange={handleChange} placeholder="What's your name?" className='bg-tertiary py-4 px-6 placeholder:text-secondary text-white rounded-lg outline-none border-none'/>
+            <input 
+              type="text" 
+              name="name" 
+              value={form.name} 
+              onChange={handleChange} 
+              placeholder="What's your name?" 
+              className='bg-tertiary py-4 px-6 placeholder:text-secondary text-white rounded-lg outline-none border-none'
+              required
+            />
           </label>
           <label className='flex flex-col'>
             <span className='text-white font-medium mb-4'>Your Email</span>
-            <input type="email" name="email" value={form.email} onChange={handleChange} placeholder="What's your email?" className='bg-tertiary py-4 px-6 placeholder:text-secondary text-white rounded-lg outline-none border-none'/>
+            <input 
+              type="email" 
+              name="email" 
+              value={form.email} 
+              onChange={handleChange} 
+              placeholder="What's your email?" 
+              className='bg-tertiary py-4 px-6 placeholder:text-secondary text-white rounded-lg outline-none border-none'
+              required
+            />
           </label>
           <label className='flex flex-col'>
             <span className='text-white font-medium mb-4'>Your Message</span>
-            <textarea row="7" name="message" value={form.message} onChange={handleChange} placeholder="What's do you want to say?" className='bg-tertiary py-4 px-6 placeholder:text-secondary text-white rounded-lg outline-none border-none'/>
+            <textarea 
+              rows="7" 
+              name="message" 
+              value={form.message} 
+              onChange={handleChange} 
+              placeholder="What do you want to say?" 
+              className='bg-tertiary py-4 px-6 placeholder:text-secondary text-white rounded-lg outline-none border-none'
+              required
+            />
           </label>
-          <button type='submit' className='bg-tertiary py-3 px-8 outline-none w-fit text-white font-bold shadow-md shadow-primary rounded-xl'>
-            {loading?'Sending...':"Send"}
+          <button 
+            type='submit' 
+            className='bg-tertiary py-3 px-8 outline-none w-fit text-white font-bold shadow-md shadow-primary rounded-xl'
+            disabled={loading}
+          >
+            {loading ? 'Sending...' : "Send"}
           </button>
         </form>
       </motion.div>
@@ -90,4 +127,5 @@ const Contact = () => {
   )
 }
 
-export default SectionWrapper(Contact, "contact")
+const ContactSection = SectionWrapper(Contact, "contact")
+export default ContactSection

@@ -1,4 +1,3 @@
-import React from 'react'
 import { Tilt } from 'react-tilt'
 import { motion } from 'framer-motion'
 import { SectionWrapper } from '../hoc'
@@ -6,7 +5,6 @@ import { SectionWrapper } from '../hoc'
 import { styles } from '../styles'
 import { services } from '../constants'
 import { fadeIn, textVariant } from '../utils/motion'
-import { div } from 'three/examples/jsm/nodes/Nodes.js'
 
 const ServiceCard = ({index, title, icon}) => {
   return (
@@ -31,10 +29,10 @@ const About = () => {
       </motion.div>
 
       <motion.p className='mt-4 text-secondary text-[17px] max-w-3xl leading-[30px]'  variants={fadeIn("", "",0.1, 1)}>
-        I'm a skilled software developer with experience in TypeScript and JavaScript, and expertise in frameworks like React, Node.js, and Three.js. I'm a quick learner and collaborate closely with clients to create efficient, scalable, and user-friendly solution that solve real-world problems. Let's work together to bring your ideas to life!
+        I&apos;m a self-taught full-stack web developer and BCA student with hands-on experience in building real-time apps, interactive UIs, and scalable backend systems. I enjoy turning ideas into working products using modern technologies like React, Node.js, and TypeScript. My focus is on solving real-world problems through consistent learning and project-based development.
       </motion.p>
 
-      <div className='mt-20 flex flex-wrap justify-center gap-10'>
+      <div className='mt-14 flex flex-wrap justify-center gap-10'>
         {services.map((service, index) => {
           return (
           <ServiceCard key={service.title} index={index} {...service} />
