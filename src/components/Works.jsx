@@ -6,7 +6,6 @@ import { github } from '../assets'
 import { SectionWrapper } from "../hoc";
 import {projects} from '../constants'
 import { fadeIn, textVariant } from "../utils/motion"
-import { div } from "three/examples/jsm/nodes/Nodes.js";
 
 const ProjectCard = ({ index, name, description, tags, image, source_code_link, link }) => {
   return (
