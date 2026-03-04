@@ -194,7 +194,6 @@ const ScreenshotsCarousel = ({ screenshots, accent, name }) => {
 
   return (
     <div className="flex flex-col gap-3">
-      {/* Main image */}
       <div className="relative w-full rounded-xl overflow-hidden"
         style={{ aspectRatio: "4/3", background: "#0f172a" }}>
 
@@ -213,7 +212,6 @@ const ScreenshotsCarousel = ({ screenshots, accent, name }) => {
           )}
         </div>
 
-        {/* Prev arrow */}
         {total > 1 && (
           <button onClick={() => go(active - 1)}
             className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full flex items-center justify-center text-lg font-bold transition-all duration-150 hover:scale-110"
@@ -222,7 +220,6 @@ const ScreenshotsCarousel = ({ screenshots, accent, name }) => {
           </button>
         )}
 
-        {/* Next arrow */}
         {total > 1 && (
           <button onClick={() => go(active + 1)}
             className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full flex items-center justify-center text-lg font-bold transition-all duration-150 hover:scale-110"
@@ -231,14 +228,12 @@ const ScreenshotsCarousel = ({ screenshots, accent, name }) => {
           </button>
         )}
 
-        {/* Counter */}
         <div className="absolute bottom-2 right-2 px-2 py-0.5 rounded-full text-xs font-medium"
           style={{ background: "rgba(5,8,22,0.8)", color: "#94a3b8" }}>
           {active + 1} / {total}
         </div>
       </div>
 
-      {/* Dots */}
       <div className="flex items-center gap-1.5 justify-center flex-wrap">
         {screenshots.map((_, i) => (
           <button key={i} onClick={() => go(i)}

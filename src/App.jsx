@@ -13,7 +13,6 @@ import Contact  from './pages/Contact'
 import Privacy  from './pages/Privacy'
 import Terms    from './pages/Terms'
 
-// Scroll to top on every route change
 const ScrollToTop = () => {
   const { pathname } = useLocation()
 

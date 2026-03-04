@@ -38,9 +38,8 @@ const HomeAbout = () => {
   ]
 
   return (
-    <section ref={ref} className="px-6 sm:px-16 py-24 max-w-7xl mx-auto">
+    <section id="about" ref={ref} className="px-6 sm:px-16 py-24 max-w-7xl mx-auto">
       <div className="flex flex-col lg:flex-row items-start gap-16">
-        {/* Text block */}
         <div className="about-item flex-1">
           <div className="w-12 h-0.5 mb-6 rounded-full"
             style={{ background: `linear-gradient(90deg,${C.violet},${C.teal})` }} />
@@ -64,7 +63,6 @@ const HomeAbout = () => {
           </Link>
         </div>
 
-        {/* Stats */}
         <div className="about-item flex flex-row lg:flex-col gap-4">
           {stats.map((s) => (
             <div key={s.label} className="flex-1 lg:flex-none flex flex-col items-center text-center rounded-2xl px-8 py-6"

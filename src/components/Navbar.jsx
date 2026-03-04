@@ -3,7 +3,6 @@ import { Link, useLocation } from "react-router-dom"
 import { navLinks } from "../constants"
 import { logo, menu, close } from "../assets"
 
-// Remove "Home" from nav — logo already goes home
 const filteredLinks = navLinks.filter((l) => l.id !== "/")
 
 const Navbar = () => {
@@ -15,8 +14,6 @@ const Navbar = () => {
       style={{ background: "rgba(5,8,22,0.75)", backdropFilter: "blur(12px)",
                borderBottom: "1px solid rgba(148,163,184,0.06)" }}>
       <div className="w-full flex justify-between items-center max-w-7xl mx-auto">
-
-        {/* Logo */}
         <Link to="/" onClick={() => {
           setMenuOpen(false)
           window.scrollTo({ top: 0, behavior: "smooth" })
@@ -28,7 +25,6 @@ const Navbar = () => {
           </span>
         </Link>
 
-        {/* Desktop nav */}
         <ul className="list-none hidden sm:flex flex-row items-center gap-1">
           {filteredLinks.map((link) => {
             const isActive = pathname === link.id
@@ -39,7 +35,6 @@ const Navbar = () => {
                   className="relative px-4 py-2 rounded-lg text-[14px] font-medium transition-all duration-200 group"
                   style={{ color: isActive ? "#f8fafc" : "#94a3b8" }}
                 >
-                  {/* Hover/active bg pill */}
                   <span
                     className="absolute inset-0 rounded-lg transition-opacity duration-200"
                     style={{
@@ -49,14 +44,12 @@ const Navbar = () => {
                       opacity: isActive ? 1 : 0,
                     }}
                   />
-                  {/* Active underline dot */}
                   {isActive && (
                     <span
                       className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full"
                       style={{ background: "#7c3aed" }}
                     />
                   )}
-                  {/* Hover state */}
                   <span className="absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200"
                     style={{ background: "rgba(148,163,184,0.06)" }} />
                   <span className="relative">{link.title}</span>
@@ -66,7 +59,6 @@ const Navbar = () => {
           })}
         </ul>
 
-        {/* Mobile toggle */}
         <button
           className="sm:hidden flex items-center justify-center w-9 h-9 rounded-lg transition-colors duration-200"
           style={{ background: "rgba(148,163,184,0.08)" }}
@@ -77,7 +69,6 @@ const Navbar = () => {
         </button>
       </div>
 
-      {/* Mobile dropdown */}
       <div
         className="sm:hidden overflow-hidden transition-all duration-300 ease-in-out"
         style={{

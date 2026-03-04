@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+
+Sitemap: https://akashsharma.dev/sitemap.xml
+
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /

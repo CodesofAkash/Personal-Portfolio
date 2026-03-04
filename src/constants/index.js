@@ -223,7 +223,7 @@ export const projects = [
       "Building OpenStream strengthened my understanding of real-time architecture — managing WebRTC connections, handling concurrent chat events, and maintaining consistent UI state across multiple participants.",
   },
   {
-    name: "Mojito — GSAP Motion Website",
+    name: "Mojito Cocktial— Cocktail Brand Experience",
     description:
       "A motion-first single-page website built to explore advanced GSAP and ScrollTrigger animation workflows. Designed with immersive transitions, timeline-based sequencing, and smooth scroll interactions to create a cinematic browsing experience for a cocktail brand.",
     tags: [

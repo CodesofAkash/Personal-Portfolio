@@ -1,28 +1,28 @@
+import { Suspense } from 'react'
 import { motion } from 'framer-motion'
 import { styles } from '../styles'
 import { ComputersCanvas } from './canvas'
+import CanvasLoader from './Loader'
 
 const Hero = () => {
   return (
     <section className='relative w-full h-screen mx-auto overflow-hidden'>
 
-      {/* ── Canvas fills entire hero behind everything ── */}
       <div className='absolute inset-0' style={{ zIndex: 1 }}>
-        <ComputersCanvas />
+        <Suspense fallback={<CanvasLoader />}>
+          <ComputersCanvas />
+        </Suspense>
       </div>
 
-      {/* ── Text layer — sits above canvas, top-left area ── */}
       <div
         className={`${styles.paddingX} absolute inset-0 top-[20px] max-w-7xl mx-auto flex items-start gap-5`}
         style={{ zIndex: 10, pointerEvents: 'none' }}
       >
-        {/* Vertical accent line */}
         <div className='flex flex-col justify-center items-center mt-1'>
           <div className='w-5 h-5 rounded-full' style={{ background: '#7c3aed' }} />
           <div className='w-1 sm:h-80 h-40 violet-gradient' />
         </div>
 
-        {/* Copy block — constrained width so it doesn't bleed into model */}
         <div style={{ maxWidth: '520px', pointerEvents: 'auto' }}>
           <motion.p
             initial={{ opacity: 0, y: -16 }}
@@ -50,14 +50,12 @@ const Hero = () => {
             transition={{ duration: 0.6, delay: 0.25 }}
             className='mt-4'
           >
-            {/* Subheadline — same heroSubText class as before, full size */}
             <p
               className={`${styles.heroSubText}`}
               style={{ color: '#e2e8f0', marginBottom: '10px' }}
             >
               Full-stack developer. Self-taught. Fast learner.
             </p>
-            {/* Supporting line — bumped from 14px to 16px */}
             <p
               style={{
                 fontSize: '16px',
@@ -72,7 +70,6 @@ const Hero = () => {
             </p>
           </motion.div>
 
-          {/* CTAs */}
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
@@ -105,7 +102,6 @@ const Hero = () => {
         </div>
       </div>
 
-      {/* ── Scroll indicator ── */}
       <div
         className='absolute xs:bottom-24 bottom-32 w-full flex justify-center items-center'
         style={{ zIndex: 10 }}
