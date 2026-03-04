@@ -1,4 +1,5 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom"
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom"
+import { useEffect } from "react"
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
@@ -12,9 +13,21 @@ import Contact  from './pages/Contact'
 import Privacy  from './pages/Privacy'
 import Terms    from './pages/Terms'
 
+// Scroll to top on every route change
+const ScrollToTop = () => {
+  const { pathname } = useLocation()
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" })
+  }, [pathname])
+
+  return null
+}
+
 const App = () => {
   return (
     <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+      <ScrollToTop />
       <div className="relative z-0 bg-primary min-h-screen flex flex-col">
         <Navbar />
         {/* pt-[68px] pushes ALL page content below the fixed navbar — fixes the overlap */}

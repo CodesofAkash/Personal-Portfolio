@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react"
 import { Link } from "react-router-dom"
 import gsap from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
-import { projects } from "../constants"
+import { projects, testimonials } from "../constants"
 import Hero from "../components/Hero"
 import { github } from "../assets"
 
@@ -53,9 +53,9 @@ const HomeAbout = () => {
             Akash Sharma.
           </h2>
           <p className="text-[17px] leading-relaxed mb-8 max-w-xl" style={{ color: C.dim }}>
-            Third-year BCA student and full-stack developer. I build real-time systems,
-            interactive 3D experiences, and production-ready web apps — from React and
-            Next.js on the frontend to Node.js, MongoDB, and WebRTC on the backend.
+            Full-stack developer who went from zero to shipping production apps in under
+            two years — entirely self-taught. I specialise in real-time systems, 3D web
+            experiences, and end-to-end application development. Every project has a live URL.
           </p>
           <Link to="/about"
             className="inline-flex items-center gap-2 px-7 py-3 rounded-xl font-semibold text-white transition-all duration-200 hover:scale-105"
@@ -204,56 +204,86 @@ const HomeFeaturedProjects = () => {
   )
 }
 
-// ── CTA ────────────────────────────────────────────────────────────────────────
-const HomeCTA = () => {
-  const ref = useRef(null)
+// ── Testimonials ─────────────────────────────────────────────────────────────
+const HomeTestimonials = () => {
+  const ref     = useRef(null)
+  const headRef = useRef(null)
 
   useEffect(() => {
-    const el = ref.current
-    if (!el) return
+    const el   = ref.current
+    const head = headRef.current
+    if (!el || !head) return
     const ctx = gsap.context(() => {
-      gsap.fromTo(el, { y: 60, opacity: 0 }, {
-        y: 0, opacity: 1, duration: 0.9, ease: "power3.out",
-        scrollTrigger: { trigger: el, start: "top 80%" }
+      gsap.fromTo(head, { y: 30, opacity: 0 }, {
+        y: 0, opacity: 1, duration: 0.7, ease: "power3.out",
+        scrollTrigger: { trigger: head, start: "top 85%" }
       })
+      gsap.fromTo(el.querySelectorAll(".t-card"),
+        { y: 50, opacity: 0 },
+        { y: 0, opacity: 1, stagger: 0.15, duration: 0.7, ease: "power3.out",
+          scrollTrigger: { trigger: el, start: "top 80%" } }
+      )
     })
     return () => ctx.revert()
   }, [])
 
   return (
-    <section className="px-6 sm:px-16 py-24">
-      <div ref={ref} className="max-w-7xl mx-auto rounded-3xl p-12 sm:p-20 relative overflow-hidden"
-        style={{
-          background: `linear-gradient(135deg,${C.violet}18,${C.teal}12,${C.card})`,
-          border: `1px solid ${C.violet}25`,
-        }}>
-        {/* Decorative blobs */}
-        <div className="absolute -top-20 -right-20 w-64 h-64 rounded-full pointer-events-none"
-          style={{ background: `radial-gradient(circle,${C.violet}15,transparent 70%)` }} />
-        <div className="absolute -bottom-20 -left-20 w-48 h-48 rounded-full pointer-events-none"
-          style={{ background: `radial-gradient(circle,${C.teal}12,transparent 70%)` }} />
+    <section className="px-6 sm:px-16 py-24" style={{ borderTop: `1px solid ${C.border}` }}>
+      <div className="max-w-7xl mx-auto">
+        {/* Heading */}
+        <div ref={headRef} className="mb-12">
+          <p className="text-sm uppercase tracking-widest mb-3" style={{ color: C.amber }}>
+            Kind words
+          </p>
+          <h2 className="font-black" style={{
+            fontSize: "clamp(2rem,6vw,5rem)", color: C.white,
+            fontFamily: "'Bebas Neue','Impact',sans-serif"
+          }}>
+            What people say.
+          </h2>
+        </div>
 
-        <div className="relative flex flex-col md:flex-row items-center justify-between gap-10">
-          <div>
-            <p className="text-sm uppercase tracking-widest mb-3" style={{ color: C.teal }}>
-              Open to work
-            </p>
-            <h2 className="font-black leading-tight mb-4"
-              style={{ fontSize: "clamp(2rem,5vw,4rem)", color: C.white,
-                       fontFamily: "'Bebas Neue','Impact',sans-serif" }}>
-              Let's build something<br />
-              <span style={{ color: C.violet }}>together.</span>
-            </h2>
-            <p className="max-w-md text-[16px] leading-relaxed" style={{ color: C.dim }}>
-              Open to freelance projects, collaborations, and full-time opportunities.
-              If you have an idea, let's talk.
-            </p>
-          </div>
-          <Link to="/contact"
-            className="flex-shrink-0 px-10 py-5 rounded-2xl font-bold text-white text-lg transition-all duration-200 hover:scale-105 hover:shadow-2xl"
-            style={{ background: `linear-gradient(135deg,${C.violet},${C.teal})` }}>
-            Get in touch
-          </Link>
+        {/* Cards */}
+        <div ref={ref} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {testimonials.map((t) => (
+            <div key={t.name} className="t-card flex flex-col rounded-2xl p-7 relative"
+              style={{
+                background: C.card,
+                border: `1px solid ${C.border}`,
+              }}>
+              {/* Quote mark */}
+              <span className="absolute top-5 right-6 text-5xl font-black leading-none select-none"
+                style={{ color: `${C.violet}20`, fontFamily: "Georgia, serif" }}>
+                "
+              </span>
+
+              {/* Testimonial text */}
+              <p className="text-[15px] leading-relaxed flex-1 mb-6 relative z-10"
+                style={{ color: C.dim }}>
+                "{t.testimonial}"
+              </p>
+
+              {/* Divider */}
+              <div className="w-full h-px mb-5"
+                style={{ background: `linear-gradient(90deg,${C.violet}30,transparent)` }} />
+
+              {/* Person */}
+              <div className="flex items-center gap-3">
+                <img
+                  src={t.image}
+                  alt={t.name}
+                  className="w-11 h-11 rounded-full object-cover flex-shrink-0"
+                  style={{ border: `2px solid ${C.violet}40` }}
+                />
+                <div>
+                  <p className="font-semibold text-sm" style={{ color: C.white }}>{t.name}</p>
+                  <p className="text-xs mt-0.5" style={{ color: C.dim }}>
+                    {t.designation} · {t.company}
+                  </p>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </section>
@@ -271,7 +301,7 @@ const Home = () => {
       </div>
       <HomeAbout />
       <HomeFeaturedProjects />
-      <HomeCTA />
+      <HomeTestimonials />
     </div>
   )
 }

@@ -36,15 +36,15 @@ const Contact = () => {
     setLoading(true);
 
     emailjs.send(
-      'service_580ywoe',
+      'service_s3inyje',
       'template_neayvk7',
       {
         from_name: form.name,
         to_name: 'Akash Sharma',
         from_email: form.email,
         to_email: 'akashcodesharma@gmail.com',
-        message: `From: ${form.name} (${form.email})\n\nMessage:\n${form.message}`,
-        reply_to: form.email,
+        subject: `Portfolio Contact: ${form.name}`,
+        message: `From: ${form.name} (${form.email})\n\nMessage:\n${form.message}\n\n---\nSent via portfolio contact form.`,
       },
       '3-eFGhotqAWABe54T'
     )

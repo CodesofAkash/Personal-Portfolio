@@ -47,11 +47,11 @@ const ContactPage = () => {
 
   const infoCards = [
     {
-      icon: "📧", label: "Email", value: "akash@example.com",
-      href: "mailto:akash@example.com", color: C.violet,
+      icon: "📧", label: "Email", value: "akashcodesharma@gmail.com",
+      href: "mailto:akashcodesharma@gmail.com", color: C.violet,
     },
     {
-      icon: "💼", label: "GitHub", value: "github.com/CodesofAkash",
+      icon: "🐙", label: "GitHub", value: "github.com/CodesofAkash",
       href: "https://github.com/CodesofAkash", color: C.teal,
     },
     {
@@ -63,7 +63,7 @@ const ContactPage = () => {
   return (
     <div style={{ background: C.bg, color: C.white, minHeight: "100vh" }}>
       {/* Hero header */}
-      <section ref={heroRef} className="relative px-6 sm:px-16 pt-32 pb-16 max-w-7xl mx-auto overflow-hidden">
+      <section ref={heroRef} className="relative px-6 sm:px-16 pt-16 pb-16 max-w-7xl mx-auto overflow-hidden">
         {/* Bg glow */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full pointer-events-none"
           style={{ background: `radial-gradient(circle,${C.violet}10 0%,transparent 70%)` }} />
@@ -79,8 +79,9 @@ const ContactPage = () => {
           Let's Talk.
         </h1>
         <p className="c-sub max-w-xl text-[17px] leading-relaxed" style={{ color: C.dim }}>
-          Have a project in mind, want to collaborate, or just want to say hello?
-          My inbox is always open.
+          I'm currently seeking my first professional role in web development — frontend,
+          backend, or full-stack. If you're hiring, have a project that needs building,
+          or just want to connect, I'd welcome the conversation.
         </p>
       </section>
 

@@ -49,7 +49,7 @@ const AboutHero = () => {
   const name = "Akash Sharma"
 
   return (
-    <section ref={heroRef} className="relative min-h-screen flex flex-col justify-center px-6 sm:px-16 py-32 max-w-7xl mx-auto overflow-hidden">
+    <section ref={heroRef} className="relative min-h-screen flex flex-col justify-center px-6 sm:px-16 pt-16 pb-16 max-w-7xl mx-auto overflow-hidden">
       {/* Grid bg */}
       <div className="absolute inset-0 pointer-events-none" style={{
         backgroundImage: `linear-gradient(${C.violet}04 1px,transparent 1px),linear-gradient(90deg,${C.violet}04 1px,transparent 1px)`,
@@ -80,7 +80,7 @@ const AboutHero = () => {
 
       {/* Tags */}
       <div className="flex flex-wrap gap-3 mb-8">
-        {["Full-Stack Dev", "Real-Time Systems", "3D & Motion", "BCA Student"].map((tag, i) => {
+          {["Builder by Practice", "Curious by Nature", "BCA Student", "Open to Opportunities"].map((tag, i) => {
           const cols = [C.violet, C.teal, C.amber, C.rose]
           return (
             <span key={tag} className="hero-tag px-4 py-1.5 rounded-full text-sm font-medium border"
@@ -92,9 +92,10 @@ const AboutHero = () => {
       </div>
 
       <p className="hero-bio max-w-2xl text-[17px] leading-relaxed mb-10" style={{ color: C.dim }}>
-        Third-year BCA student who went from zero to shipping production apps in under two years.
-        I build across the full stack — React, Next.js, Node.js, MongoDB, WebRTC, and Three.js.
-        I care about things being fast, beautiful, and real-time.
+        Self-taught developer driven by curiosity and consistency. 
+        What started as learning HTML two years ago evolved into building complete, 
+        production-ready applications independently. I value clarity, ownership, and continuous improvement — 
+        and I’m now seeking my first professional opportunity to contribute, learn, and grow within a strong engineering team.
       </p>
 
       <div className="flex flex-wrap gap-4">
@@ -137,10 +138,10 @@ const StatsBar = () => {
   }, [])
 
   const stats = [
-    { value: "1.5+", label: "Years coding",   color: C.violet },
-    { value: "15+",  label: "Projects built", color: C.teal   },
-    { value: "7+",   label: "Tech stacks",    color: C.amber  },
-    { value: "100%", label: "Self-taught",    color: C.rose   },
+    { value: "2+", label: "Years of Development", color: C.violet },
+    { value: "10+", label: "Projects Shipped", color: C.teal   },
+    { value: "10+", label: "Technologies Applied", color: C.amber  },
+    { value: "∞", label: "Curiosity & Growth", color: C.rose   },
   ]
 
   return (
@@ -396,7 +397,8 @@ const AboutCTA = () => {
           <span style={{ color: C.violet }}>remarkable.</span>
         </h2>
         <p className="max-w-lg mx-auto mb-10 text-[17px] leading-relaxed" style={{ color: C.dim }}>
-          Always open to interesting projects, collaborations, and conversations.
+          Available immediately for full-time roles, internships, and remote positions.
+          India-based — open to relocation or fully remote worldwide.
         </p>
         <div className="flex flex-wrap justify-center gap-4">
           <Link to="/contact"

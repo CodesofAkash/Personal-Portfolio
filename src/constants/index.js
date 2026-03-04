@@ -1,7 +1,5 @@
-import { techIcon, projectImage, serviceIcon } from "../lib/cloudinary";
-
 // ─────────────────────────────────────────────
-// NAVIGATION — page routes, not hash anchors
+// NAVIGATION
 // ─────────────────────────────────────────────
 
 export const navLinks = [
@@ -11,35 +9,49 @@ export const navLinks = [
 ];
 
 // ─────────────────────────────────────────────
-// SERVICES
+// CLOUDINARY BASE URLs
 // ─────────────────────────────────────────────
 
-const services = [
-  { title: "Web Developer",        icon: serviceIcon("portfolio/services/web")      },
-  { title: "Real-Time System Dev", icon: serviceIcon("portfolio/services/realtime") },
-  { title: "API & DB Enthusiast",  icon: serviceIcon("portfolio/services/backend")  },
-  { title: "UI Motion Hacker",     icon: serviceIcon("portfolio/services/creator")  },
-];
+const CDN  = "https://res.cloudinary.com/ddawd3kp5/image/upload";
+const VCDN = "https://res.cloudinary.com/ddawd3kp5/video/upload";
 
 // ─────────────────────────────────────────────
 // TECH STACK
 // ─────────────────────────────────────────────
 
-const technologies = [
-  { name: "TypeScript",   icon: techIcon("portfolio/tech/typescript")  },
-  { name: "React JS",     icon: techIcon("portfolio/tech/reactjs")     },
-  { name: "Next.js",      icon: techIcon("portfolio/tech/nextjs")      },
-  { name: "Tailwind CSS", icon: techIcon("portfolio/tech/tailwind")    },
-  { name: "GSAP",         icon: techIcon("portfolio/tech/gsap")        },
-  { name: "Three.js",     icon: techIcon("portfolio/tech/threejs")     },
-  { name: "Node.js",      icon: techIcon("portfolio/tech/nodejs")      },
-  { name: "MongoDB",      icon: techIcon("portfolio/tech/mongodb")     },
-  { name: "Prisma",       icon: techIcon("portfolio/tech/prisma")      },
-  { name: "Socket.IO",    icon: techIcon("portfolio/tech/socketio")    },
-  { name: "Git",          icon: techIcon("portfolio/tech/git")         },
-  { name: "Figma",        icon: techIcon("https://res.cloudinary.com/ddawd3kp5/image/upload/v1772289494/figma_yryrpw.png")       },
-  { name: "WordPress",    icon: techIcon("portfolio/tech/wordpress")   },
-  { name: "Postman",      icon: techIcon("portfolio/tech/postman")     },
+export const technologies = [
+  // Core Frontend
+  { name: "JavaScript",   icon: `${CDN}/js_svckyk.svg`          },
+  { name: "TypeScript",   icon: `${CDN}/typescript_dqkj0j.png`  },
+  { name: "React.js",     icon: `${CDN}/reactjs_mykfpg.png`     },
+  { name: "Next.js",      icon: `${CDN}/nextjs_f6qd7x.png`      },
+  { name: "Tailwind CSS", icon: `${CDN}/tailwind_gkafu4.png`    },
+
+  // 3D & Motion
+  { name: "Three.js",     icon: `${CDN}/threejs_dlcegx.svg`     },
+  { name: "GSAP",         icon: `${CDN}/gsap_boaydq.png`        },
+
+  // Backend & APIs
+  { name: "Node.js",      icon: `${CDN}/nodejs_ur2zox.png`      },
+  { name: "Express.js",   icon: `${CDN}/express_ml2xwr.svg`     },
+  { name: "Socket.IO",    icon: `${CDN}/socketio_vonskh.png`    },
+
+  // Database & ORM
+  { name: "MongoDB",      icon: `${CDN}/mongodb_sf0rxe.png`     },
+  { name: "Prisma ORM",   icon: `${CDN}/prisma_b3owp4.svg`      },
+
+  // Dev Tools
+  { name: "Git",          icon: `${CDN}/git_jplhr2.png`         },
+  { name: "Postman",      icon: `${CDN}/postman_g8ikuc.png`     },
+  { name: "AWS",          icon: `${CDN}/aws-2_bj0olj.svg`       },
+
+  // Design & CMS
+  { name: "Figma",        icon: `${CDN}/figma_y3pmrr.png`       },
+  { name: "WordPress",    icon: `${CDN}/wordpress_l38kfs.png`   },
+
+  // DSA Languages
+  { name: "C++",          icon: `${CDN}/cpp_k9uf4z.svg`         },
+  { name: "Java",         icon: `${CDN}/java_ieeb3s.svg`        },
 ];
 
 // ─────────────────────────────────────────────
@@ -50,99 +62,100 @@ const LOGOS = {
   apnaCollege:   "https://avatars.githubusercontent.com/u/66199241?s=200&v=4",
   codeWithHarry: "https://avatars.githubusercontent.com/u/55523838?s=200&v=4",
   jsMastery:     "https://avatars.githubusercontent.com/u/72614512?s=200&v=4",
-  meta:          "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Meta_Platforms_Inc._logo.svg/200px-Meta_Platforms_Inc._logo.svg.png",
+  antonio:       "https://avatars.githubusercontent.com/u/35677084?s=200&v=4",
 };
 
-const experiences = [
+export const experiences = [
   {
-    title: "Getting Started with Web Development",
-    company_name: "Apna College",
+    title: "Web Development Foundations",
+    company_name: "Independent Learning",
     icon: LOGOS.apnaCollege,
     iconBg: "#E6DEDD",
-    date: "December 2023 – January 2024",
+    date: "December 2023 – Early 2024",
     points: [
-      "Started my journey with HTML, CSS, and vanilla JavaScript through YouTube.",
-      "Built basic web pages, learned responsive layouts, Flexbox, and CSS tricks.",
-      "Explored browser DevTools and applied concepts through hands-on mini projects.",
-      "Laid the foundation that everything since has been built on.",
+      "Began coding the day I purchased my first laptop, starting with HTML, CSS, and JavaScript fundamentals.",
+      "Built small logic-based projects — Rock Paper Scissors, Snake Game, Calculator, and a YouTube UI clone — to understand how the web actually works.",
+      "Practiced responsive layouts using Flexbox and CSS Grid while strengthening core JavaScript understanding.",
+      "Developed early debugging discipline by solving layout and logic issues independently.",
     ],
   },
   {
-    title: "Frontend Foundations & React",
-    company_name: "CodeWithHarry",
+    title: "Frontend & Full-Stack Exploration",
+    company_name: "Project-Based Learning",
     icon: LOGOS.codeWithHarry,
     iconBg: "#383E56",
-    date: "January 2024",
+    date: "Early – Mid 2024",
     points: [
-      "Learned React.js fundamentals — components, props, state, and hooks.",
-      "Adopted Bootstrap and Tailwind CSS for fast, responsive UI design.",
-      "Started using Git and GitHub for version control and collaboration.",
-      "Built small projects including Spotify and Twitter frontend clones.",
+      "Learned React fundamentals including hooks, component architecture, props, and state management.",
+      "Built frontend clones — Spotify UI and Twitter homepage — to reverse-engineer complex layout systems.",
+      "Moved into backend development with Node.js, Express, and MongoDB to understand full-stack data flow.",
+      "Built learning-stage full-stack applications including a creator-support platform (Give Me a Chai) and API-driven projects tested via Postman and HTTPie.",
     ],
   },
   {
-    title: "Backend with Node.js & MongoDB",
-    company_name: "CodeWithHarry",
-    icon: LOGOS.codeWithHarry,
+    title: "Backend Focus & DSA Beginnings",
+    company_name: "Self-Study Phase",
+    icon: LOGOS.apnaCollege,
     iconBg: "#E6DEDD",
-    date: "February 2024",
+    date: "Mid 2024",
     points: [
-      "Dove into backend development with Node.js and Express.js.",
-      "Connected MongoDB databases to store and retrieve user data.",
-      "Built and tested REST APIs using Postman for CRUD operations.",
-      "Created first full-stack apps — a to-do list and password manager.",
+      "Shifted deeper into backend architecture, API design, and database relationships.",
+      "Started structured Data Structures & Algorithms practice in Java, progressing through arrays, linked lists, trees, and binary search.",
+      "Developed stronger logical thinking through consistent problem-solving practice.",
+      "Paused DSA and active development due to personal challenges — stepped away for an extended period.",
     ],
   },
   {
-    title: "Next.js & Full-Stack Development",
-    company_name: "CodeWithHarry",
+    title: "Interruption & Reset",
+    company_name: "Personal Phase",
     icon: LOGOS.codeWithHarry,
-    iconBg: "#383E56",
-    date: "March 2024",
+    iconBg: "#1a1a2e",
+    date: "Late 2024",
     points: [
-      "Shifted to production-level projects using Next.js with SSR and dynamic routing.",
-      "Integrated Clerk for auth, Prisma for database ORM, and deployed via Vercel.",
-      "Built a Patreon-style app to apply full-stack skills end to end.",
-      "Learned environment management, API routes, and deployment pipelines.",
+      "Experienced a significant pause in consistent development due to personal circumstances.",
+      "Several earlier projects became inactive or were abandoned during this period.",
+      "Used this time to gain perspective on discipline, long-term consistency, and the cost of scattered focus.",
+      "Made a quiet decision to restart with more intentionality — fewer projects, deeper ownership.",
     ],
   },
   {
-    title: "Three.js, React Three Fiber & GSAP",
-    company_name: "JavaScript Mastery",
+    title: "Rebuilding Through Advanced Projects",
+    company_name: "Focused Re-Entry",
     icon: LOGOS.jsMastery,
     iconBg: "#E6DEDD",
-    date: "February 2025",
+    date: "2025",
     points: [
-      "Explored 3D graphics in the browser using Three.js and react-three-fiber.",
-      "Built animated, scroll-based 3D websites including an iPhone showcase.",
-      "Learned GSAP to craft smooth, performant animations and engaging interactions.",
-      "Combined motion and 3D to build creative, portfolio-level experiences.",
+      "Restarted development with project-driven learning in Three.js and GSAP to rebuild momentum and interest.",
+      "Built interactive 3D product showcases, GSAP animation-heavy landing pages, and a backend-driven social platform.",
+      "Explored real-time systems by building a Twitch-style live streaming platform (LiveKit) and a Zoom-style conferencing app.",
+      "Studied microservices architecture concepts through an Uber-style backend experiment.",
     ],
   },
   {
-    title: "Low-Code & Design Tools",
-    company_name: "JavaScript Mastery",
-    icon: LOGOS.jsMastery,
+    title: "Refinement, Prioritisation & AI-Assisted Development",
+    company_name: "Independent Development",
+    icon: LOGOS.antonio,
     iconBg: "#383E56",
-    date: "February 2025",
+    date: "Late 2025 – Early 2026",
     points: [
-      "Figma: Designed UI/UX for web apps, building prototypes and design systems.",
-      "Locofy: Developed web apps with minimal code, focusing on logic and design.",
-      "WordPress & WooCommerce: Built blogs, portfolios, and e-commerce storefronts.",
-      "Developed an eye for design systems and component consistency.",
+      "Stopped maintaining scattered experiments and chose to refine a focused set of projects deeply.",
+      "Scaled and restructured OpenStream (Twitch clone) independently — improving architecture, stability, and feature depth.",
+      "Converted the Apple 3D showcase into a functioning e-commerce system with cart logic, variant selection, and a demo payment flow.",
+      "Used AI tools as accelerators for refactoring and iteration while maintaining full architectural ownership and decision-making.",
+      "Integrated AWS CloudFront CDN for asset delivery — first hands-on cloud infrastructure work.",
     ],
   },
   {
-    title: "WebRTC & Real-Time Systems",
-    company_name: "Meta Open Source",
-    icon: LOGOS.meta,
+    title: "Professional Preparation & Future Direction",
+    company_name: "Career Focus",
+    icon: LOGOS.apnaCollege,
     iconBg: "#E6DEDD",
-    date: "March 2025 – May 2025",
+    date: "2026 – Present",
     points: [
-      "Explored real-time communication using WebRTC and Socket.IO.",
-      "Built Twitch, Zoom, Threads, and Uber clones with video, chat, and live streaming.",
-      "Used LiveKit/Stream for media signaling and ShadCN + Chakra UI for interfaces.",
-      "Gained hands-on experience with peer-to-peer connections and event-driven systems.",
+      "Finalising portfolio, resume, and public presence in preparation for first professional role.",
+      "Restarted structured DSA practice in C++ to strengthen core problem-solving foundations.",
+      "Designing a large-scale college content library platform with role-based access, resource management, mentorship features, and tiered architecture — the most complete system I will have independently designed.",
+      "Actively seeking first internship or full-time opportunity to apply accumulated skills within a collaborative engineering environment.",
     ],
   },
 ];
@@ -151,7 +164,7 @@ const experiences = [
 // TESTIMONIALS
 // ─────────────────────────────────────────────
 
-const testimonials = [
+export const testimonials = [
   {
     testimonial: "Akash is an exceptional web developer. His attention to detail and ability to solve complex problems is impressive.",
     name: "Sahil",
@@ -167,7 +180,7 @@ const testimonials = [
     image: "https://randomuser.me/api/portraits/men/44.jpg",
   },
   {
-    testimonial: "Akash's creativity and technical skills are top-notch. He transformed our ideas into a stunning website that exceeded our expectations.",
+    testimonial: "Akash's creativity and technical skills are top-notch. He transformed our ideas into a stunning website.",
     name: "Omkar Singh",
     designation: "Student",
     company: "Bachelor of Science (Physics)",
@@ -179,43 +192,90 @@ const testimonials = [
 // PROJECTS
 // ─────────────────────────────────────────────
 
-const projects = [
+export const projects = [
   {
-    name: "Twitch Clone",
-    description: "A full-featured live streaming platform where users can go live using RTMP/WHIP ingestion and interact through real-time chat. Built with LiveKit for media transport and Prisma for data persistence.",
+    name: "OpenStream — Live Streaming Platform",
+    description:
+      "A real-time live streaming platform enabling creators to broadcast instantly and engage through concurrent chat. Built using LiveKit for WebRTC-based media transport, Prisma for relational data management, and deployed on Vercel. Focused on clean architecture, state management, and scalable real-time event handling.",
     tags: [
-      { name: "livekit",     color: "blue-text-gradient"  },
-      { name: "tailwindcss", color: "green-text-gradient" },
-      { name: "prisma",      color: "pink-text-gradient"  },
+      { name: "Next.js",  color: "blue-text-gradient"   },
+      { name: "LiveKit",  color: "green-text-gradient"  },
+      { name: "Prisma",   color: "pink-text-gradient"   },
+      { name: "WebRTC",   color: "orange-text-gradient" },
     ],
-    image: projectImage("portfolio/projects/twitch-clone"),
-    source_code_link: "https://github.com/CodesofAkash/twitch-clone",
+    image: `${CDN}/OpenStreamImage-1_sntrdd.jpg`,
+    video: `${VCDN}/OpenStreamVideo_e4e8wl.mp4`,
+    screenshots: [
+      `${CDN}/OpenStreamImage-1_sntrdd.jpg`,
+      `${CDN}/OpenStreamImage-2_ugtlxy.jpg`,
+      `${CDN}/OpenStreamImage-3_ufmtsi.jpg`,
+      `${CDN}/OpenStreamImage-4_nvdwmn.jpg`,
+      `${CDN}/OpenStreamImage-5_azolkd.jpg`,
+      `${CDN}/OpenStreamImage-6_gfni4g.jpg`,
+      `${CDN}/OpenStreamImage-7_fz4nke.jpg`,
+      `${CDN}/OpenStreamImage-8_my706u.jpg`,
+      `${CDN}/OpenStreamImage-9_rqvnpg.jpg`,
+      `${CDN}/OpenStreamImage-10_ktappf.jpg`,
+    ],
+    source_code_link: "https://github.com/CodesofAkash/open-stream",
     link: "https://open-stream--codesofakash.vercel.app",
+    learning:
+      "Building OpenStream strengthened my understanding of real-time architecture — managing WebRTC connections, handling concurrent chat events, and maintaining consistent UI state across multiple participants.",
   },
   {
-    name: "Zoom Clone",
-    description: "A real-time video conferencing app with meeting scheduling, screen sharing, and peer-to-peer communication. Uses Stream for media transport and ShadCN for a polished UI.",
+    name: "Mojito — GSAP Motion Website",
+    description:
+      "A motion-first single-page website built to explore advanced GSAP and ScrollTrigger animation workflows. Designed with immersive transitions, timeline-based sequencing, and smooth scroll interactions to create a cinematic browsing experience for a cocktail brand.",
     tags: [
-      { name: "stream",  color: "blue-text-gradient"  },
-      { name: "shadcn",  color: "green-text-gradient" },
-      { name: "nextjs",  color: "pink-text-gradient"  },
+      { name: "React",        color: "blue-text-gradient"  },
+      { name: "GSAP",         color: "green-text-gradient" },
+      { name: "Tailwind CSS", color: "pink-text-gradient"  },
     ],
-    image: projectImage("portfolio/projects/zoom-clone"),
-    source_code_link: "https://github.com/CodesofAkash/zoom-clone",
-    link: "https://mojito-cocktail--codesofakash.vercel.app/#hero",
+    image: `${CDN}/mojito-cocktail-6_kudebd.jpg`,
+    video: `${VCDN}/mojito-cocktail-video_mehx0v.mp4`,
+    screenshots: [
+      `${CDN}/mojito-cocktail-6_kudebd.jpg`,
+      `${CDN}/mojito-cocktail-7_pjhpxj.jpg`,
+      `${CDN}/mojito-cocktail-8_ozxhuj.jpg`,
+      `${CDN}/mojito-cocktail-9_ulv2eu.jpg`,
+      `${CDN}/mojito-cocktail-10_ghfqpa.jpg`,
+      `${CDN}/mojito-cocktail-11_evqssu.jpg`,
+      `${CDN}/mojito-cocktail-12_ej9wdg.jpg`,
+      `${CDN}/mojito-cocktail-13_ziy69z.jpg`,
+      `${CDN}/mojito-cocktail-1_aojheo.jpg`,
+      `${CDN}/mojito-cocktail-2_hl1q2a.jpg`,
+      `${CDN}/mojito-cocktail-3_lcivhc.jpg`,
+      `${CDN}/mojito-cocktail-4_gnpook.jpg`,
+      `${CDN}/mojito-cocktail-5_zenlnq.jpg`,
+    ],
+    source_code_link: "https://github.com/CodesofAkash/mojito-cocktail",
+    link: "https://mojito-cocktail--codesofakash.vercel.app",
+    learning:
+      "This project helped me master animation sequencing, scroll-based triggers, and performance optimisation for motion-heavy interfaces — understanding how to keep frame rates smooth while running complex GSAP timelines.",
   },
   {
-    name: "3D iPhone Display Website",
-    description: "A product landing page showcasing iPhone 3D models with scroll-driven animations using Three.js and GSAP. Optimized for visual impact and smooth 60fps interactions.",
+    name: "Apple Phone — 3D E-Commerce Experience",
+    description:
+      "An interactive product experience combining Three.js-powered 3D iPhone models with a complete e-commerce workflow. Features variant selection, cart state management, and a demo payment flow — built independently using AI as an assistant, without tutorial guidance.",
     tags: [
-      { name: "threejs", color: "blue-text-gradient"  },
-      { name: "gsap",    color: "green-text-gradient" },
-      { name: "react",   color: "pink-text-gradient"  },
+      { name: "Three.js",   color: "blue-text-gradient"   },
+      { name: "React.js",   color: "green-text-gradient"  },
+      { name: "GSAP",       color: "pink-text-gradient"   },
+      { name: "PostgreSQL", color: "orange-text-gradient" },
     ],
-    image: projectImage("portfolio/projects/iphone-3d"),
-    source_code_link: "https://github.com/CodesofAkash/3D-iPhone-Website",
-    link: "https://apple-phone--codesofakash.vercel.app/signin",
+    image: `${CDN}/apple-phone-1_f16sbh.jpg`,
+    video: `${VCDN}/apple-phone-video_scpgkz.mp4`,
+    screenshots: [
+      `${CDN}/apple-phone-1_f16sbh.jpg`,
+      `${CDN}/apple-phone-2_yfjmrv.jpg`,
+      `${CDN}/apple-phone-3_nydowh.jpg`,
+      `${CDN}/apple-phone-4_vvbyu8.jpg`,
+      `${CDN}/apple-phone-5_lyjlpi.jpg`,
+      `${CDN}/apple-phone-6_um5zij.jpg`,
+    ],
+    source_code_link: "https://github.com/CodesofAkash/apple-phone",
+    link: "https://apple-phone--codesofakash.vercel.app",
+    learning:
+      "Building this without a tutorial forced me to make real architectural decisions — integrating 3D rendering, cart state, and backend persistence into a single coherent system. This was the first project I designed end to end independently.",
   },
 ];
-
-export { services, technologies, experiences, testimonials, projects };

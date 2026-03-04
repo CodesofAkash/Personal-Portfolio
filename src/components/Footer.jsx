@@ -31,7 +31,7 @@ const Footer = () => {
             <div className="flex items-center gap-3 mt-1">
               {[
                 { label: "GitHub",   href: "https://github.com/CodesofAkash" },
-                { label: "LinkedIn", href: "https://linkedin.com" },
+                { label: "LinkedIn", href: "https://www.linkedin.com/in/codesofakash" },
               ].map((s) => (
                 <a key={s.label} href={s.href} target="_blank" rel="noreferrer"
                   className="px-4 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 hover:scale-105"

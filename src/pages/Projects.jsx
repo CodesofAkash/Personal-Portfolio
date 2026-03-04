@@ -5,6 +5,21 @@ import { ScrollTrigger } from "gsap/ScrollTrigger"
 import { projects as baseProjects } from "../constants"
 import { github } from "../assets"
 
+// Inject CSS to hide mute button from video controls (controlsList doesn't work in Chrome)
+const injectVideoStyles = () => {
+  if (document.getElementById("video-controls-style")) return
+  const style = document.createElement("style")
+  style.id = "video-controls-style"
+  style.textContent = `
+    .portfolio-video::-webkit-media-controls-mute-button { display: none !important; }
+    .portfolio-video::-webkit-media-controls-volume-slider { display: none !important; }
+    .portfolio-video::-webkit-media-controls-volume-control-container { display: none !important; }
+  `
+  document.head.appendChild(style)
+}
+injectVideoStyles()
+
+
 gsap.registerPlugin(ScrollTrigger)
 
 const C = {
@@ -14,18 +29,10 @@ const C = {
 }
 const ACCENTS = [C.violet, C.teal, C.amber, C.rose]
 
+// ── Enrich projects — video / screenshots / learning come from constants
 const enriched = baseProjects.map((p, i) => ({
   ...p,
   accent: ACCENTS[i % ACCENTS.length],
-  // Video: replace with your real Cloudinary/S3 video URL when ready
-  video: null, // e.g. "https://res.cloudinary.com/YOUR_CLOUD/video/upload/portfolio/twitch-demo.mp4"
-  // Screenshots: replace nulls with real Cloudinary URLs when ready
-  screenshots: [null, null, null],
-  learning: [
-    "Built a production-ready app from scratch end to end",
-    "Solved complex real-time architecture challenges",
-    "Improved performance and user experience significantly",
-  ][i] || "Deepened expertise in full-stack development patterns",
 }))
 
 // ── Hero section (page header) ────────────────────────────────────────────────
@@ -67,19 +74,18 @@ const ProjectsHero = () => {
 }
 
 // ── Video player with placeholder ─────────────────────────────────────────────
-const VideoPreview = ({ src, accent, name }) => {
+const VideoPreview = ({ src, accent }) => {
+  // Prevent unmuting — always re-mute if user somehow changes it
   const videoRef = useRef(null)
-  const [playing, setPlaying] = useState(false)
-
   useEffect(() => {
     const v = videoRef.current
-    if (!v || !src) return
-    if (playing) { v.play().catch(() => {}) }
-    else { v.pause(); v.currentTime = 0 }
-  }, [playing, src])
+    if (!v) return
+    const keepMuted = () => { v.muted = true }
+    v.addEventListener("volumechange", keepMuted)
+    return () => v.removeEventListener("volumechange", keepMuted)
+  }, [])
 
   if (!src) {
-    // Placeholder — animated gradient with "Video coming soon"
     return (
       <div className="relative w-full h-full flex items-center justify-center overflow-hidden rounded-xl"
         style={{ background: `linear-gradient(135deg,${accent}15,${C.bg})` }}>
@@ -100,75 +106,154 @@ const VideoPreview = ({ src, accent, name }) => {
   }
 
   return (
-    <div className="relative w-full h-full rounded-xl overflow-hidden cursor-pointer group/vid"
-      onClick={() => setPlaying(p => !p)}>
-      <video ref={videoRef} src={src} muted loop playsInline
-        className="w-full h-full object-cover" />
-      {!playing && (
-        <div className="absolute inset-0 flex items-center justify-center"
-          style={{ background: "rgba(5,8,22,0.5)" }}>
-          <div className="w-14 h-14 rounded-full flex items-center justify-center transition-transform duration-200 group-hover/vid:scale-110"
-            style={{ background: accent }}>
-            <span className="text-white text-xl ml-1">▶</span>
-          </div>
-        </div>
-      )}
+    <div className="relative w-full h-full rounded-xl overflow-hidden"
+      style={{ background: "#0a0f1e" }}>
+      <video
+        ref={videoRef}
+        src={src}
+        muted
+        loop
+        playsInline
+        controls
+        controlsList="novolume nodownload nofullscreen"
+        disablePictureInPicture
+        className="w-full h-full portfolio-video"
+        style={{ objectFit: "contain" }}
+      />
     </div>
   )
 }
 
 // ── Screenshots carousel ───────────────────────────────────────────────────────
 const ScreenshotsCarousel = ({ screenshots, accent, name }) => {
-  const [active, setActive] = useState(0)
+  const [active, setActive]   = useState(0)
+  const [loaded, setLoaded]   = useState({})   // track which imgs are loaded
+  const [animating, setAnimating] = useState(false)
   const imgRef = useRef(null)
 
-  const go = useCallback((idx) => {
-    if (!imgRef.current) return
-    gsap.fromTo(imgRef.current,
-      { opacity: 0, x: idx > active ? 20 : -20 },
-      { opacity: 1, x: 0, duration: 0.35, ease: "power2.out" }
+  // Preload all images upfront
+  useEffect(() => {
+    screenshots.forEach((src, i) => {
+      if (!src) return
+      const img = new Image()
+      img.onload = () => setLoaded(prev => ({ ...prev, [i]: true }))
+      img.src = src
+    })
+  }, [screenshots])
+
+  const allLoaded = screenshots.every((src, i) => !src || loaded[i])
+
+  const go = useCallback((rawIdx) => {
+    if (animating) return
+    const total = screenshots.length
+    const next  = ((rawIdx % total) + total) % total
+    if (next === active) return
+
+    setAnimating(true)
+    const dir = next > active ? 1 : -1
+
+    if (imgRef.current) {
+      // Slide out current
+      gsap.to(imgRef.current, {
+        x: -dir * 40, opacity: 0, duration: 0.18, ease: "power2.in",
+        onComplete: () => {
+          setActive(next)
+          // Slide in next
+          gsap.fromTo(imgRef.current,
+            { x: dir * 40, opacity: 0 },
+            { x: 0, opacity: 1, duration: 0.25, ease: "power2.out",
+              onComplete: () => setAnimating(false) }
+          )
+        }
+      })
+    } else {
+      setActive(next)
+      setAnimating(false)
+    }
+  }, [active, animating, screenshots.length])
+
+  const total = screenshots.length
+
+  // Show loader until all images are preloaded
+  if (!allLoaded) {
+    return (
+      <div className="relative w-full rounded-xl overflow-hidden flex items-center justify-center"
+        style={{ aspectRatio: "4/3", background: `linear-gradient(135deg,${accent}10,#0f172a)` }}>
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-8 h-8 rounded-full border-2 border-transparent animate-spin"
+            style={{ borderTopColor: accent, borderRightColor: `${accent}40` }} />
+          <p className="text-xs" style={{ color: accent }}>
+            Loading {screenshots.filter((s,i) => s && loaded[i]).length} / {screenshots.filter(s=>s).length}
+          </p>
+        </div>
+      </div>
     )
-    setActive(idx)
-  }, [active])
+  }
 
   const src = screenshots[active]
 
   return (
     <div className="flex flex-col gap-3">
       {/* Main image */}
-      <div className="relative w-full rounded-xl overflow-hidden" style={{ height: "180px" }}>
+      <div className="relative w-full rounded-xl overflow-hidden"
+        style={{ aspectRatio: "4/3", background: "#0f172a" }}>
+
         <div ref={imgRef} className="w-full h-full">
           {src ? (
-            <img src={src} alt={`${name} screenshot ${active + 1}`} className="w-full h-full object-cover" />
+            <img
+              src={src}
+              alt={`${name} screenshot ${active + 1}`}
+              className="w-full h-full"
+              style={{ objectFit: "contain" }}
+            />
           ) : (
-            <div className="w-full h-full flex items-center justify-center"
-              style={{ background: `linear-gradient(135deg,${accent}12,${C.bg})` }}>
-              <div className="text-center">
-                <p className="text-xs font-medium" style={{ color: accent }}>Screenshot {active + 1}</p>
-                <p className="text-xs mt-1" style={{ color: C.dim }}>Coming soon</p>
-              </div>
+            <div className="w-full h-full flex items-center justify-center">
+              <p className="text-xs" style={{ color: "#64748b" }}>No image</p>
             </div>
           )}
         </div>
+
+        {/* Prev arrow */}
+        {total > 1 && (
+          <button onClick={() => go(active - 1)}
+            className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full flex items-center justify-center text-lg font-bold transition-all duration-150 hover:scale-110"
+            style={{ background: "rgba(5,8,22,0.75)", border: `1px solid ${accent}50`, color: "#fff" }}>
+            ‹
+          </button>
+        )}
+
+        {/* Next arrow */}
+        {total > 1 && (
+          <button onClick={() => go(active + 1)}
+            className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full flex items-center justify-center text-lg font-bold transition-all duration-150 hover:scale-110"
+            style={{ background: "rgba(5,8,22,0.75)", border: `1px solid ${accent}50`, color: "#fff" }}>
+            ›
+          </button>
+        )}
+
+        {/* Counter */}
+        <div className="absolute bottom-2 right-2 px-2 py-0.5 rounded-full text-xs font-medium"
+          style={{ background: "rgba(5,8,22,0.8)", color: "#94a3b8" }}>
+          {active + 1} / {total}
+        </div>
       </div>
 
-      {/* Thumbnail dots */}
-      <div className="flex items-center gap-2 justify-center">
+      {/* Dots */}
+      <div className="flex items-center gap-1.5 justify-center flex-wrap">
         {screenshots.map((_, i) => (
           <button key={i} onClick={() => go(i)}
-            className="transition-all duration-200"
+            className="flex-shrink-0 transition-all duration-200"
             style={{
-              width: i === active ? "24px" : "8px",
-              height: "8px",
+              width:  i === active ? "20px" : "7px",
+              height: "7px",
               borderRadius: "4px",
-              background: i === active ? accent : `${accent}30`,
+              background: i === active ? accent : `${accent}35`,
             }} />
         ))}
       </div>
     </div>
   )
 }
-
 // ── Expanded hero card ────────────────────────────────────────────────────────
 const ExpandedCard = ({ project, onClose }) => {
   const ref = useRef(null)
@@ -225,13 +310,13 @@ const ExpandedCard = ({ project, onClose }) => {
         </div>
 
         {/* Main content grid */}
-        <div className="exp-section grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+        <div className="exp-section grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           {/* Video */}
           <div>
             <p className="text-xs uppercase tracking-widest mb-3" style={{ color: C.dim }}>
               Preview
             </p>
-            <div style={{ height: "240px" }}>
+            <div style={{ aspectRatio: "16/9", width: "100%", background: "#0a0f1e", borderRadius: "12px", overflow: "hidden", marginTop: "55px" }}>
               <VideoPreview src={project.video} accent={accent} name={project.name} />
             </div>
           </div>
@@ -346,12 +431,12 @@ const CompactCard = ({ project, isActive, onClick, index }) => {
       onMouseLeave={() => setHovering(false)}
     >
       {/* Image / video area */}
-      <div className="relative w-full overflow-hidden" style={{ height: "200px" }}>
+      <div className="relative w-full overflow-hidden" style={{ aspectRatio: "16/9", background: "#0a0f1e" }}>
         {/* Static image */}
         {project.image ? (
           <img src={project.image} alt={project.name}
-            className="w-full h-full object-cover transition-transform duration-700"
-            style={{ transform: hovering ? "scale(1.06)" : "scale(1)" }} />
+            className="w-full h-full transition-transform duration-700"
+            style={{ objectFit: "cover", transform: hovering ? "scale(1.06)" : "scale(1)" }} />
         ) : (
           <div className="w-full h-full flex items-center justify-center"
             style={{ background: `linear-gradient(135deg,${accent}18,${C.bg})` }}>
@@ -365,8 +450,8 @@ const CompactCard = ({ project, isActive, onClick, index }) => {
         {/* Video overlaid on hover */}
         {project.video && (
           <video ref={vidRef} src={project.video} muted loop playsInline
-            className="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
-            style={{ opacity: hovering ? 1 : 0 }} />
+            className="absolute inset-0 w-full h-full transition-opacity duration-500"
+            style={{ objectFit: "cover", opacity: hovering ? 1 : 0 }} />
         )}
 
         {/* No video — subtle animated gradient on hover */}
@@ -428,57 +513,51 @@ const ProjectsSection = () => {
   const expandedRef = useRef(null)
 
   const handleCardClick = (idx) => {
-    if (activeIdx === idx) {
-      setActiveIdx(null)
-      return
-    }
+    if (activeIdx === idx) { setActiveIdx(null); return }
     setActiveIdx(idx)
-    // Scroll to expanded card after state update
     setTimeout(() => {
       expandedRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
     }, 50)
   }
 
   const activeProject = activeIdx !== null ? enriched[activeIdx] : null
-  const activeRow = activeIdx !== null ? Math.floor(activeIdx / 3) : null
-
-  // Calculate number of rows needed
-  const numRows = Math.ceil(enriched.length / 3)
-  const rows = Array.from({ length: numRows }, (_, rowIdx) => {
-    const start = rowIdx * 3
-    return enriched.slice(start, start + 3)
-  })
+  const activeRow     = activeIdx !== null ? Math.floor(activeIdx / 3) : null
+  const numRows       = Math.ceil(enriched.length / 3)
 
   return (
     <section className="px-6 sm:px-16 pb-24 max-w-7xl mx-auto">
-      {rows.map((row, rowIdx) => (
-        <div key={`row-${rowIdx}`}>
-          <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 ${rowIdx > 0 ? "mt-6" : ""}`}>
-            {row.map((project, j) => {
-              const realIdx = rowIdx * 3 + j
-              return (
-                <CompactCard
-                  key={project.name}
-                  project={project}
-                  index={realIdx}
-                  isActive={activeIdx === realIdx}
-                  onClick={() => handleCardClick(realIdx)}
-                />
-              )
-            })}
-          </div>
-
-          {/* Inject expanded card after its row */}
-          {activeRow === rowIdx && activeProject && (
-            <div ref={expandedRef} className="mt-6">
-              <ExpandedCard
-                project={activeProject}
-                onClose={() => setActiveIdx(null)}
-              />
+      {Array.from({ length: numRows }, (_, rowIdx) => {
+        const rowProjects = enriched.slice(rowIdx * 3, rowIdx * 3 + 3)
+        return (
+          <div key={rowIdx}>
+            {/* Card grid row */}
+            <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 ${rowIdx > 0 ? "mt-6" : ""}`}>
+              {rowProjects.map((project, j) => {
+                const realIdx = rowIdx * 3 + j
+                return (
+                  <CompactCard
+                    key={project.name}
+                    project={project}
+                    index={realIdx}
+                    isActive={activeIdx === realIdx}
+                    onClick={() => handleCardClick(realIdx)}
+                  />
+                )
+              })}
             </div>
-          )}
-        </div>
-      ))}
+
+            {/* Expanded card injected after its row */}
+            {activeRow === rowIdx && activeProject && (
+              <div ref={expandedRef} className="mt-6">
+                <ExpandedCard
+                  project={activeProject}
+                  onClose={() => setActiveIdx(null)}
+                />
+              </div>
+            )}
+          </div>
+        )
+      })}
     </section>
   )
 }

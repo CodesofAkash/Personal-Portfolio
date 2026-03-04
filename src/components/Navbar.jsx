@@ -17,7 +17,10 @@ const Navbar = () => {
       <div className="w-full flex justify-between items-center max-w-7xl mx-auto">
 
         {/* Logo */}
-        <Link to="/" onClick={() => setMenuOpen(false)}
+        <Link to="/" onClick={() => {
+          setMenuOpen(false)
+          window.scrollTo({ top: 0, behavior: "smooth" })
+        }}
           className="flex items-center gap-2.5 group">
           <img src={logo} alt="logo" className="w-8 h-8 object-contain transition-transform duration-300 group-hover:rotate-12" />
           <span className="text-white text-[17px] font-bold tracking-tight">
