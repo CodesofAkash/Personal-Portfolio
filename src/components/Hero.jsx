@@ -1,4 +1,5 @@
 import { Suspense } from 'react'
+import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { styles } from '../styles'
 import { ComputersCanvas } from './canvas'
@@ -76,8 +77,8 @@ const Hero = () => {
             transition={{ duration: 0.6, delay: 0.4 }}
             className='flex flex-wrap gap-4 mt-8'
           >
-            <a
-              href='/projects'
+            <Link
+              to='/projects'
               className='px-8 py-3 rounded-xl font-semibold text-white transition-all duration-200 hover:scale-105 hover:shadow-lg'
               style={{
                 fontSize: '15px',
@@ -85,9 +86,9 @@ const Hero = () => {
               }}
             >
               See my work →
-            </a>
-            <a
-              href='/contact'
+            </Link>
+            <Link
+              to='/contact'
               className='px-8 py-3 rounded-xl font-semibold transition-all duration-200 hover:scale-105 border'
               style={{
                 fontSize: '15px',
@@ -97,7 +98,7 @@ const Hero = () => {
               }}
             >
               Get in touch
-            </a>
+            </Link>
           </motion.div>
         </div>
       </div>
