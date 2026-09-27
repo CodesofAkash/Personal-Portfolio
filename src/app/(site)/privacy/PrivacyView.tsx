@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import type { LegalPage } from "@/sanity/lib/types";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -17,50 +18,11 @@ const C = {
   border: "rgba(148,163,184,0.08)",
 };
 
-const sections = [
-  {
-    n: "01",
-    title: "Overview",
-    body: `This portfolio website ("Site") is operated by Akash Sharma ("I", "me", "my"). This Privacy Policy explains what information is collected when you visit the Site and how it is used. I am committed to protecting your privacy and handling any information you share with me responsibly.`,
-  },
-  {
-    n: "02",
-    title: "Information I Collect",
-    body: `I collect only the minimum information necessary to operate the Site. This includes contact form submissions — your name, email address, and message content — and basic anonymous analytics such as page views and browser type if analytics are enabled. I do not collect payment information, create user accounts, or track you across other websites.`,
-  },
-  {
-    n: "03",
-    title: "How I Use Your Information",
-    body: `Your information is used solely to respond to your messages and enquiries submitted via the contact form, and to understand how visitors interact with the Site so I can improve it. I will never sell, rent, or share your personal data with third parties for marketing purposes.`,
-  },
-  {
-    n: "04",
-    title: "Third-Party Services",
-    body: `The Site uses EmailJS to process contact form submissions (see emailjs.com/legal/privacy-policy), Cloudinary to serve optimised images via CDN (see cloudinary.com/privacy), and AWS CloudFront to serve 3D model assets (see aws.amazon.com/privacy). Each of these services has their own privacy policies governing how they handle data.`,
-  },
-  {
-    n: "05",
-    title: "Cookies",
-    body: `This Site does not use tracking cookies or advertising cookies. Session-level browser storage may be used for technical functionality only and is not used to identify you personally.`,
-  },
-  {
-    n: "06",
-    title: "Data Retention",
-    body: `Contact form messages are retained only as long as necessary to respond to your enquiry. You may request deletion of your data at any time by contacting me directly via the Contact page.`,
-  },
-  {
-    n: "07",
-    title: "Your Rights",
-    body: `You have the right to request access to, correction of, or deletion of any personal information I hold about you. To exercise these rights, contact me at the email address provided on the Contact page.`,
-  },
-  {
-    n: "08",
-    title: "Changes to This Policy",
-    body: `I may update this Privacy Policy from time to time. Any changes will be reflected on this page with an updated date. Continued use of the Site after changes constitutes acceptance of the updated policy.`,
-  },
-];
+interface PrivacyViewProps {
+  content: LegalPage | null;
+}
 
-const PrivacyView = () => {
+const PrivacyView = ({ content }: PrivacyViewProps) => {
   const heroRef = useRef<HTMLElement>(null);
   const sectionsRef = useRef<HTMLElement>(null);
 
@@ -93,7 +55,9 @@ const PrivacyView = () => {
     });
 
     return () => ctx.revert();
-  }, []);
+  }, [content?.sections?.length]);
+
+  const sections = content?.sections ?? [];
 
   return (
     <div style={{ background: C.bg, color: C.white, minHeight: "100vh" }}>
@@ -110,26 +74,30 @@ const PrivacyView = () => {
         <p className="p-tag text-xs uppercase tracking-widest mb-3" style={{ color: C.teal }}>
           Legal
         </p>
-        <h1
-          className="p-h1 font-black mb-4"
-          style={{
-            fontSize: "clamp(2.5rem,7vw,6rem)",
-            color: C.white,
-            fontFamily: "'Bebas Neue','Impact',sans-serif",
-            lineHeight: 1.05,
-          }}
-        >
-          Privacy Policy.
-        </h1>
-        <p className="p-date text-sm" style={{ color: C.dim }}>
-          Last updated: March 2026
-        </p>
+        {content?.heading && (
+          <h1
+            className="p-h1 font-black mb-4"
+            style={{
+              fontSize: "clamp(2.5rem,7vw,6rem)",
+              color: C.white,
+              fontFamily: "'Bebas Neue','Impact',sans-serif",
+              lineHeight: 1.05,
+            }}
+          >
+            {content.heading}
+          </h1>
+        )}
+        {content?.lastUpdated && (
+          <p className="p-date text-sm" style={{ color: C.dim }}>
+            Last updated: {content.lastUpdated}
+          </p>
+        )}
       </section>
 
       <section ref={sectionsRef} className="px-6 sm:px-16 pb-24 max-w-4xl mx-auto space-y-4">
-        {sections.map((s) => (
+        {sections.map((s, i) => (
           <div
-            key={s.n}
+            key={s.title}
             className="sec-card group rounded-2xl p-8 transition-all duration-300"
             style={{ background: C.card, border: `1px solid ${C.border}` }}
             onMouseEnter={(e) => {
@@ -144,7 +112,7 @@ const PrivacyView = () => {
                 className="flex-shrink-0 font-black text-3xl leading-none select-none"
                 style={{ color: `${C.violet}30`, fontFamily: "'Bebas Neue',monospace" }}
               >
-                {s.n}
+                {String(i + 1).padStart(2, "0")}
               </span>
               <div>
                 <h2 className="font-bold text-lg mb-3" style={{ color: C.white }}>

@@ -9,6 +9,7 @@ import { styles } from "@/styles";
 import { EarthCanvas } from "@/components/canvas";
 import { SectionWrapper } from "@/hoc";
 import { slideIn } from "@/utils/motion";
+import type { Settings } from "@/sanity/lib/types";
 
 interface ContactForm {
   name: string;
@@ -16,7 +17,11 @@ interface ContactForm {
   message: string;
 }
 
-const Contact = () => {
+interface ContactProps {
+  settings: Settings | null;
+}
+
+const Contact = ({ settings }: ContactProps) => {
   const formRef = useRef<HTMLFormElement>(null);
 
   const [form, setForm] = useState<ContactForm>({
@@ -50,9 +55,9 @@ const Contact = () => {
         "template_neayvk7",
         {
           from_name: form.name,
-          to_name: "Akash Sharma",
+          to_name: settings?.name ?? "",
           from_email: form.email,
-          to_email: "akashcodesharma@gmail.com",
+          to_email: settings?.email ?? "",
           subject: `Portfolio Contact: ${form.name}`,
           message: `From: ${form.name} (${form.email})\n\nMessage:\n${form.message}\n\n---\nSent via portfolio contact form.`,
         },

@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { experiences, technologies } from "@/constants";
+import type { AboutPage, Experience, Technology } from "@/sanity/lib/types";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -20,7 +20,7 @@ const C = {
   border: "rgba(148,163,184,0.1)",
 };
 
-const AboutHero = () => {
+const AboutHero = ({ content }: { content: AboutPage | null }) => {
   const heroRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -64,9 +64,13 @@ const AboutHero = () => {
     });
 
     return () => ctx.revert();
-  }, []);
+  }, [content?.heroName]);
 
-  const name = "Akash Sharma";
+  if (!content?.heroName) return null;
+
+  const name = content.heroName;
+  const tags = content.heroTags ?? [];
+  const cols = [C.violet, C.teal, C.amber, C.rose];
 
   return (
     <section
@@ -114,48 +118,42 @@ const AboutHero = () => {
         ))}
       </h1>
 
-      <div className="flex flex-wrap gap-3 mb-8">
-        {["Builder by Practice", "Curious by Nature", "BCA Student", "Open to Opportunities"].map(
-          (tag, i) => {
-            const cols = [C.violet, C.teal, C.amber, C.rose];
-            return (
-              <span
-                key={tag}
-                className="hero-tag px-4 py-1.5 rounded-full text-sm font-medium border"
-                style={{ borderColor: cols[i], color: cols[i], background: `${cols[i]}18` }}
-              >
-                {tag}
-              </span>
-            );
-          },
-        )}
-      </div>
+      {tags.length > 0 && (
+        <div className="flex flex-wrap gap-3 mb-8">
+          {tags.map((tag, i) => (
+            <span
+              key={tag}
+              className="hero-tag px-4 py-1.5 rounded-full text-sm font-medium border"
+              style={{ borderColor: cols[i % cols.length], color: cols[i % cols.length], background: `${cols[i % cols.length]}18` }}
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
+      )}
 
-      <p className="hero-bio max-w-2xl text-[17px] leading-relaxed mb-10" style={{ color: C.dim }}>
-        Self-taught developer driven by curiosity and consistency. What
-        started as learning HTML two years ago evolved into building
-        complete, production-ready applications independently. I value
-        clarity, ownership, and continuous improvement — and I’m now seeking
-        my first professional opportunity to contribute, learn, and grow
-        within a strong engineering team.
-      </p>
+      {content.heroBio && (
+        <p className="hero-bio max-w-2xl text-[17px] leading-relaxed mb-10" style={{ color: C.dim }}>
+          {content.heroBio}
+        </p>
+      )}
 
-      <div className="flex flex-wrap gap-4">
-        <Link
-          href="/projects"
-          className="hero-cta px-8 py-3 rounded-xl font-semibold text-white transition-all duration-200 hover:scale-105"
-          style={{ background: `linear-gradient(135deg,${C.violet},${C.teal})` }}
-        >
-          See my work →
-        </Link>
-        <Link
-          href="/contact"
-          className="hero-cta px-8 py-3 rounded-xl font-semibold border transition-all duration-200 hover:scale-105"
-          style={{ borderColor: C.border, color: C.white, background: "rgba(255,255,255,0.04)" }}
-        >
-          Get in touch
-        </Link>
-      </div>
+      {(content.heroCtaPrimaryLabel || content.heroCtaSecondaryLabel) && (
+        <div className="flex flex-wrap gap-4">
+          {content.heroCtaPrimaryLabel && (
+            <Link href="/projects" className="hero-cta px-8 py-3 rounded-xl font-semibold text-white transition-all duration-200 hover:scale-105"
+              style={{ background: `linear-gradient(135deg,${C.violet},${C.teal})` }}>
+              {content.heroCtaPrimaryLabel}
+            </Link>
+          )}
+          {content.heroCtaSecondaryLabel && (
+            <Link href="/contact" className="hero-cta px-8 py-3 rounded-xl font-semibold border transition-all duration-200 hover:scale-105"
+              style={{ borderColor: C.border, color: C.white, background: "rgba(255,255,255,0.04)" }}>
+              {content.heroCtaSecondaryLabel}
+            </Link>
+          )}
+        </div>
+      )}
 
       <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-40">
         <span className="text-xs tracking-widest uppercase" style={{ color: C.dim }}>
@@ -170,7 +168,7 @@ const AboutHero = () => {
   );
 };
 
-const StatsBar = () => {
+const StatsBar = ({ content }: { content: AboutPage | null }) => {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -196,12 +194,10 @@ const StatsBar = () => {
     return () => ctx.revert();
   }, []);
 
-  const stats = [
-    { value: "2+", label: "Years of Development", color: C.violet },
-    { value: "10+", label: "Projects Shipped", color: C.teal },
-    { value: "10+", label: "Technologies Applied", color: C.amber },
-    { value: "∞", label: "Curiosity & Growth", color: C.rose },
-  ];
+  const stats = content?.stats ?? [];
+  const colors = [C.violet, C.teal, C.amber, C.rose];
+
+  if (stats.length === 0) return null;
 
   return (
     <div
@@ -210,11 +206,11 @@ const StatsBar = () => {
       style={{ borderTop: `1px solid ${C.border}`, borderBottom: `1px solid ${C.border}` }}
     >
       <div className="max-w-7xl mx-auto grid grid-cols-2 sm:grid-cols-4 gap-8">
-        {stats.map((s) => (
+        {stats.map((s, i) => (
           <div key={s.label} className="stat-item flex flex-col items-center text-center">
             <span
               className="font-black text-5xl mb-1"
-              style={{ color: s.color, fontFamily: "'Bebas Neue',monospace" }}
+              style={{ color: colors[i % colors.length], fontFamily: "'Bebas Neue',monospace" }}
             >
               {s.value}
             </span>
@@ -228,7 +224,13 @@ const StatsBar = () => {
   );
 };
 
-const ExperienceSection = () => {
+const ExperienceSection = ({
+  content,
+  experiences,
+}: {
+  content: AboutPage | null;
+  experiences: Experience[];
+}) => {
   const ref = useRef<HTMLElement>(null);
   const headRef = useRef<HTMLHeadingElement>(null);
 
@@ -268,23 +270,29 @@ const ExperienceSection = () => {
     });
 
     return () => ctx.revert();
-  }, []);
+  }, [experiences.length]);
 
   const accentColors = [C.violet, C.teal, C.amber, C.violet, C.rose, C.teal, C.amber];
+
+  if (experiences.length === 0) return null;
 
   return (
     <section ref={ref} className="px-6 sm:px-16 py-24" style={{ background: C.bg }}>
       <div className="max-w-7xl mx-auto">
-        <p className="text-sm uppercase tracking-widest mb-3" style={{ color: C.teal }}>
-          How I got here
-        </p>
-        <h2
-          ref={headRef}
-          className="font-black mb-16"
-          style={{ fontSize: "clamp(2rem,6vw,5rem)", color: C.white, fontFamily: "'Bebas Neue',sans-serif" }}
-        >
-          My Journey.
-        </h2>
+        {content?.experienceEyebrow && (
+          <p className="text-sm uppercase tracking-widest mb-3" style={{ color: C.teal }}>
+            {content.experienceEyebrow}
+          </p>
+        )}
+        {content?.experienceHeading && (
+          <h2
+            ref={headRef}
+            className="font-black mb-16"
+            style={{ fontSize: "clamp(2rem,6vw,5rem)", color: C.white, fontFamily: "'Bebas Neue',sans-serif" }}
+          >
+            {content.experienceHeading}
+          </h2>
+        )}
 
         <div className="relative">
           <div
@@ -299,7 +307,7 @@ const ExperienceSection = () => {
 
               return (
                 <div
-                  key={exp.title}
+                  key={exp._id}
                   className={`exp-card relative flex flex-col sm:flex-row gap-6 ${
                     isRight ? "sm:flex-row" : "sm:flex-row-reverse"
                   }`}
@@ -327,18 +335,18 @@ const ExperienceSection = () => {
                         {exp.icon ? (
                           <img
                             src={exp.icon}
-                            alt={exp.company_name}
+                            alt={exp.companyName}
                             className="w-7 h-7 object-contain"
                           />
                         ) : (
                           <span className="text-white font-bold">
-                            {exp.company_name.charAt(0)}
+                            {exp.companyName.charAt(0)}
                           </span>
                         )}
                       </div>
                       <div>
                         <p className="text-xs uppercase tracking-widest" style={{ color: accent }}>
-                          {exp.company_name}
+                          {exp.companyName}
                         </p>
                         <p className="text-xs" style={{ color: C.dim }}>
                           {exp.date}
@@ -376,7 +384,13 @@ const ExperienceSection = () => {
   );
 };
 
-const TechSection = () => {
+const TechSection = ({
+  content,
+  technologies,
+}: {
+  content: AboutPage | null;
+  technologies: Technology[];
+}) => {
   const ref = useRef<HTMLElement>(null);
   const headRef = useRef<HTMLHeadingElement>(null);
   const row1Ref = useRef<HTMLDivElement>(null);
@@ -422,7 +436,9 @@ const TechSection = () => {
       tweens.current = [];
       ctx.revert();
     };
-  }, []);
+  }, [technologies.length]);
+
+  if (technologies.length === 0) return null;
 
   const half = Math.ceil(technologies.length / 2);
   const row1 = [...technologies.slice(0, half), ...technologies.slice(0, half)];
@@ -452,16 +468,20 @@ const TechSection = () => {
   return (
     <section ref={ref} className="py-24 overflow-hidden">
       <div className="px-6 sm:px-16 max-w-7xl mx-auto mb-12">
-        <p className="text-sm uppercase tracking-widest mb-3" style={{ color: C.amber }}>
-          Tools of the trade
-        </p>
-        <h2
-          ref={headRef}
-          className="font-black"
-          style={{ fontSize: "clamp(2rem,6vw,5rem)", color: C.white, fontFamily: "'Bebas Neue',sans-serif" }}
-        >
-          Tech Stack.
-        </h2>
+        {content?.techEyebrow && (
+          <p className="text-sm uppercase tracking-widest mb-3" style={{ color: C.amber }}>
+            {content.techEyebrow}
+          </p>
+        )}
+        {content?.techHeading && (
+          <h2
+            ref={headRef}
+            className="font-black"
+            style={{ fontSize: "clamp(2rem,6vw,5rem)", color: C.white, fontFamily: "'Bebas Neue',sans-serif" }}
+          >
+            {content.techHeading}
+          </h2>
+        )}
       </div>
 
       <div className="space-y-4">
@@ -476,7 +496,7 @@ const TechSection = () => {
           >
             <div ref={rowRef} className="flex">
               {items.map((tech, i) => (
-                <Pill key={`r${ri}-${i}`} {...tech} />
+                <Pill key={`r${ri}-${i}`} name={tech.name} icon={tech.icon} />
               ))}
             </div>
           </div>
@@ -486,7 +506,7 @@ const TechSection = () => {
   );
 };
 
-const AboutCTA = () => {
+const AboutCTA = ({ content }: { content: AboutPage | null }) => {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -508,6 +528,8 @@ const AboutCTA = () => {
     return () => ctx.revert();
   }, []);
 
+  if (!content?.ctaHeadingLine1) return null;
+
   return (
     <section className="px-6 sm:px-16 py-24" style={{ borderTop: `1px solid ${C.border}` }}>
       <div
@@ -523,44 +545,56 @@ const AboutCTA = () => {
           style={{ background: `radial-gradient(circle at top right,${C.teal}20,transparent 70%)` }}
         />
 
-        <p className="text-sm uppercase tracking-widest mb-4" style={{ color: C.teal }}>
-          What&apos;s next
-        </p>
+        {content.ctaEyebrow && (
+          <p className="text-sm uppercase tracking-widest mb-4" style={{ color: C.teal }}>
+            {content.ctaEyebrow}
+          </p>
+        )}
         <h2
           className="font-black mb-6"
           style={{ fontSize: "clamp(2rem,5vw,4rem)", color: C.white, fontFamily: "'Bebas Neue',sans-serif" }}
         >
-          Let&apos;s build something
+          {content.ctaHeadingLine1}
           <br />
-          <span style={{ color: C.violet }}>remarkable.</span>
+          <span style={{ color: C.violet }}>{content.ctaHeadingHighlight}</span>
         </h2>
-        <p className="max-w-lg mx-auto mb-10 text-[17px] leading-relaxed" style={{ color: C.dim }}>
-          Available immediately for full-time roles, internships, and remote
-          positions. India-based — open to relocation or fully remote
-          worldwide.
-        </p>
+        {content.ctaBody && (
+          <p className="max-w-lg mx-auto mb-10 text-[17px] leading-relaxed" style={{ color: C.dim }}>
+            {content.ctaBody}
+          </p>
+        )}
         <div className="flex flex-wrap justify-center gap-4">
-          <Link
-            href="/contact"
-            className="px-10 py-4 rounded-xl font-bold text-white text-lg transition-all duration-200 hover:scale-105"
-            style={{ background: `linear-gradient(135deg,${C.violet},${C.teal})` }}
-          >
-            Get in touch
-          </Link>
-          <Link
-            href="/projects"
-            className="px-10 py-4 rounded-xl font-bold text-lg border transition-all duration-200 hover:scale-105"
-            style={{ borderColor: `${C.violet}50`, color: C.white, background: `${C.violet}08` }}
-          >
-            See projects
-          </Link>
+          {content.ctaPrimaryLabel && (
+            <Link
+              href="/contact"
+              className="px-10 py-4 rounded-xl font-bold text-white text-lg transition-all duration-200 hover:scale-105"
+              style={{ background: `linear-gradient(135deg,${C.violet},${C.teal})` }}
+            >
+              {content.ctaPrimaryLabel}
+            </Link>
+          )}
+          {content.ctaSecondaryLabel && (
+            <Link
+              href="/projects"
+              className="px-10 py-4 rounded-xl font-bold text-lg border transition-all duration-200 hover:scale-105"
+              style={{ borderColor: `${C.violet}50`, color: C.white, background: `${C.violet}08` }}
+            >
+              {content.ctaSecondaryLabel}
+            </Link>
+          )}
         </div>
       </div>
     </section>
   );
 };
 
-const AboutView = () => {
+interface AboutViewProps {
+  content: AboutPage | null;
+  experiences: Experience[];
+  technologies: Technology[];
+}
+
+const AboutView = ({ content, experiences, technologies }: AboutViewProps) => {
   useEffect(() => {
     return () => {
       ScrollTrigger.getAll().forEach((st) => st.kill());
@@ -569,11 +603,11 @@ const AboutView = () => {
 
   return (
     <div style={{ background: C.bg, color: C.white }}>
-      <AboutHero />
-      <StatsBar />
-      <ExperienceSection />
-      <TechSection />
-      <AboutCTA />
+      <AboutHero content={content} />
+      <StatsBar content={content} />
+      <ExperienceSection content={content} experiences={experiences} />
+      <TechSection content={content} technologies={technologies} />
+      <AboutCTA content={content} />
     </div>
   );
 };

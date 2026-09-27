@@ -4,8 +4,8 @@ import { useEffect, useRef } from "react";
 import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { projects, testimonials } from "@/constants";
 import Hero from "@/components/Hero";
+import type { HomePage, Project, Testimonial } from "@/sanity/lib/types";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -21,7 +21,7 @@ const C = {
   border: "rgba(148,163,184,0.08)",
 };
 
-const HomeAbout = () => {
+const HomeAbout = ({ content }: { content: HomePage | null }) => {
   const ref = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -44,11 +44,10 @@ const HomeAbout = () => {
     return () => ctx.revert();
   }, []);
 
-  const stats = [
-    { value: "1.5+", label: "Years building", color: C.violet },
-    { value: "10+", label: "Projects shipped", color: C.teal },
-    { value: "7+", label: "Technologies", color: C.amber },
-  ];
+  const stats = content?.aboutStats ?? [];
+  const statColors = [C.violet, C.teal, C.amber];
+
+  if (!content?.aboutHeading) return null;
 
   return (
     <section
@@ -62,12 +61,14 @@ const HomeAbout = () => {
             className="w-12 h-0.5 mb-6 rounded-full"
             style={{ background: `linear-gradient(90deg,${C.violet},${C.teal})` }}
           />
-          <p
-            className="text-sm uppercase tracking-widest mb-3"
-            style={{ color: C.teal }}
-          >
-            Who I am
-          </p>
+          {content.aboutEyebrow && (
+            <p
+              className="text-sm uppercase tracking-widest mb-3"
+              style={{ color: C.teal }}
+            >
+              {content.aboutEyebrow}
+            </p>
+          )}
           <h2
             className="font-black mb-6 leading-tight"
             style={{
@@ -76,72 +77,71 @@ const HomeAbout = () => {
               fontFamily: "'Bebas Neue','Impact',sans-serif",
             }}
           >
-            Akash Sharma.
+            {content.aboutHeading}
           </h2>
-          <p
-            className="text-[17px] leading-relaxed mb-8 max-w-xl"
-            style={{ color: C.dim }}
-          >
-            Full-stack developer who went from zero to shipping production
-            apps in under two years — entirely self-taught. I specialise in
-            real-time systems, 3D web experiences, and end-to-end application
-            development. Every project has a live URL.
-          </p>
-          <Link
-            href="/about"
-            className="inline-flex items-center gap-2 px-7 py-3 rounded-xl font-semibold text-white transition-all duration-200 hover:scale-105"
-            style={{ background: `linear-gradient(135deg,${C.violet},${C.teal})` }}
-          >
-            More about me →
-          </Link>
+          {content.aboutBody && (
+            <p
+              className="text-[17px] leading-relaxed mb-8 max-w-xl"
+              style={{ color: C.dim }}
+            >
+              {content.aboutBody}
+            </p>
+          )}
+          {content.aboutCtaLabel && (
+            <Link
+              href="/about"
+              className="inline-flex items-center gap-2 px-7 py-3 rounded-xl font-semibold text-white transition-all duration-200 hover:scale-105"
+              style={{ background: `linear-gradient(135deg,${C.violet},${C.teal})` }}
+            >
+              {content.aboutCtaLabel}
+            </Link>
+          )}
         </div>
 
-        <div className="about-item flex flex-row lg:flex-col gap-4">
-          {stats.map((s) => (
-            <div
-              key={s.label}
-              className="flex-1 lg:flex-none flex flex-col items-center text-center rounded-2xl px-8 py-6"
-              style={{ background: C.card, border: `1px solid ${s.color}20` }}
-            >
-              <span
-                className="font-black text-4xl"
-                style={{ color: s.color, fontFamily: "'Bebas Neue',monospace" }}
+        {stats.length > 0 && (
+          <div className="about-item flex flex-row lg:flex-col gap-4">
+            {stats.map((s, i) => (
+              <div
+                key={s.label}
+                className="flex-1 lg:flex-none flex flex-col items-center text-center rounded-2xl px-8 py-6"
+                style={{
+                  background: C.card,
+                  border: `1px solid ${statColors[i % statColors.length]}20`,
+                }}
               >
-                {s.value}
-              </span>
-              <span
-                className="text-xs uppercase tracking-wider mt-1"
-                style={{ color: C.dim }}
-              >
-                {s.label}
-              </span>
-            </div>
-          ))}
-        </div>
+                <span
+                  className="font-black text-4xl"
+                  style={{
+                    color: statColors[i % statColors.length],
+                    fontFamily: "'Bebas Neue',monospace",
+                  }}
+                >
+                  {s.value}
+                </span>
+                <span
+                  className="text-xs uppercase tracking-wider mt-1"
+                  style={{ color: C.dim }}
+                >
+                  {s.label}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );
 };
-
-interface ProjectCardProps {
-  name: string;
-  description: string;
-  tags: { name: string; color: string }[];
-  image: string;
-  source_code_link: string;
-  link?: string;
-  index: number;
-}
 
 const ProjectCard = ({
   name,
   description,
   tags,
   image,
-  source_code_link,
+  sourceCodeLink,
   link,
   index,
-}: ProjectCardProps) => {
+}: Project & { index: number }) => {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -210,7 +210,7 @@ const ProjectCard = ({
           style={{ background: `linear-gradient(90deg,transparent,${accent},transparent)` }}
         />
         <a
-          href={source_code_link}
+          href={sourceCodeLink}
           target="_blank"
           rel="noreferrer"
           className="absolute top-3 right-3 w-9 h-9 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200"
@@ -272,7 +272,13 @@ const ProjectCard = ({
   );
 };
 
-const HomeFeaturedProjects = () => {
+const HomeFeaturedProjects = ({
+  content,
+  projects,
+}: {
+  content: HomePage | null;
+  projects: Project[];
+}) => {
   const headRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -294,6 +300,8 @@ const HomeFeaturedProjects = () => {
     return () => ctx.revert();
   }, []);
 
+  if (projects.length === 0) return null;
+
   return (
     <section
       className="px-6 sm:px-16 py-24"
@@ -301,40 +309,46 @@ const HomeFeaturedProjects = () => {
     >
       <div className="max-w-7xl mx-auto">
         <div ref={headRef} className="mb-12">
-          <p
-            className="text-sm uppercase tracking-widest mb-3"
-            style={{ color: C.rose }}
-          >
-            What I&apos;ve built
-          </p>
+          {content?.featuredProjectsEyebrow && (
+            <p
+              className="text-sm uppercase tracking-widest mb-3"
+              style={{ color: C.rose }}
+            >
+              {content.featuredProjectsEyebrow}
+            </p>
+          )}
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
-            <h2
-              className="font-black"
-              style={{
-                fontSize: "clamp(2rem,6vw,5rem)",
-                color: C.white,
-                fontFamily: "'Bebas Neue','Impact',sans-serif",
-              }}
-            >
-              Featured Projects.
-            </h2>
-            <Link
-              href="/projects"
-              className="flex-shrink-0 px-6 py-2.5 rounded-xl text-sm font-semibold border transition-all duration-200 hover:scale-105"
-              style={{
-                borderColor: `${C.violet}40`,
-                color: C.violet,
-                background: `${C.violet}10`,
-              }}
-            >
-              View all →
-            </Link>
+            {content?.featuredProjectsHeading && (
+              <h2
+                className="font-black"
+                style={{
+                  fontSize: "clamp(2rem,6vw,5rem)",
+                  color: C.white,
+                  fontFamily: "'Bebas Neue','Impact',sans-serif",
+                }}
+              >
+                {content.featuredProjectsHeading}
+              </h2>
+            )}
+            {content?.featuredProjectsViewAllLabel && (
+              <Link
+                href="/projects"
+                className="flex-shrink-0 px-6 py-2.5 rounded-xl text-sm font-semibold border transition-all duration-200 hover:scale-105"
+                style={{
+                  borderColor: `${C.violet}40`,
+                  color: C.violet,
+                  background: `${C.violet}10`,
+                }}
+              >
+                {content.featuredProjectsViewAllLabel}
+              </Link>
+            )}
           </div>
         </div>
 
         <div className="flex flex-wrap gap-6 justify-center">
-          {projects.slice(0, 3).map((project, i) => (
-            <ProjectCard key={project.name} {...project} index={i} />
+          {projects.map((project, i) => (
+            <ProjectCard key={project._id} {...project} index={i} />
           ))}
         </div>
       </div>
@@ -342,7 +356,13 @@ const HomeFeaturedProjects = () => {
   );
 };
 
-const HomeTestimonials = () => {
+const HomeTestimonials = ({
+  content,
+  testimonials,
+}: {
+  content: HomePage | null;
+  testimonials: Testimonial[];
+}) => {
   const ref = useRef<HTMLDivElement>(null);
   const headRef = useRef<HTMLDivElement>(null);
 
@@ -378,6 +398,8 @@ const HomeTestimonials = () => {
     return () => ctx.revert();
   }, []);
 
+  if (testimonials.length === 0) return null;
+
   return (
     <section
       className="px-6 sm:px-16 py-24"
@@ -385,22 +407,26 @@ const HomeTestimonials = () => {
     >
       <div className="max-w-7xl mx-auto">
         <div ref={headRef} className="mb-12">
-          <p
-            className="text-sm uppercase tracking-widest mb-3"
-            style={{ color: C.amber }}
-          >
-            Kind words
-          </p>
-          <h2
-            className="font-black"
-            style={{
-              fontSize: "clamp(2rem,6vw,5rem)",
-              color: C.white,
-              fontFamily: "'Bebas Neue','Impact',sans-serif",
-            }}
-          >
-            What people say.
-          </h2>
+          {content?.testimonialsEyebrow && (
+            <p
+              className="text-sm uppercase tracking-widest mb-3"
+              style={{ color: C.amber }}
+            >
+              {content.testimonialsEyebrow}
+            </p>
+          )}
+          {content?.testimonialsHeading && (
+            <h2
+              className="font-black"
+              style={{
+                fontSize: "clamp(2rem,6vw,5rem)",
+                color: C.white,
+                fontFamily: "'Bebas Neue','Impact',sans-serif",
+              }}
+            >
+              {content.testimonialsHeading}
+            </h2>
+          )}
         </div>
 
         <div
@@ -409,7 +435,7 @@ const HomeTestimonials = () => {
         >
           {testimonials.map((t) => (
             <div
-              key={t.name}
+              key={t._id}
               className="t-card flex flex-col rounded-2xl p-7 relative"
               style={{ background: C.card, border: `1px solid ${C.border}` }}
             >
@@ -456,7 +482,13 @@ const HomeTestimonials = () => {
   );
 };
 
-const HomeView = () => {
+interface HomeViewProps {
+  content: HomePage | null;
+  featuredProjects: Project[];
+  testimonials: Testimonial[];
+}
+
+const HomeView = ({ content, featuredProjects, testimonials }: HomeViewProps) => {
   useEffect(() => () => {
     ScrollTrigger.getAll().forEach((st) => st.kill());
   }, []);
@@ -464,11 +496,11 @@ const HomeView = () => {
   return (
     <div style={{ background: C.bg, color: C.white }}>
       <div className="bg-hero-pattern bg-cover bg-no-repeat bg-center">
-        <Hero />
+        <Hero content={content} />
       </div>
-      <HomeAbout />
-      <HomeFeaturedProjects />
-      <HomeTestimonials />
+      <HomeAbout content={content} />
+      <HomeFeaturedProjects content={content} projects={featuredProjects} />
+      <HomeTestimonials content={content} testimonials={testimonials} />
     </div>
   );
 };
