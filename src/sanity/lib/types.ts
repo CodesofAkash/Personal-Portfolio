@@ -14,9 +14,8 @@ export interface Seo {
   ogImage?: SanityImageValue;
 }
 
-export interface NavLink {
-  id: string;
-  title: string;
+export interface NavLink extends ResolvedLink {
+  label: string;
 }
 
 export interface Social {
@@ -53,62 +52,136 @@ export interface Stat {
   label: string;
 }
 
+// Resolved at the data layer (AK-CMS-025) — components never see linkType,
+// fixedRoute, email, phone or url, only the finished destination.
+export interface ResolvedLink {
+  href: string;
+  target: "_self" | "_blank";
+}
+
+export interface ResolvedCtaBtn extends ResolvedLink {
+  text: string;
+  variant: "primary" | "secondary";
+}
+
+export interface SectionHeader {
+  eyebrow?: string;
+  heading?: string;
+  paragraph?: string;
+  cta?: ResolvedCtaBtn;
+}
+
+export interface HeroSection {
+  _key: string;
+  _type: "heroSection";
+  eyebrow: string;
+  greeting: string;
+  name: string;
+  subheadLine1: string;
+  subheadLine2: string;
+  primaryCta?: ResolvedCtaBtn;
+  secondaryCta?: ResolvedCtaBtn;
+}
+
+export interface AboutHeroSection {
+  _key: string;
+  _type: "aboutHeroSection";
+  name: string;
+  tags?: string[];
+  bio: string;
+  primaryCta?: ResolvedCtaBtn;
+  secondaryCta?: ResolvedCtaBtn;
+}
+
+export interface ProjectsHeroSection {
+  _key: string;
+  _type: "projectsHeroSection";
+  headingLine1: string;
+  headingHighlight: string;
+  subheading: string;
+}
+
+export interface ContactHeroSection {
+  _key: string;
+  _type: "contactHeroSection";
+  eyebrow: string;
+  heading: string;
+  subheading: string;
+}
+
+export interface StatsSection {
+  _key: string;
+  _type: "statsSection";
+  sectionHeader?: SectionHeader;
+  stats: Stat[];
+}
+
+export interface FeaturedProjectsSection {
+  _key: string;
+  _type: "featuredProjectsSection";
+  sectionHeader: SectionHeader;
+}
+
+export interface TestimonialsSection {
+  _key: string;
+  _type: "testimonialsSection";
+  sectionHeader: SectionHeader;
+}
+
+export interface ExperienceSection {
+  _key: string;
+  _type: "experienceSection";
+  sectionHeader: SectionHeader;
+}
+
+export interface TechSection {
+  _key: string;
+  _type: "techSection";
+  sectionHeader: SectionHeader;
+}
+
+export interface CtaSection {
+  _key: string;
+  _type: "ctaSection";
+  sectionHeader: SectionHeader;
+  headingHighlight?: string;
+  secondaryCta?: ResolvedCtaBtn;
+}
+
+export type HomeSection =
+  | HeroSection
+  | StatsSection
+  | FeaturedProjectsSection
+  | TestimonialsSection;
+
+export type AboutSection =
+  | AboutHeroSection
+  | StatsSection
+  | ExperienceSection
+  | TechSection
+  | CtaSection;
+
+export type ProjectsSection = ProjectsHeroSection | CtaSection;
+
+export type ContactSection = ContactHeroSection;
+
 export interface HomePage {
-  heroEyebrow?: string;
-  heroGreeting?: string;
-  heroName?: string;
-  heroSubheadLine1?: string;
-  heroSubheadLine2?: string;
-  heroCtaPrimaryLabel?: string;
-  heroCtaSecondaryLabel?: string;
-  aboutEyebrow?: string;
-  aboutHeading?: string;
-  aboutBody?: string;
-  aboutCtaLabel?: string;
-  aboutStats?: Stat[];
-  featuredProjectsEyebrow?: string;
-  featuredProjectsHeading?: string;
-  featuredProjectsViewAllLabel?: string;
-  testimonialsEyebrow?: string;
-  testimonialsHeading?: string;
+  sections?: HomeSection[];
   seo?: Seo;
 }
 
 export interface AboutPage {
-  heroName?: string;
-  heroTags?: string[];
-  heroBio?: string;
-  heroCtaPrimaryLabel?: string;
-  heroCtaSecondaryLabel?: string;
-  stats?: Stat[];
-  experienceEyebrow?: string;
-  experienceHeading?: string;
-  techEyebrow?: string;
-  techHeading?: string;
-  ctaEyebrow?: string;
-  ctaHeadingLine1?: string;
-  ctaHeadingHighlight?: string;
-  ctaBody?: string;
-  ctaPrimaryLabel?: string;
-  ctaSecondaryLabel?: string;
+  sections?: AboutSection[];
   seo?: Seo;
 }
 
 export interface ProjectsPage {
-  heroHeadingLine1?: string;
-  heroHeadingHighlight?: string;
-  heroSubheading?: string;
-  ctaEyebrow?: string;
-  ctaHeading?: string;
-  ctaBody?: string;
-  ctaLabel?: string;
+  sections?: ProjectsSection[];
   seo?: Seo;
 }
 
 export interface ContactPage {
-  eyebrow?: string;
-  heading?: string;
-  subheading?: string;
+  sections?: ContactSection[];
   seo?: Seo;
 }
 

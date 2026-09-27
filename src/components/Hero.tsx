@@ -1,18 +1,35 @@
 "use client";
 
 import { Suspense } from "react";
-import Link from "next/link";
+import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 import { styles } from "@/styles";
-import { ComputersCanvas } from "@/components/canvas";
 import CanvasLoader from "@/components/Loader";
-import type { HomePage } from "@/sanity/lib/types";
+import Cta from "@/components/sections/Cta";
+import type { HeroSection } from "@/sanity/lib/types";
+
+// Three.js/R3F/drei is a large client bundle with no SSR value (WebGL needs
+// the browser) — loading it off the initial JS payload cuts unused JS and
+// render-blocking work on every other page that doesn't need it.
+const ComputersCanvas = dynamic(() => import("@/components/canvas/Computers"), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-full flex items-center justify-center">
+      <div
+        className="w-10 h-10 rounded-full border-2 border-transparent animate-spin"
+        style={{ borderTopColor: "#7c3aed", borderRightColor: "rgba(124,58,237,0.3)" }}
+      />
+    </div>
+  ),
+});
 
 interface HeroProps {
-  content: HomePage | null;
+  section: HeroSection | undefined;
 }
 
-const Hero = ({ content }: HeroProps) => {
+const Hero = ({ section }: HeroProps) => {
+  if (!section) return null;
+
   return (
     <section className="relative w-full h-screen mx-auto overflow-hidden">
       <div className="absolute inset-0" style={{ zIndex: 1 }}>
@@ -34,92 +51,58 @@ const Hero = ({ content }: HeroProps) => {
         </div>
 
         <div style={{ maxWidth: "520px", pointerEvents: "auto" }}>
-          {content?.heroEyebrow && (
-            <motion.p
-              initial={{ opacity: 0, y: -16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="text-xs uppercase tracking-widest mb-4 font-semibold"
-              style={{ color: "#0d9488", letterSpacing: "0.18em" }}
-            >
-              {content.heroEyebrow}
-            </motion.p>
-          )}
+          <motion.p
+            initial={{ opacity: 0, y: -16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="text-xs uppercase tracking-widest mb-4 font-semibold"
+            style={{ color: "#0d9488", letterSpacing: "0.18em" }}
+          >
+            {section.eyebrow}
+          </motion.p>
 
-          {(content?.heroGreeting || content?.heroName) && (
-            <motion.h1
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-              className={`${styles.heroHeadText} text-white`}
-            >
-              {content.heroGreeting} <span style={{ color: "#7c3aed" }}>{content.heroName}</span>
-            </motion.h1>
-          )}
+          <motion.h1
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className={`${styles.heroHeadText} text-white`}
+          >
+            {section.greeting} <span style={{ color: "#7c3aed" }}>{section.name}</span>
+          </motion.h1>
 
-          {(content?.heroSubheadLine1 || content?.heroSubheadLine2) && (
-            <motion.div
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.25 }}
-              className="mt-4"
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.25 }}
+            className="mt-4"
+          >
+            <p
+              className={`${styles.heroSubText}`}
+              style={{ color: "#e2e8f0", marginBottom: "10px" }}
             >
-              {content?.heroSubheadLine1 && (
-                <p
-                  className={`${styles.heroSubText}`}
-                  style={{ color: "#e2e8f0", marginBottom: "10px" }}
-                >
-                  {content.heroSubheadLine1}
-                </p>
-              )}
-              {content?.heroSubheadLine2 && (
-                <p
-                  style={{
-                    fontSize: "16px",
-                    lineHeight: "1.7",
-                    color: "#d6d6d6",
-                    maxWidth: "480px",
-                  }}
-                >
-                  {content.heroSubheadLine2}
-                </p>
-              )}
-            </motion.div>
-          )}
+              {section.subheadLine1}
+            </p>
+            <p
+              style={{
+                fontSize: "16px",
+                lineHeight: "1.7",
+                color: "#d6d6d6",
+                maxWidth: "480px",
+              }}
+            >
+              {section.subheadLine2}
+            </p>
+          </motion.div>
 
-          {(content?.heroCtaPrimaryLabel || content?.heroCtaSecondaryLabel) && (
+          {(section.primaryCta || section.secondaryCta) && (
             <motion.div
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
               className="flex flex-wrap gap-4 mt-8"
             >
-              {content?.heroCtaPrimaryLabel && (
-                <Link
-                  href="/projects"
-                  className="px-8 py-3 rounded-xl font-semibold text-white transition-all duration-200 hover:scale-105 hover:shadow-lg"
-                  style={{
-                    fontSize: "15px",
-                    background: "linear-gradient(135deg,#7c3aed,#0d9488)",
-                  }}
-                >
-                  {content.heroCtaPrimaryLabel}
-                </Link>
-              )}
-              {content?.heroCtaSecondaryLabel && (
-                <Link
-                  href="/contact"
-                  className="px-8 py-3 rounded-xl font-semibold transition-all duration-200 hover:scale-105 border"
-                  style={{
-                    fontSize: "15px",
-                    borderColor: "rgba(124,58,237,0.5)",
-                    color: "#f8fafc",
-                    background: "rgba(124,58,237,0.1)",
-                  }}
-                >
-                  {content.heroCtaSecondaryLabel}
-                </Link>
-              )}
+              <Cta cta={section.primaryCta} />
+              <Cta cta={section.secondaryCta} />
             </motion.div>
           )}
         </div>
@@ -129,7 +112,7 @@ const Hero = ({ content }: HeroProps) => {
         className="absolute xs:bottom-24 bottom-32 w-full flex justify-center items-center"
         style={{ zIndex: 10 }}
       >
-        <a href="#about">
+        <a href="#about" aria-label="Scroll to About section">
           <div
             className="w-[35px] h-[64px] rounded-3xl border-4 flex justify-center items-start p-2"
             style={{ borderColor: "#475569" }}

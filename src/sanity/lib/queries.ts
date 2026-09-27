@@ -12,45 +12,102 @@ import type {
   Testimonial,
 } from "./types";
 
-// Reused on every query that returns SEO — AK-SAN-011.
+// ── Shared fragments — resolved once, reused everywhere a link-shaped field
+// appears (AK-SAN-062/063). Components never see linkType/fixedRoute/email/
+// phone/url, only the finished { href, target }.
+const hrefFragment = /* groq */ `select(
+  linkType == "email" => "mailto:" + email,
+  linkType == "phone" => "tel:" + phone,
+  linkType == "fixedRoute" => fixedRoute,
+  url
+)`;
+
+const linkFragment = /* groq */ `{
+  "label": label,
+  "href": ${hrefFragment},
+  target
+}`;
+
+const ctaBtnFragment = /* groq */ `{
+  text,
+  "href": ${hrefFragment},
+  target,
+  variant
+}`;
+
+const sectionHeaderFragment = /* groq */ `{
+  eyebrow,
+  heading,
+  paragraph,
+  cta${ctaBtnFragment}
+}`;
+
 const SEO_FIELDS = /* groq */ `seo{ title, description, ogImage }`;
 
+// ── Site settings ────────────────────────────────────────────────────────
+
 const SETTINGS_QUERY = /* groq */ `*[_id == "settings"][0]{
-  name, tagline, logo, favicon, navLinks, socials, email, location,
+  name, tagline, logo, favicon,
+  "navLinks": navLinks[]${linkFragment},
+  socials, email, location,
   analytics, verification, scripts, cookieConsent, maintenance, notFound,
   ${SEO_FIELDS}
 }`;
 
+// ── Page-builder pages — one query per page, per-section-type branches
+// (AK-SAN-013), sections fetched in their editor-defined order.
+
 const HOME_PAGE_QUERY = /* groq */ `*[_id == "homePage"][0]{
-  heroEyebrow, heroGreeting, heroName, heroSubheadLine1, heroSubheadLine2,
-  heroCtaPrimaryLabel, heroCtaSecondaryLabel,
-  aboutEyebrow, aboutHeading, aboutBody, aboutCtaLabel, aboutStats,
-  featuredProjectsEyebrow, featuredProjectsHeading, featuredProjectsViewAllLabel,
-  testimonialsEyebrow, testimonialsHeading,
+  sections[]{
+    _key, _type,
+    _type == "heroSection" => {
+      eyebrow, greeting, name, subheadLine1, subheadLine2,
+      primaryCta${ctaBtnFragment}, secondaryCta${ctaBtnFragment}
+    },
+    _type == "statsSection" => { sectionHeader${sectionHeaderFragment}, stats },
+    _type == "featuredProjectsSection" => { sectionHeader${sectionHeaderFragment} },
+    _type == "testimonialsSection" => { sectionHeader${sectionHeaderFragment} }
+  },
   ${SEO_FIELDS}
 }`;
 
 const ABOUT_PAGE_QUERY = /* groq */ `*[_id == "aboutPage"][0]{
-  heroName, heroTags, heroBio, heroCtaPrimaryLabel, heroCtaSecondaryLabel,
-  stats, experienceEyebrow, experienceHeading, techEyebrow, techHeading,
-  ctaEyebrow, ctaHeadingLine1, ctaHeadingHighlight, ctaBody, ctaPrimaryLabel, ctaSecondaryLabel,
+  sections[]{
+    _key, _type,
+    _type == "aboutHeroSection" => {
+      name, tags, bio,
+      primaryCta${ctaBtnFragment}, secondaryCta${ctaBtnFragment}
+    },
+    _type == "statsSection" => { sectionHeader${sectionHeaderFragment}, stats },
+    _type == "experienceSection" => { sectionHeader${sectionHeaderFragment} },
+    _type == "techSection" => { sectionHeader${sectionHeaderFragment} },
+    _type == "ctaSection" => { sectionHeader${sectionHeaderFragment}, headingHighlight, secondaryCta${ctaBtnFragment} }
+  },
   ${SEO_FIELDS}
 }`;
 
 const PROJECTS_PAGE_QUERY = /* groq */ `*[_id == "projectsPage"][0]{
-  heroHeadingLine1, heroHeadingHighlight, heroSubheading,
-  ctaEyebrow, ctaHeading, ctaBody, ctaLabel,
+  sections[]{
+    _key, _type,
+    _type == "projectsHeroSection" => { headingLine1, headingHighlight, subheading },
+    _type == "ctaSection" => { sectionHeader${sectionHeaderFragment}, headingHighlight, secondaryCta${ctaBtnFragment} }
+  },
   ${SEO_FIELDS}
 }`;
 
 const CONTACT_PAGE_QUERY = /* groq */ `*[_id == "contactPage"][0]{
-  eyebrow, heading, subheading,
+  sections[]{
+    _key, _type,
+    _type == "contactHeroSection" => { eyebrow, heading, subheading }
+  },
   ${SEO_FIELDS}
 }`;
 
 const LEGAL_PAGE_QUERY = /* groq */ `*[_type == "legalPage" && slug == $slug][0]{
   slug, heading, lastUpdated, sections, ${SEO_FIELDS}
 }`;
+
+// ── Collections ──────────────────────────────────────────────────────────
 
 const PROJECTS_QUERY = /* groq */ `*[_type == "project"] | order(order asc){
   _id, name, description, tags, image, video, screenshots,

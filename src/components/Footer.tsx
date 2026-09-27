@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import type { Social } from "@/sanity/lib/types";
+import { textSafe } from "@/components/sections/colors";
 
 const C = {
   violet: "#7c3aed",
@@ -39,7 +40,7 @@ const Footer = ({ brandName, logoUrl, tagline, socials }: FooterProps) => {
                   className="font-bold text-[17px] tracking-tight"
                   style={{ color: C.white }}
                 >
-                  {brandName}<span style={{ color: C.violet }}>.</span>
+                  {brandName}<span style={{ color: textSafe(C.violet) }}>.</span>
                 </span>
               )}
             </Link>
@@ -59,7 +60,7 @@ const Footer = ({ brandName, logoUrl, tagline, socials }: FooterProps) => {
                     className="px-4 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 hover:scale-105"
                     style={{
                       background: "rgba(124,58,237,0.12)",
-                      color: C.violet,
+                      color: textSafe(C.violet),
                       border: `1px solid rgba(124,58,237,0.2)`,
                     }}
                   >

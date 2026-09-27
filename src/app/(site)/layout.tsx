@@ -2,10 +2,11 @@ import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "../globals.css";
 import { draftMode } from "next/headers";
-import { VisualEditing } from "next-sanity/visual-editing";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ToastProvider from "@/components/ToastProvider";
+import DraftModeBanner from "@/components/DraftModeBanner";
+import VisualEditingLoader from "@/components/VisualEditingLoader";
 import { SanityLive } from "@/sanity/lib/live";
 import { getSettings } from "@/sanity/lib/queries";
 import { buildMetadata } from "@/sanity/lib/seo";
@@ -99,7 +100,8 @@ export default async function RootLayout({
         {/* Not draft-gated: defineLive only configures revalidation — nothing
             revalidates until the next deploy unless this is actually rendered. */}
         <SanityLive />
-        {isDraft && <VisualEditing />}
+        {isDraft && <VisualEditingLoader />}
+        {isDraft && <DraftModeBanner />}
       </body>
     </html>
   );

@@ -9,6 +9,6 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function Page() {
-  const [content, projects] = await Promise.all([getProjectsPage(), getProjects()]);
-  return <ProjectsView content={content} projects={projects} />;
+  const [projectsPage, projects] = await Promise.all([getProjectsPage(), getProjects()]);
+  return <ProjectsView sections={projectsPage?.sections ?? []} projects={projects} />;
 }

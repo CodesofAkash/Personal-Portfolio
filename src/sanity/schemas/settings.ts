@@ -61,24 +61,8 @@ export const settings = defineType({
       title: "Header navigation",
       type: "array",
       group: "navigation",
-      description: "Links shown in the navbar. Each id is a route path, e.g. /about.",
-      of: [
-        defineArrayMember({
-          type: "object",
-          name: "navLink",
-          fields: [
-            defineField({
-              name: "id",
-              title: "Path",
-              type: "string",
-              description: "Route path starting with /, e.g. /about, /projects, /contact.",
-              validation: (r) => r.required(),
-            }),
-            defineField({ name: "title", type: "string", validation: (r) => r.required() }),
-          ],
-          preview: { select: { title: "title", subtitle: "id" } },
-        }),
-      ],
+      description: "Links shown in the navbar.",
+      of: [defineArrayMember({ type: "link" })],
       validation: (r) => r.required().min(1),
     }),
     defineField({

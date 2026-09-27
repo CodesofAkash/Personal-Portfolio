@@ -9,11 +9,17 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function Page() {
-  const [content, experiences, technologies] = await Promise.all([
+  const [aboutPage, experiences, technologies] = await Promise.all([
     getAboutPage(),
     getExperiences(),
     getTechnologies(),
   ]);
 
-  return <AboutView content={content} experiences={experiences} technologies={technologies} />;
+  return (
+    <AboutView
+      sections={aboutPage?.sections ?? []}
+      experiences={experiences}
+      technologies={technologies}
+    />
+  );
 }
