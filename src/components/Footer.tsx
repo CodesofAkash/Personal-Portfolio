@@ -143,7 +143,7 @@ const Footer = ({ brandName, logoUrl, tagline, socials }: FooterProps) => {
             © {new Date().getFullYear()} {brandName ?? "Akash Sharma"} — Built with Next.js,
             Three.js & GSAP
           </p>
-          <p className="text-xs" style={{ color: `${C.dim}80` }}>
+          <p className="text-xs" style={{ color: `${C.dim}cc` }}>
             Designed & developed by {brandName ?? "Akash"}
           </p>
         </div>

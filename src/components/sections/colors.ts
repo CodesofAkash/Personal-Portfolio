@@ -10,13 +10,17 @@ export const C = {
   border: "rgba(148,163,184,0.08)",
 };
 
-// violet and rose fail WCAG AA (4.5:1) as small text directly on C.bg —
-// 3.50:1 and 4.25:1 respectively. These lightened variants pass (4.60:1,
-// 4.69:1) and stay in the same hue. Use for small text (badges, eyebrow
-// labels); backgrounds/borders/large headings can keep the saturated
-// originals since contrast rules apply to text, not decoration.
+// Text using these accents never sits directly on C.bg — it's always inside
+// a badge/card whose actual background is a translucent accent tint (up to
+// 25% alpha, see ProjectsGrid's "Click to expand" pill) composited over
+// C.card, which is LIGHTER than C.bg. That composite is the worst case for
+// contrast, so every value here is picked to clear 4.5:1 (AA, small text)
+// against accent-at-25%-over-C.card, not against the raw page background —
+// an earlier pass only checked against C.bg and still failed in production.
 export const TEXT_SAFE: Record<string, string> = {
-  [C.violet]: "#9058f0",
-  [C.rose]: "#e4345a",
+  [C.violet]: "#a67af3",
+  [C.teal]: "#3faaa1",
+  [C.amber]: "#de8824",
+  [C.rose]: "#ea6280",
 };
 export const textSafe = (color: string) => TEXT_SAFE[color] ?? color;
