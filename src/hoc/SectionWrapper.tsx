@@ -5,8 +5,8 @@ import type { ComponentType } from "react";
 import { styles } from "@/styles";
 import { staggerContainer } from "@/utils/motion";
 
-const SectionWrapper = (Component: ComponentType, idName: string) =>
-  function HOC() {
+const SectionWrapper = <P extends object>(Component: ComponentType<P>, idName: string) =>
+  function HOC(props: P) {
     return (
       <motion.section
         variants={staggerContainer()}
@@ -18,7 +18,7 @@ const SectionWrapper = (Component: ComponentType, idName: string) =>
         <span className="hash-span" id={idName}>
           &nbsp;
         </span>
-        <Component />
+        <Component {...props} />
       </motion.section>
     );
   };

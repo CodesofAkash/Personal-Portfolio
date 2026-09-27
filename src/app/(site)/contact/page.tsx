@@ -1,26 +1,14 @@
 import type { Metadata } from "next";
 import ContactView from "./ContactView";
+import { getContactPage, getSettings } from "@/sanity/lib/queries";
+import { buildMetadata } from "@/sanity/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Contact Akash Sharma | Get in Touch",
-  description:
-    "Interested in collaborating? Get in touch with me via email or social media. Available for freelance work and full-time opportunities.",
-  alternates: {
-    canonical: "https://akashsharma.dev/contact",
-  },
-  openGraph: {
-    title: "Contact Akash Sharma | Get in Touch",
-    description:
-      "Interested in collaborating? Get in touch with me via email or social media. Available for freelance work and full-time opportunities.",
-    url: "https://akashsharma.dev/contact",
-  },
-  twitter: {
-    title: "Contact Akash Sharma | Get in Touch",
-    description:
-      "Interested in collaborating? Get in touch with me via email or social media. Available for freelance work and full-time opportunities.",
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const [contactPage, settings] = await Promise.all([getContactPage(), getSettings()]);
+  return buildMetadata(contactPage?.seo, settings?.seo, "/contact");
+}
 
-export default function Page() {
-  return <ContactView />;
+export default async function Page() {
+  const [content, settings] = await Promise.all([getContactPage(), getSettings()]);
+  return <ContactView content={content} settings={settings} />;
 }

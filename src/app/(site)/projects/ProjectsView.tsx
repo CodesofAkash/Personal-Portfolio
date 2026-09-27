@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { projects as baseProjects } from "@/constants";
+import type { Project, ProjectsPage } from "@/sanity/lib/types";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -21,25 +21,9 @@ const C = {
 };
 const ACCENTS = [C.violet, C.teal, C.amber, C.rose];
 
-interface EnrichedProject {
-  name: string;
-  description: string;
-  tags: { name: string; color: string }[];
-  image: string;
-  video: string;
-  screenshots: string[];
-  source_code_link: string;
-  link?: string;
-  learning: string;
-  accent: string;
-}
+type EnrichedProject = Project & { accent: string };
 
-const enriched: EnrichedProject[] = baseProjects.map((p, i) => ({
-  ...p,
-  accent: ACCENTS[i % ACCENTS.length],
-}));
-
-const ProjectsHero = () => {
+const ProjectsHero = ({ content }: { content: ProjectsPage | null }) => {
   const ref = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -67,7 +51,9 @@ const ProjectsHero = () => {
         );
     });
     return () => ctx.revert();
-  }, []);
+  }, [content?.heroHeadingLine1]);
+
+  if (!content?.heroHeadingLine1) return null;
 
   return (
     <section
@@ -94,15 +80,17 @@ const ProjectsHero = () => {
           lineHeight: 1.05,
         }}
       >
-        What I&apos;ve
+        {content.heroHeadingLine1}
         <br />
         <span style={{ WebkitTextStroke: `2px ${C.violet}`, color: "transparent" }}>
-          Built.
+          {content.heroHeadingHighlight}
         </span>
       </h1>
-      <p className="ph-sub max-w-xl text-[17px] leading-relaxed" style={{ color: C.dim }}>
-        Click any project to expand it. Every project ships to production.
-      </p>
+      {content.heroSubheading && (
+        <p className="ph-sub max-w-xl text-[17px] leading-relaxed" style={{ color: C.dim }}>
+          {content.heroSubheading}
+        </p>
+      )}
     </section>
   );
 };
@@ -462,7 +450,7 @@ const ExpandedCard = ({
               Links
             </p>
             <a
-              href={project.source_code_link}
+              href={project.sourceCodeLink}
               target="_blank"
               rel="noreferrer"
               className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 hover:scale-[1.02]"
@@ -647,9 +635,14 @@ const CompactCard = ({
   );
 };
 
-const ProjectsSection = () => {
+const ProjectsSection = ({ projects }: { projects: Project[] }) => {
   const [activeIdx, setActiveIdx] = useState<number | null>(null);
   const expandedRef = useRef<HTMLDivElement>(null);
+
+  const enriched: EnrichedProject[] = projects.map((p, i) => ({
+    ...p,
+    accent: ACCENTS[i % ACCENTS.length],
+  }));
 
   const handleCardClick = (idx: number) => {
     if (activeIdx === idx) {
@@ -666,6 +659,8 @@ const ProjectsSection = () => {
   const activeRow = activeIdx !== null ? Math.floor(activeIdx / 3) : null;
   const numRows = Math.ceil(enriched.length / 3);
 
+  if (enriched.length === 0) return null;
+
   return (
     <section className="px-6 sm:px-16 pb-24 max-w-7xl mx-auto">
       {Array.from({ length: numRows }, (_, rowIdx) => {
@@ -677,7 +672,7 @@ const ProjectsSection = () => {
                 const realIdx = rowIdx * 3 + j;
                 return (
                   <CompactCard
-                    key={project.name}
+                    key={project._id}
                     project={project}
                     index={realIdx}
                     isActive={activeIdx === realIdx}
@@ -699,7 +694,7 @@ const ProjectsSection = () => {
   );
 };
 
-const ProjectsCTA = () => {
+const ProjectsCTA = ({ content }: { content: ProjectsPage | null }) => {
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const el = ref.current;
@@ -720,6 +715,8 @@ const ProjectsCTA = () => {
     return () => ctx.revert();
   }, []);
 
+  if (!content?.ctaHeading) return null;
+
   return (
     <section className="px-6 sm:px-16 pb-24" style={{ borderTop: `1px solid ${C.border}` }}>
       <div
@@ -727,39 +724,50 @@ const ProjectsCTA = () => {
         className="max-w-7xl mx-auto mt-16 rounded-2xl p-12 text-center relative overflow-hidden"
         style={{ background: `linear-gradient(135deg,${C.teal}12,${C.violet}10,${C.card})`, border: `1px solid ${C.teal}25` }}
       >
-        <p className="text-sm uppercase tracking-widest mb-3" style={{ color: C.teal }}>
-          Interested in collaborating?
-        </p>
+        {content.ctaEyebrow && (
+          <p className="text-sm uppercase tracking-widest mb-3" style={{ color: C.teal }}>
+            {content.ctaEyebrow}
+          </p>
+        )}
         <h2
           className="font-black mb-4"
           style={{ fontSize: "clamp(1.5rem,4vw,3rem)", color: C.white, fontFamily: "'Bebas Neue','Impact',sans-serif" }}
         >
-          Let&apos;s build the next one together.
+          {content.ctaHeading}
         </h2>
-        <p className="max-w-md mx-auto mb-8" style={{ color: C.dim }}>
-          Always looking for interesting problems to solve and great people to work with.
-        </p>
-        <Link
-          href="/contact"
-          className="inline-flex items-center gap-2 px-8 py-3 rounded-xl font-bold text-white transition-all duration-200 hover:scale-105"
-          style={{ background: `linear-gradient(135deg,${C.teal},${C.violet})` }}
-        >
-          Start a conversation →
-        </Link>
+        {content.ctaBody && (
+          <p className="max-w-md mx-auto mb-8" style={{ color: C.dim }}>
+            {content.ctaBody}
+          </p>
+        )}
+        {content.ctaLabel && (
+          <Link
+            href="/contact"
+            className="inline-flex items-center gap-2 px-8 py-3 rounded-xl font-bold text-white transition-all duration-200 hover:scale-105"
+            style={{ background: `linear-gradient(135deg,${C.teal},${C.violet})` }}
+          >
+            {content.ctaLabel}
+          </Link>
+        )}
       </div>
     </section>
   );
 };
 
-const ProjectsView = () => {
+interface ProjectsViewProps {
+  content: ProjectsPage | null;
+  projects: Project[];
+}
+
+const ProjectsView = ({ content, projects }: ProjectsViewProps) => {
   useEffect(() => () => {
     ScrollTrigger.getAll().forEach((st) => st.kill());
   }, []);
   return (
     <div style={{ background: C.bg, color: C.white }}>
-      <ProjectsHero />
-      <ProjectsSection />
-      <ProjectsCTA />
+      <ProjectsHero content={content} />
+      <ProjectsSection projects={projects} />
+      <ProjectsCTA content={content} />
     </div>
   );
 };

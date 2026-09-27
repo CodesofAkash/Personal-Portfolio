@@ -1,23 +1,14 @@
 import type { Metadata } from "next";
 import TermsView from "./TermsView";
+import { getLegalPage, getSettings } from "@/sanity/lib/queries";
+import { buildMetadata } from "@/sanity/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Terms of Service | Akash Sharma",
-  description: "Terms of service for akashsharma.dev",
-  alternates: {
-    canonical: "https://akashsharma.dev/terms",
-  },
-  openGraph: {
-    title: "Terms of Service | Akash Sharma",
-    description: "Terms of service for akashsharma.dev",
-    url: "https://akashsharma.dev/terms",
-  },
-  twitter: {
-    title: "Terms of Service | Akash Sharma",
-    description: "Terms of service for akashsharma.dev",
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const [page, settings] = await Promise.all([getLegalPage("terms"), getSettings()]);
+  return buildMetadata(page?.seo, settings?.seo, "/terms");
+}
 
-export default function Page() {
-  return <TermsView />;
+export default async function Page() {
+  const content = await getLegalPage("terms");
+  return <TermsView content={content} />;
 }

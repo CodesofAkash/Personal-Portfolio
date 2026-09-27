@@ -1,26 +1,14 @@
 import type { Metadata } from "next";
 import ProjectsView from "./ProjectsView";
+import { getProjects, getProjectsPage, getSettings } from "@/sanity/lib/queries";
+import { buildMetadata } from "@/sanity/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Projects | Akash Sharma - Full-Stack Developer",
-  description:
-    "Explore my portfolio of production-ready projects including real-time systems, 3D web experiences, and full-stack applications.",
-  alternates: {
-    canonical: "https://akashsharma.dev/projects",
-  },
-  openGraph: {
-    title: "Projects | Akash Sharma - Full-Stack Developer",
-    description:
-      "Explore my portfolio of production-ready projects including real-time systems, 3D web experiences, and full-stack applications.",
-    url: "https://akashsharma.dev/projects",
-  },
-  twitter: {
-    title: "Projects | Akash Sharma - Full-Stack Developer",
-    description:
-      "Explore my portfolio of production-ready projects including real-time systems, 3D web experiences, and full-stack applications.",
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const [projectsPage, settings] = await Promise.all([getProjectsPage(), getSettings()]);
+  return buildMetadata(projectsPage?.seo, settings?.seo, "/projects");
+}
 
-export default function Page() {
-  return <ProjectsView />;
+export default async function Page() {
+  const [content, projects] = await Promise.all([getProjectsPage(), getProjects()]);
+  return <ProjectsView content={content} projects={projects} />;
 }

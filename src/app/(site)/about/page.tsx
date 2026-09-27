@@ -1,26 +1,19 @@
 import type { Metadata } from "next";
 import AboutView from "./AboutView";
+import { getAboutPage, getExperiences, getSettings, getTechnologies } from "@/sanity/lib/queries";
+import { buildMetadata } from "@/sanity/lib/seo";
 
-export const metadata: Metadata = {
-  title: "About Akash Sharma | Full-Stack Developer",
-  description:
-    "Learn about my journey from self-taught developer to shipping production-ready apps. Experience with React, Node.js, Three.js, and modern web technologies.",
-  alternates: {
-    canonical: "https://akashsharma.dev/about",
-  },
-  openGraph: {
-    title: "About Akash Sharma | Full-Stack Developer",
-    description:
-      "Learn about my journey from self-taught developer to shipping production-ready apps. Experience with React, Node.js, Three.js, and modern web technologies.",
-    url: "https://akashsharma.dev/about",
-  },
-  twitter: {
-    title: "About Akash Sharma | Full-Stack Developer",
-    description:
-      "Learn about my journey from self-taught developer to shipping production-ready apps. Experience with React, Node.js, Three.js, and modern web technologies.",
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const [aboutPage, settings] = await Promise.all([getAboutPage(), getSettings()]);
+  return buildMetadata(aboutPage?.seo, settings?.seo, "/about");
+}
 
-export default function Page() {
-  return <AboutView />;
+export default async function Page() {
+  const [content, experiences, technologies] = await Promise.all([
+    getAboutPage(),
+    getExperiences(),
+    getTechnologies(),
+  ]);
+
+  return <AboutView content={content} experiences={experiences} technologies={technologies} />;
 }

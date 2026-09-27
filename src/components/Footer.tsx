@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import type { Social } from "@/sanity/lib/types";
 
 const C = {
   violet: "#7c3aed",
@@ -10,7 +11,14 @@ const C = {
   border: "rgba(148,163,184,0.08)",
 };
 
-const Footer = () => {
+interface FooterProps {
+  brandName?: string;
+  logoUrl?: string;
+  tagline?: string;
+  socials: Social[];
+}
+
+const Footer = ({ brandName, logoUrl, tagline, socials }: FooterProps) => {
   return (
     <footer
       style={{ background: "#050816", borderTop: `1px solid ${C.border}` }}
@@ -19,46 +27,47 @@ const Footer = () => {
         <div className="flex flex-col sm:flex-row justify-between gap-12 mb-12">
           <div className="flex flex-col gap-4 max-w-xs">
             <Link href="/" className="flex items-center gap-2.5 group w-fit">
-              <img
-                src="/assets/logo.svg"
-                alt="logo"
-                className="w-8 h-8 object-contain transition-transform duration-300 group-hover:rotate-12"
-              />
-              <span
-                className="font-bold text-[17px] tracking-tight"
-                style={{ color: C.white }}
-              >
-                Akash<span style={{ color: C.violet }}>.</span>
-              </span>
-            </Link>
-            <p className="text-[14px] leading-relaxed" style={{ color: C.dim }}>
-              Full-stack developer building real-time systems, 3D
-              experiences, and production-ready web apps.
-            </p>
-            <div className="flex items-center gap-3 mt-1">
-              {[
-                { label: "GitHub", href: "https://github.com/CodesofAkash" },
-                {
-                  label: "LinkedIn",
-                  href: "https://www.linkedin.com/in/codesofakash",
-                },
-              ].map((s) => (
-                <a
-                  key={s.label}
-                  href={s.href}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="px-4 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 hover:scale-105"
-                  style={{
-                    background: "rgba(124,58,237,0.12)",
-                    color: C.violet,
-                    border: `1px solid rgba(124,58,237,0.2)`,
-                  }}
+              {logoUrl && (
+                <img
+                  src={logoUrl}
+                  alt={brandName ? `${brandName} logo` : "logo"}
+                  className="w-8 h-8 object-contain transition-transform duration-300 group-hover:rotate-12"
+                />
+              )}
+              {brandName && (
+                <span
+                  className="font-bold text-[17px] tracking-tight"
+                  style={{ color: C.white }}
                 >
-                  {s.label}
-                </a>
-              ))}
-            </div>
+                  {brandName}<span style={{ color: C.violet }}>.</span>
+                </span>
+              )}
+            </Link>
+            {tagline && (
+              <p className="text-[14px] leading-relaxed" style={{ color: C.dim }}>
+                {tagline}
+              </p>
+            )}
+            {socials.length > 0 && (
+              <div className="flex items-center gap-3 mt-1">
+                {socials.map((s) => (
+                  <a
+                    key={s.label}
+                    href={s.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="px-4 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 hover:scale-105"
+                    style={{
+                      background: "rgba(124,58,237,0.12)",
+                      color: C.violet,
+                      border: `1px solid rgba(124,58,237,0.2)`,
+                    }}
+                  >
+                    {s.label}
+                  </a>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="flex gap-16">
@@ -130,11 +139,11 @@ const Footer = () => {
 
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-xs" style={{ color: C.dim }}>
-            © {new Date().getFullYear()} Akash Sharma — Built with React,
+            © {new Date().getFullYear()} {brandName ?? "Akash Sharma"} — Built with Next.js,
             Three.js & GSAP
           </p>
           <p className="text-xs" style={{ color: `${C.dim}80` }}>
-            Designed & developed by Akash
+            Designed & developed by {brandName ?? "Akash"}
           </p>
         </div>
       </div>

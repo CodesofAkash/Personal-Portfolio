@@ -1,26 +1,25 @@
 import type { Metadata } from "next";
 import HomeView from "./HomeView";
+import { getHomePage, getProjects, getSettings, getTestimonials } from "@/sanity/lib/queries";
+import { buildMetadata } from "@/sanity/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Akash Sharma | Full-Stack Developer & 3D Web Specialist",
-  description:
-    "Full-stack developer specializing in React, Three.js, Node.js. 10+ projects shipped. Self-taught developer building real-time systems and 3D web experiences.",
-  alternates: {
-    canonical: "https://akashsharma.dev",
-  },
-  openGraph: {
-    title: "Akash Sharma | Full-Stack Developer & 3D Web Specialist",
-    description:
-      "Full-stack developer specializing in React, Three.js, Node.js. 10+ projects shipped. Self-taught developer building real-time systems and 3D web experiences.",
-    url: "https://akashsharma.dev",
-  },
-  twitter: {
-    title: "Akash Sharma | Full-Stack Developer & 3D Web Specialist",
-    description:
-      "Full-stack developer specializing in React, Three.js, Node.js. 10+ projects shipped. Self-taught developer building real-time systems and 3D web experiences.",
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const [homePage, settings] = await Promise.all([getHomePage(), getSettings()]);
+  return buildMetadata(homePage?.seo, settings?.seo, "/");
+}
 
-export default function Page() {
-  return <HomeView />;
+export default async function Page() {
+  const [homePage, projects, testimonials] = await Promise.all([
+    getHomePage(),
+    getProjects(),
+    getTestimonials(),
+  ]);
+
+  return (
+    <HomeView
+      content={homePage}
+      featuredProjects={projects.slice(0, 3)}
+      testimonials={testimonials}
+    />
+  );
 }

@@ -3,11 +3,15 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { navLinks } from "@/constants";
+import type { NavLink } from "@/sanity/lib/types";
 
-const filteredLinks = navLinks.filter((l) => l.id !== "/");
+interface NavbarProps {
+  brandName?: string;
+  logoUrl?: string;
+  navLinks: NavLink[];
+}
 
-const Navbar = () => {
+const Navbar = ({ brandName, logoUrl, navLinks }: NavbarProps) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
 
@@ -29,18 +33,22 @@ const Navbar = () => {
           }}
           className="flex items-center gap-2.5 group"
         >
-          <img
-            src="/assets/logo.svg"
-            alt="logo"
-            className="w-8 h-8 object-contain transition-transform duration-300 group-hover:rotate-12"
-          />
-          <span className="text-white text-[17px] font-bold tracking-tight">
-            Akash <span className="hidden sm:inline text-[#7c3aed]">.</span>
-          </span>
+          {logoUrl && (
+            <img
+              src={logoUrl}
+              alt={brandName ? `${brandName} logo` : "logo"}
+              className="w-8 h-8 object-contain transition-transform duration-300 group-hover:rotate-12"
+            />
+          )}
+          {brandName && (
+            <span className="text-white text-[17px] font-bold tracking-tight">
+              {brandName} <span className="hidden sm:inline text-[#7c3aed]">.</span>
+            </span>
+          )}
         </Link>
 
         <ul className="list-none hidden sm:flex flex-row items-center gap-1">
-          {filteredLinks.map((link) => {
+          {navLinks.map((link) => {
             const isActive = pathname === link.id;
             return (
               <li key={link.id}>
@@ -75,18 +83,28 @@ const Navbar = () => {
           })}
         </ul>
 
-        <button
-          className="sm:hidden flex items-center justify-center w-9 h-9 rounded-lg transition-colors duration-200"
-          style={{ background: "rgba(148,163,184,0.08)" }}
-          onClick={() => setMenuOpen((p) => !p)}
-          aria-label="Toggle menu"
-        >
-          <img
-            src={menuOpen ? "/assets/close.svg" : "/assets/menu.svg"}
-            alt="menu"
-            className="w-5 h-5 object-contain"
-          />
-        </button>
+        {navLinks.length > 0 && (
+          <button
+            className="sm:hidden flex items-center justify-center w-9 h-9 rounded-lg transition-colors duration-200"
+            style={{ background: "rgba(148,163,184,0.08)" }}
+            onClick={() => setMenuOpen((p) => !p)}
+            aria-label="Toggle menu"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              className="w-5 h-5 text-white"
+            >
+              {menuOpen ? (
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              ) : (
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5" />
+              )}
+            </svg>
+          </button>
+        )}
       </div>
 
       <div
@@ -97,7 +115,7 @@ const Navbar = () => {
         }}
       >
         <div className="flex flex-col gap-1 pt-3 pb-2 px-1">
-          {filteredLinks.map((link) => {
+          {navLinks.map((link) => {
             const isActive = pathname === link.id;
             return (
               <Link
