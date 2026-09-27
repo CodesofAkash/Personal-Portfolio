@@ -113,6 +113,7 @@ const TermsView = ({ content }: TermsViewProps) => {
             >
               <div className="flex items-start gap-6">
                 <span
+                  aria-hidden="true"
                   className="flex-shrink-0 font-black text-3xl leading-none select-none"
                   style={{ color: `${color}35`, fontFamily: "'Bebas Neue',monospace" }}
                 >

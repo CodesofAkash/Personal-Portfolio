@@ -5,6 +5,7 @@ import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type { Testimonial, TestimonialsSection } from "@/sanity/lib/types";
+import Heading from "./Heading";
 import { C } from "./colors";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -36,10 +37,12 @@ const Testimonials = ({ section, testimonials }: { section: TestimonialsSection;
       <div className="max-w-7xl mx-auto">
         <div ref={headRef} className="mb-12">
           {h?.eyebrow && <p className="text-sm uppercase tracking-widest mb-3" style={{ color: C.amber }}>{h.eyebrow}</p>}
-          {h?.heading && (
-            <h2 className="font-black" style={{ fontSize: "clamp(2rem,6vw,5rem)", color: C.white, fontFamily: "'Bebas Neue','Impact',sans-serif" }}>
-              {h.heading}
-            </h2>
+          {h?.heading && h.heading.length > 0 && (
+            <Heading
+              segments={h.heading}
+              className="font-black"
+              style={{ fontSize: "clamp(2rem,6vw,5rem)", color: C.white, fontFamily: "'Bebas Neue','Impact',sans-serif" }}
+            />
           )}
         </div>
 

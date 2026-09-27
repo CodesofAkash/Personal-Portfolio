@@ -19,3 +19,22 @@ export const CTA_VARIANTS = [
   { title: "Primary", value: "primary" },
   { title: "Secondary", value: "secondary" },
 ];
+
+// "outline" = stroked/transparent-fill text (the Projects hero's "Built." treatment).
+// Contrast-safe variants of violet/rose are applied at render time, not here —
+// see src/components/sections/colors.ts.
+export const HEADING_STYLES = [
+  { title: "Default (white)", value: "default" },
+  { title: "Muted", value: "muted" },
+  { title: "Brand (violet)", value: "brand" },
+  { title: "Outline", value: "outline" },
+];
+
+export const HEADING_TAGS = [
+  { title: "H1", value: "h1" },
+  { title: "H2", value: "h2" },
+  { title: "H3", value: "h3" },
+  { title: "H4", value: "h4" },
+  { title: "H5", value: "h5" },
+  { title: "H6", value: "h6" },
+];

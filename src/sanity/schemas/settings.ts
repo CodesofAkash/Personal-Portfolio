@@ -34,21 +34,9 @@ export const settings = defineType({
     }),
     defineField({
       name: "logo",
-      type: "image",
+      type: "imageWithAlt",
       group: "identity",
-      description: "Shown in the navbar and footer.",
-      fields: [
-        defineField({
-          name: "alt",
-          title: "Alt text",
-          type: "string",
-          validation: (r) => r.required(),
-        }),
-      ],
-      validation: (r) =>
-        r.custom((value) =>
-          value && !value.alt ? "Alt text is required once a logo is set." : true,
-        ),
+      description: "Shown in the navbar and footer. An inline SVG override renders if no image is uploaded.",
     }),
     defineField({
       name: "favicon",

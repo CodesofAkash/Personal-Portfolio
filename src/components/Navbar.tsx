@@ -3,15 +3,16 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import type { NavLink } from "@/sanity/lib/types";
+import type { NavLink, SanityImageValue } from "@/sanity/lib/types";
+import Icon from "@/components/Icon";
 
 interface NavbarProps {
   brandName?: string;
-  logoUrl?: string;
+  logo?: SanityImageValue;
   navLinks: NavLink[];
 }
 
-const Navbar = ({ brandName, logoUrl, navLinks }: NavbarProps) => {
+const Navbar = ({ brandName, logo, navLinks }: NavbarProps) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
 
@@ -33,13 +34,13 @@ const Navbar = ({ brandName, logoUrl, navLinks }: NavbarProps) => {
           }}
           className="flex items-center gap-2.5 group"
         >
-          {logoUrl && (
-            <img
-              src={logoUrl}
-              alt={brandName ? `${brandName} logo` : "logo"}
-              className="w-8 h-8 object-contain transition-transform duration-300 group-hover:rotate-12"
-            />
-          )}
+          <Icon
+            image={logo}
+            fallbackAlt={brandName ? `${brandName} logo` : "logo"}
+            width={32}
+            height={32}
+            className="w-8 h-8 object-contain transition-transform duration-300 group-hover:rotate-12"
+          />
           {brandName && (
             <span className="text-white text-[17px] font-bold tracking-tight">
               {brandName} <span className="hidden sm:inline text-[#7c3aed]">.</span>

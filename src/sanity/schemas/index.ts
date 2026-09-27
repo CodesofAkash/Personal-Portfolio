@@ -3,6 +3,8 @@ import { link } from "./objects/link";
 import { ctaBtn } from "./objects/ctaBtn";
 import { sectionHeader } from "./objects/sectionHeader";
 import { stat } from "./objects/stat";
+import { headingSegments } from "./objects/headingSegments";
+import { imageWithAlt } from "./objects/imageWithAlt";
 import { heroSection } from "./sections/heroSection";
 import { aboutHeroSection } from "./sections/aboutHeroSection";
 import { projectsHeroSection } from "./sections/projectsHeroSection";
@@ -31,6 +33,8 @@ export const schemaTypes = [
   ctaBtn,
   sectionHeader,
   stat,
+  headingSegments,
+  imageWithAlt,
   // Page-builder sections
   heroSection,
   aboutHeroSection,

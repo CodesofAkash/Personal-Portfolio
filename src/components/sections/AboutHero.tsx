@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import type { AboutHeroSection } from "@/sanity/lib/types";
 import Cta from "./Cta";
-import { C } from "./colors";
+import { C, textSafe } from "./colors";
 
 const TAG_COLORS = [C.violet, C.teal, C.amber, C.rose];
 
@@ -55,11 +55,14 @@ const AboutHero = ({ section }: { section: AboutHeroSection }) => {
 
       {tags.length > 0 && (
         <div className="flex flex-wrap gap-3 mb-8">
-          {tags.map((tag, i) => (
-            <span key={tag} className="hero-tag px-4 py-1.5 rounded-full text-sm font-medium border" style={{ borderColor: TAG_COLORS[i % TAG_COLORS.length], color: TAG_COLORS[i % TAG_COLORS.length], background: `${TAG_COLORS[i % TAG_COLORS.length]}18` }}>
-              {tag}
-            </span>
-          ))}
+          {tags.map((tag, i) => {
+            const tagColor = TAG_COLORS[i % TAG_COLORS.length];
+            return (
+              <span key={tag} className="hero-tag px-4 py-1.5 rounded-full text-sm font-medium border" style={{ borderColor: tagColor, color: textSafe(tagColor), background: `${tagColor}18` }}>
+                {tag}
+              </span>
+            );
+          })}
         </div>
       )}
 

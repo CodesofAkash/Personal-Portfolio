@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { styles } from "@/styles";
 import CanvasLoader from "@/components/Loader";
 import Cta from "@/components/sections/Cta";
+import Heading from "@/components/sections/Heading";
 import type { HeroSection } from "@/sanity/lib/types";
 
 // Three.js/R3F/drei is a large client bundle with no SSR value (WebGL needs
@@ -61,14 +62,13 @@ const Hero = ({ section }: HeroProps) => {
             {section.eyebrow}
           </motion.p>
 
-          <motion.h1
+          <motion.div
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className={`${styles.heroHeadText} text-white`}
           >
-            {section.greeting} <span style={{ color: "#7c3aed" }}>{section.name}</span>
-          </motion.h1>
+            <Heading segments={section.heading} className={`${styles.heroHeadText} text-white`} />
+          </motion.div>
 
           <motion.div
             initial={{ opacity: 0, y: 24 }}

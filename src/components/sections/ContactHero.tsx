@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import type { ContactHeroSection } from "@/sanity/lib/types";
+import Heading from "./Heading";
 import { C } from "./colors";
 
 const ContactHero = ({ section }: { section: ContactHeroSection }) => {
@@ -33,9 +34,11 @@ const ContactHero = ({ section }: { section: ContactHeroSection }) => {
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full pointer-events-none" style={{ background: `radial-gradient(circle,${C.violet}10 0%,transparent 70%)` }} />
       <div className="c-line w-16 h-1 mb-6 rounded-full" style={{ background: `linear-gradient(90deg,${C.teal},${C.violet})` }} />
       <p className="c-label text-sm uppercase tracking-widest mb-3" style={{ color: C.teal }}>{section.eyebrow}</p>
-      <h1 className="c-h1 font-black mb-4" style={{ fontSize: "clamp(3rem,9vw,7rem)", color: C.white, fontFamily: "'Bebas Neue','Impact',sans-serif", lineHeight: 1.05 }}>
-        {section.heading}
-      </h1>
+      <Heading
+        segments={section.heading}
+        className="c-h1 font-black mb-4"
+        style={{ fontSize: "clamp(3rem,9vw,7rem)", color: C.white, fontFamily: "'Bebas Neue','Impact',sans-serif", lineHeight: 1.05 }}
+      />
       <p className="c-sub max-w-xl text-[17px] leading-relaxed" style={{ color: C.dim }}>
         {section.subheading}
       </p>

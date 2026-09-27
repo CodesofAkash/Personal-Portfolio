@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import type { Social } from "@/sanity/lib/types";
+import type { Social, SanityImageValue } from "@/sanity/lib/types";
 import { textSafe } from "@/components/sections/colors";
+import Icon from "@/components/Icon";
 
 const C = {
   violet: "#7c3aed",
@@ -14,12 +15,12 @@ const C = {
 
 interface FooterProps {
   brandName?: string;
-  logoUrl?: string;
+  logo?: SanityImageValue;
   tagline?: string;
   socials: Social[];
 }
 
-const Footer = ({ brandName, logoUrl, tagline, socials }: FooterProps) => {
+const Footer = ({ brandName, logo, tagline, socials }: FooterProps) => {
   return (
     <footer
       style={{ background: "#050816", borderTop: `1px solid ${C.border}` }}
@@ -28,13 +29,13 @@ const Footer = ({ brandName, logoUrl, tagline, socials }: FooterProps) => {
         <div className="flex flex-col sm:flex-row justify-between gap-12 mb-12">
           <div className="flex flex-col gap-4 max-w-xs">
             <Link href="/" className="flex items-center gap-2.5 group w-fit">
-              {logoUrl && (
-                <img
-                  src={logoUrl}
-                  alt={brandName ? `${brandName} logo` : "logo"}
-                  className="w-8 h-8 object-contain transition-transform duration-300 group-hover:rotate-12"
-                />
-              )}
+              <Icon
+                image={logo}
+                fallbackAlt={brandName ? `${brandName} logo` : "logo"}
+                width={32}
+                height={32}
+                className="w-8 h-8 object-contain transition-transform duration-300 group-hover:rotate-12"
+              />
               {brandName && (
                 <span
                   className="font-bold text-[17px] tracking-tight"
@@ -143,7 +144,7 @@ const Footer = ({ brandName, logoUrl, tagline, socials }: FooterProps) => {
             © {new Date().getFullYear()} {brandName ?? "Akash Sharma"} — Built with Next.js,
             Three.js & GSAP
           </p>
-          <p className="text-xs" style={{ color: `${C.dim}80` }}>
+          <p className="text-xs" style={{ color: `${C.dim}cc` }}>
             Designed & developed by {brandName ?? "Akash"}
           </p>
         </div>

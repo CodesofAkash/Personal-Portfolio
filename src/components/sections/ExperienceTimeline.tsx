@@ -5,6 +5,7 @@ import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type { Experience, ExperienceSection } from "@/sanity/lib/types";
+import Heading from "./Heading";
 import { C, textSafe } from "./colors";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -38,10 +39,13 @@ const ExperienceTimeline = ({ section, experiences }: { section: ExperienceSecti
     <section ref={ref} className="px-6 sm:px-16 py-24" style={{ background: C.bg }}>
       <div className="max-w-7xl mx-auto">
         {h?.eyebrow && <p className="text-sm uppercase tracking-widest mb-3" style={{ color: C.teal }}>{h.eyebrow}</p>}
-        {h?.heading && (
-          <h2 ref={headRef} className="font-black mb-16" style={{ fontSize: "clamp(2rem,6vw,5rem)", color: C.white, fontFamily: "'Bebas Neue',sans-serif" }}>
-            {h.heading}
-          </h2>
+        {h?.heading && h.heading.length > 0 && (
+          <Heading
+            ref={headRef}
+            segments={h.heading}
+            className="font-black mb-16"
+            style={{ fontSize: "clamp(2rem,6vw,5rem)", color: C.white, fontFamily: "'Bebas Neue',sans-serif" }}
+          />
         )}
 
         <div className="relative">

@@ -9,12 +9,16 @@ export const heroSection = defineType({
   type: "object",
   fields: [
     defineField({ name: "eyebrow", type: "string", description: "e.g. 'Full-Stack Developer · Available for hire'.", validation: (r) => r.required() }),
-    defineField({ name: "greeting", type: "string", description: "Text before the name, e.g. 'Hi, I'm'.", validation: (r) => r.required() }),
-    defineField({ name: "name", type: "string", description: "e.g. 'Akash.'.", validation: (r) => r.required() }),
+    defineField({
+      name: "heading",
+      type: "headingSegments",
+      description: "e.g. two segments: 'Hi, I'm ' (default) + 'Akash.' (brand).",
+      validation: (r) => r.required(),
+    }),
     defineField({ name: "subheadLine1", type: "string", validation: (r) => r.required() }),
     defineField({ name: "subheadLine2", type: "text", rows: 3, validation: (r) => r.required() }),
     defineField({ name: "primaryCta", title: "Primary button", type: "ctaBtn" }),
     defineField({ name: "secondaryCta", title: "Secondary button", type: "ctaBtn" }),
   ],
-  preview: { select: { title: "name" }, prepare: ({ title }) => ({ title: title || "Hero", subtitle: "Home hero" }) },
+  preview: { select: { title: "heading.0.text" }, prepare: ({ title }) => ({ title: title || "Hero", subtitle: "Home hero" }) },
 });

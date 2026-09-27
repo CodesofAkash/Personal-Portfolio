@@ -109,6 +109,7 @@ const PrivacyView = ({ content }: PrivacyViewProps) => {
           >
             <div className="flex items-start gap-6">
               <span
+                aria-hidden="true"
                 className="flex-shrink-0 font-black text-3xl leading-none select-none"
                 style={{ color: `${C.violet}30`, fontFamily: "'Bebas Neue',monospace" }}
               >

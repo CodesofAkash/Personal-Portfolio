@@ -5,6 +5,7 @@ import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type { StatsSection } from "@/sanity/lib/types";
+import Heading from "./Heading";
 import { C } from "./colors";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -16,7 +17,7 @@ const STAT_COLORS = [C.violet, C.teal, C.amber, C.rose];
 // stand-alone stats bar (stats only) — same statsSection schema either way.
 const Stats = ({ section }: { section: StatsSection }) => {
   const ref = useRef<HTMLDivElement>(null);
-  const hasHeader = Boolean(section.sectionHeader?.heading);
+  const hasHeader = Boolean(section.sectionHeader?.heading?.length);
 
   useEffect(() => {
     const el = ref.current;
@@ -55,16 +56,15 @@ const Stats = ({ section }: { section: StatsSection }) => {
                 {h.eyebrow}
               </p>
             )}
-            <h2
+            <Heading
+              segments={h.heading}
               className="font-black mb-6 leading-tight"
               style={{
                 fontSize: "clamp(2rem,5vw,4rem)",
                 color: C.white,
                 fontFamily: "'Bebas Neue','Impact',sans-serif",
               }}
-            >
-              {h.heading}
-            </h2>
+            />
             {h.paragraph && (
               <p className="text-[17px] leading-relaxed mb-8 max-w-xl" style={{ color: C.dim }}>
                 {h.paragraph}

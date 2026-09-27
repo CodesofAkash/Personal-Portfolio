@@ -6,6 +6,7 @@ import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type { FeaturedProjectsSection, Project } from "@/sanity/lib/types";
+import Heading from "./Heading";
 import { C, textSafe } from "./colors";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -125,10 +126,12 @@ const FeaturedProjects = ({ section, projects }: { section: FeaturedProjectsSect
             <p className="text-sm uppercase tracking-widest mb-3" style={{ color: textSafe(C.rose) }}>{h.eyebrow}</p>
           )}
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
-            {h?.heading && (
-              <h2 className="font-black" style={{ fontSize: "clamp(2rem,6vw,5rem)", color: C.white, fontFamily: "'Bebas Neue','Impact',sans-serif" }}>
-                {h.heading}
-              </h2>
+            {h?.heading && h.heading.length > 0 && (
+              <Heading
+                segments={h.heading}
+                className="font-black"
+                style={{ fontSize: "clamp(2rem,6vw,5rem)", color: C.white, fontFamily: "'Bebas Neue','Impact',sans-serif" }}
+              />
             )}
             {h?.cta?.text && (
               <Link
