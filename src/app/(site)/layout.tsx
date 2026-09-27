@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
-import "./globals.css";
+import "../globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ToastProvider from "@/components/ToastProvider";
+import { SanityLive } from "@/sanity/lib/live";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -91,6 +92,9 @@ export default function RootLayout({
           <Footer />
         </div>
         <ToastProvider />
+        {/* Not draft-gated: defineLive only configures revalidation — nothing
+            revalidates until the next deploy unless this is actually rendered. */}
+        <SanityLive />
       </body>
     </html>
   );
