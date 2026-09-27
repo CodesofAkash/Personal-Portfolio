@@ -8,9 +8,11 @@ export const client = createClient({
   // Public dataset, published content only — the CDN is safe and cheap here.
   useCdn: true,
   perspective: "published",
+  // Inert until draft mode is actually on, so enabling it costs nothing on
+  // the public site — AK-SAN-007. Needed for VisualEditing's click-to-edit
+  // overlays to bind to the right field.
   stega: {
     studioUrl,
-    // Draft mode only: stega's invisible chars would leak into JSON-LD.
-    enabled: false,
+    enabled: true,
   },
 });

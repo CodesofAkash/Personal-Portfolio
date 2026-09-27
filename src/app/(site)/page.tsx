@@ -17,8 +17,8 @@ export default async function Page() {
 
   return (
     <HomeView
-      content={homePage}
-      featuredProjects={projects.slice(0, 3)}
+      sections={homePage?.sections ?? []}
+      projects={projects}
       testimonials={testimonials}
     />
   );

@@ -49,11 +49,11 @@ const Navbar = ({ brandName, logoUrl, navLinks }: NavbarProps) => {
 
         <ul className="list-none hidden sm:flex flex-row items-center gap-1">
           {navLinks.map((link) => {
-            const isActive = pathname === link.id;
+            const isActive = pathname === link.href;
             return (
-              <li key={link.id}>
+              <li key={link.href}>
                 <Link
-                  href={link.id}
+                  href={link.href}
                   className="relative px-4 py-2 rounded-lg text-[14px] font-medium transition-all duration-200 group"
                   style={{ color: isActive ? "#f8fafc" : "#94a3b8" }}
                 >
@@ -76,7 +76,7 @@ const Navbar = ({ brandName, logoUrl, navLinks }: NavbarProps) => {
                     className="absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200"
                     style={{ background: "rgba(148,163,184,0.06)" }}
                   />
-                  <span className="relative">{link.title}</span>
+                  <span className="relative">{link.label}</span>
                 </Link>
               </li>
             );
@@ -116,11 +116,11 @@ const Navbar = ({ brandName, logoUrl, navLinks }: NavbarProps) => {
       >
         <div className="flex flex-col gap-1 pt-3 pb-2 px-1">
           {navLinks.map((link) => {
-            const isActive = pathname === link.id;
+            const isActive = pathname === link.href;
             return (
               <Link
-                key={link.id}
-                href={link.id}
+                key={link.href}
+                href={link.href}
                 onClick={() => setMenuOpen(false)}
                 className="flex items-center gap-3 px-4 py-3 rounded-xl text-[15px] font-medium transition-all duration-200"
                 style={{
@@ -133,7 +133,7 @@ const Navbar = ({ brandName, logoUrl, navLinks }: NavbarProps) => {
                     : "2px solid transparent",
                 }}
               >
-                {link.title}
+                {link.label}
               </Link>
             );
           })}

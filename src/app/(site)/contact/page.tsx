@@ -9,6 +9,6 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function Page() {
-  const [content, settings] = await Promise.all([getContactPage(), getSettings()]);
-  return <ContactView content={content} settings={settings} />;
+  const [contactPage, settings] = await Promise.all([getContactPage(), getSettings()]);
+  return <ContactView sections={contactPage?.sections ?? []} settings={settings} />;
 }

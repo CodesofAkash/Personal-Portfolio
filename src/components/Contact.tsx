@@ -1,15 +1,17 @@
 "use client";
 
 import { useState, useRef, type ChangeEvent, type FormEvent } from "react";
+import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 import emailjs from "@emailjs/browser";
 import { toast } from "react-toastify";
 
 import { styles } from "@/styles";
-import { EarthCanvas } from "@/components/canvas";
 import { SectionWrapper } from "@/hoc";
 import { slideIn } from "@/utils/motion";
 import type { Settings } from "@/sanity/lib/types";
+
+const EarthCanvas = dynamic(() => import("@/components/canvas/Earth"), { ssr: false });
 
 interface ContactForm {
   name: string;
@@ -90,7 +92,7 @@ const Contact = ({ settings }: ContactProps) => {
         className="flex-[0.75] bg-black-100 p-8 rounded-2xl"
       >
         <p className={`${styles.sectionSubText}`}>Get in touch</p>
-        <h3 className={`${styles.sectionHeadText}`}>Contact.</h3>
+        <h2 className={`${styles.sectionHeadText}`}>Contact.</h2>
 
         <form
           ref={formRef}

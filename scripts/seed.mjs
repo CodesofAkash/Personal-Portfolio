@@ -47,6 +47,21 @@ async function uploadImageFromUrl(url, filename) {
   return { _type: "image", asset: { _type: "reference", _ref: asset._id } };
 }
 
+let keyCounter = 0;
+const key = () => `k${keyCounter++}`;
+
+// Every internal destination on this site is a fixed route — no page-builder
+// "pages" collection to reference (AK-SAN-062).
+function ctaBtn(text, fixedRoute, variant) {
+  return { _type: "ctaBtn", _key: key(), text, linkType: "fixedRoute", fixedRoute, target: "_self", variant };
+}
+function navLink(label, fixedRoute) {
+  return { _type: "link", _key: key(), label, linkType: "fixedRoute", fixedRoute, target: "_self" };
+}
+function sectionHeader({ eyebrow, heading, paragraph, cta }) {
+  return { _type: "sectionHeader", eyebrow, heading, paragraph, ...(cta ? { cta } : {}) };
+}
+
 async function main() {
   console.log("Uploading brand assets...");
   const logo = await uploadImage("public/assets/logo.svg", "logo.svg");
@@ -70,9 +85,9 @@ async function main() {
     logo: logoWithAlt,
     favicon: logo,
     navLinks: [
-      { _type: "navLink", _key: "about", id: "/about", title: "About" },
-      { _type: "navLink", _key: "projects", id: "/projects", title: "Projects" },
-      { _type: "navLink", _key: "contact", id: "/contact", title: "Contact" },
+      navLink("About", "/about"),
+      navLink("Projects", "/projects"),
+      navLink("Contact", "/contact"),
     ],
     socials: [
       { _type: "social", _key: "github", label: "GitHub", url: "https://github.com/CodesofAkash" },
@@ -99,29 +114,50 @@ async function main() {
   await client.createOrReplace({
     _id: "homePage",
     _type: "homePage",
-    heroEyebrow: "Full-Stack Developer · Available for hire",
-    heroGreeting: "Hi, I'm",
-    heroName: "Akash.",
-    heroSubheadLine1: "Full-stack developer. Self-taught. Fast learner.",
-    heroSubheadLine2:
-      "Two years of self-teaching, multiple projects in production, and AI as a daily tool — not to replace my thinking, but to sharpen it and ship faster.",
-    heroCtaPrimaryLabel: "See my work →",
-    heroCtaSecondaryLabel: "Get in touch",
-    aboutEyebrow: "Who I am",
-    aboutHeading: "Akash Sharma.",
-    aboutBody:
-      "Full-stack developer who went from zero to shipping production apps in under two years — entirely self-taught. I specialise in real-time systems, 3D web experiences, and end-to-end application development. Every project has a live URL.",
-    aboutCtaLabel: "More about me →",
-    aboutStats: [
-      { _type: "stat", _key: "years", value: "1.5+", label: "Years building" },
-      { _type: "stat", _key: "projects", value: "10+", label: "Projects shipped" },
-      { _type: "stat", _key: "tech", value: "7+", label: "Technologies" },
+    sections: [
+      {
+        _type: "heroSection",
+        _key: key(),
+        eyebrow: "Full-Stack Developer · Available for hire",
+        greeting: "Hi, I'm",
+        name: "Akash.",
+        subheadLine1: "Full-stack developer. Self-taught. Fast learner.",
+        subheadLine2:
+          "Two years of self-teaching, multiple projects in production, and AI as a daily tool — not to replace my thinking, but to sharpen it and ship faster.",
+        primaryCta: ctaBtn("See my work →", "/projects", "primary"),
+        secondaryCta: ctaBtn("Get in touch", "/contact", "secondary"),
+      },
+      {
+        _type: "statsSection",
+        _key: key(),
+        sectionHeader: sectionHeader({
+          eyebrow: "Who I am",
+          heading: "Akash Sharma.",
+          paragraph:
+            "Full-stack developer who went from zero to shipping production apps in under two years — entirely self-taught. I specialise in real-time systems, 3D web experiences, and end-to-end application development. Every project has a live URL.",
+          cta: ctaBtn("More about me →", "/about", "primary"),
+        }),
+        stats: [
+          { _type: "stat", _key: key(), value: "1.5+", label: "Years building" },
+          { _type: "stat", _key: key(), value: "10+", label: "Projects shipped" },
+          { _type: "stat", _key: key(), value: "7+", label: "Technologies" },
+        ],
+      },
+      {
+        _type: "featuredProjectsSection",
+        _key: key(),
+        sectionHeader: sectionHeader({
+          eyebrow: "What I've built",
+          heading: "Featured Projects.",
+          cta: ctaBtn("View all →", "/projects", "secondary"),
+        }),
+      },
+      {
+        _type: "testimonialsSection",
+        _key: key(),
+        sectionHeader: sectionHeader({ eyebrow: "Kind words", heading: "What people say." }),
+      },
     ],
-    featuredProjectsEyebrow: "What I've built",
-    featuredProjectsHeading: "Featured Projects.",
-    featuredProjectsViewAllLabel: "View all →",
-    testimonialsEyebrow: "Kind words",
-    testimonialsHeading: "What people say.",
     seo: {
       title: "Akash Sharma | Full-Stack Developer & 3D Web Specialist",
       description:
@@ -133,29 +169,51 @@ async function main() {
   await client.createOrReplace({
     _id: "aboutPage",
     _type: "aboutPage",
-    heroName: "Akash Sharma",
-    heroTags: ["Builder by Practice", "Curious by Nature", "BCA Student", "Open to Opportunities"],
-    heroBio:
-      "Self-taught developer driven by curiosity and consistency. What started as learning HTML two years ago evolved into building complete, production-ready applications independently. I value clarity, ownership, and continuous improvement — and I'm now seeking my first professional opportunity to contribute, learn, and grow within a strong engineering team.",
-    heroCtaPrimaryLabel: "See my work →",
-    heroCtaSecondaryLabel: "Get in touch",
-    stats: [
-      { _type: "stat", _key: "years", value: "2+", label: "Years of Development" },
-      { _type: "stat", _key: "projects", value: "10+", label: "Projects Shipped" },
-      { _type: "stat", _key: "tech", value: "10+", label: "Technologies Applied" },
-      { _type: "stat", _key: "curiosity", value: "∞", label: "Curiosity & Growth" },
+    sections: [
+      {
+        _type: "aboutHeroSection",
+        _key: key(),
+        name: "Akash Sharma",
+        tags: ["Builder by Practice", "Curious by Nature", "BCA Student", "Open to Opportunities"],
+        bio:
+          "Self-taught developer driven by curiosity and consistency. What started as learning HTML two years ago evolved into building complete, production-ready applications independently. I value clarity, ownership, and continuous improvement — and I'm now seeking my first professional opportunity to contribute, learn, and grow within a strong engineering team.",
+        primaryCta: ctaBtn("See my work →", "/projects", "primary"),
+        secondaryCta: ctaBtn("Get in touch", "/contact", "secondary"),
+      },
+      {
+        _type: "statsSection",
+        _key: key(),
+        stats: [
+          { _type: "stat", _key: key(), value: "2+", label: "Years of Development" },
+          { _type: "stat", _key: key(), value: "10+", label: "Projects Shipped" },
+          { _type: "stat", _key: key(), value: "10+", label: "Technologies Applied" },
+          { _type: "stat", _key: key(), value: "∞", label: "Curiosity & Growth" },
+        ],
+      },
+      {
+        _type: "experienceSection",
+        _key: key(),
+        sectionHeader: sectionHeader({ eyebrow: "How I got here", heading: "My Journey." }),
+      },
+      {
+        _type: "techSection",
+        _key: key(),
+        sectionHeader: sectionHeader({ eyebrow: "Tools of the trade", heading: "Tech Stack." }),
+      },
+      {
+        _type: "ctaSection",
+        _key: key(),
+        sectionHeader: sectionHeader({
+          eyebrow: "What's next",
+          heading: "Let's build something",
+          paragraph:
+            "Available immediately for full-time roles, internships, and remote positions. India-based — open to relocation or fully remote worldwide.",
+          cta: ctaBtn("Get in touch", "/contact", "primary"),
+        }),
+        headingHighlight: "remarkable.",
+        secondaryCta: ctaBtn("See projects", "/projects", "secondary"),
+      },
     ],
-    experienceEyebrow: "How I got here",
-    experienceHeading: "My Journey.",
-    techEyebrow: "Tools of the trade",
-    techHeading: "Tech Stack.",
-    ctaEyebrow: "What's next",
-    ctaHeadingLine1: "Let's build something",
-    ctaHeadingHighlight: "remarkable.",
-    ctaBody:
-      "Available immediately for full-time roles, internships, and remote positions. India-based — open to relocation or fully remote worldwide.",
-    ctaPrimaryLabel: "Get in touch",
-    ctaSecondaryLabel: "See projects",
     seo: {
       title: "About Akash Sharma | Full-Stack Developer",
       description:
@@ -167,13 +225,25 @@ async function main() {
   await client.createOrReplace({
     _id: "projectsPage",
     _type: "projectsPage",
-    heroHeadingLine1: "What I've",
-    heroHeadingHighlight: "Built.",
-    heroSubheading: "Click any project to expand it. Every project ships to production.",
-    ctaEyebrow: "Interested in collaborating?",
-    ctaHeading: "Let's build the next one together.",
-    ctaBody: "Always looking for interesting problems to solve and great people to work with.",
-    ctaLabel: "Start a conversation →",
+    sections: [
+      {
+        _type: "projectsHeroSection",
+        _key: key(),
+        headingLine1: "What I've",
+        headingHighlight: "Built.",
+        subheading: "Click any project to expand it. Every project ships to production.",
+      },
+      {
+        _type: "ctaSection",
+        _key: key(),
+        sectionHeader: sectionHeader({
+          eyebrow: "Interested in collaborating?",
+          heading: "Let's build the next one together.",
+          paragraph: "Always looking for interesting problems to solve and great people to work with.",
+          cta: ctaBtn("Start a conversation →", "/contact", "primary"),
+        }),
+      },
+    ],
     seo: {
       title: "Projects | Akash Sharma - Full-Stack Developer",
       description:
@@ -185,10 +255,16 @@ async function main() {
   await client.createOrReplace({
     _id: "contactPage",
     _type: "contactPage",
-    eyebrow: "Get in touch",
-    heading: "Let's Talk.",
-    subheading:
-      "I'm currently seeking my first professional role in web development — frontend, backend, or full-stack. If you're hiring, have a project that needs building, or just want to connect, I'd welcome the conversation.",
+    sections: [
+      {
+        _type: "contactHeroSection",
+        _key: key(),
+        eyebrow: "Get in touch",
+        heading: "Let's Talk.",
+        subheading:
+          "I'm currently seeking my first professional role in web development — frontend, backend, or full-stack. If you're hiring, have a project that needs building, or just want to connect, I'd welcome the conversation.",
+      },
+    ],
     seo: {
       title: "Contact Akash Sharma | Get in Touch",
       description:
