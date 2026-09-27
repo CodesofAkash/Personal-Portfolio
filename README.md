@@ -1,13 +1,13 @@
 # Personal Portfolio
 
 A 3D, animation-driven personal portfolio — an interactive Three.js hero model, GSAP scroll
-motion, and a project showcase, built with React and Vite.
+motion, and a project showcase, built with Next.js.
 
 **Live:** [codesofakash.vercel.app](https://codesofakash.vercel.app)
 
 ## Overview
 
-A single-page-app-style portfolio with dedicated routes for Home, About, Projects, and Contact.
+A Next.js App Router site with routes for Home, About, Projects, Contact, Privacy, and Terms.
 The 3D hero visualization is the centerpiece, backed by an explicit error boundary so a WebGL
 failure degrades gracefully instead of taking the page down.
 
@@ -15,45 +15,55 @@ failure degrades gracefully instead of taking the page down.
 
 - Interactive 3D hero model (Three.js + React Three Fiber + Drei)
 - GSAP scroll-triggered animations throughout
-- A project showcase section
+- A project showcase section with expandable project detail cards, video previews, and
+  screenshot carousels
 - A contact form (EmailJS)
 - Dedicated Privacy and Terms pages
-- A dedicated error boundary around the 3D canvas, so a model/WebGL failure fails gracefully
+- A dedicated error boundary around every 3D canvas, so a model/WebGL failure fails gracefully
   rather than breaking the page
+- Native Next.js metadata (per-page title/description/canonical) and JSON-LD structured data
 
 ## Tech Stack
 
 **Frontend**
-React 18, React Router v6, Vite 7, Tailwind CSS 3, Framer Motion
+Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS 4, Framer Motion
 
 **3D / Animation**
-Three.js, React Three Fiber, Drei, GSAP + `@gsap/react`, `maath`
+Three.js, React Three Fiber, Drei, GSAP, `maath`
 
 **Other**
-EmailJS (contact form), `react-toastify` (notifications), `react-vertical-timeline-component`
+EmailJS (contact form), `react-toastify` (notifications)
 
 ## Project Structure
 
 ```
 src/
+├── app/
+│   ├── layout.tsx         # Root layout — fonts, metadata, Navbar/Footer, toasts
+│   ├── page.tsx           # Home route
+│   ├── about/
+│   ├── projects/
+│   ├── contact/
+│   ├── privacy/
+│   ├── terms/
+│   └── not-found.tsx
 ├── components/
-│   ├── canvas/          # 3D scene components
-│   ├── Hero.jsx
-│   ├── Contact.jsx
-│   ├── ModelErrorBoundary.jsx
-│   └── Navbar.jsx / Footer.jsx
-├── pages/                # Home, About, Projects, Contact, Privacy, Terms
-├── constants/             # Static content (project list, nav links, etc.)
-├── hooks/
+│   ├── canvas/            # 3D scene components (Computers, Earth, Ball, Stars)
+│   ├── Hero.tsx
+│   ├── Contact.tsx
+│   ├── ModelErrorBoundary.tsx
+│   └── Navbar.tsx / Footer.tsx
+├── constants/              # Static content (project list, nav links, etc.)
 ├── hoc/
-└── assets/
+├── lib/
+└── utils/
 ```
 
 ## Getting Started
 
 ### Prerequisites
 
-- Node.js 18+
+- Node.js 20+
 
 ### Install
 
@@ -79,9 +89,9 @@ secrets.
 
 ## Deployment
 
-Deployed on Vercel as a static Vite build.
+Deployed on Vercel via its native Next.js integration.
 
 ## Current Status
 
-Deployed and live. This portfolio is scheduled for a full rebuild — the current version is stable
-but not the final design or content.
+Migrated from a Vite + React Router SPA to Next.js. Sanity CMS integration is planned as the
+next phase, followed by a Core Web Vitals / performance pass.
