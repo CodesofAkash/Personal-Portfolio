@@ -7,7 +7,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import ContactForm from "@/components/Contact";
 import SectionRenderer from "@/components/sections/SectionRenderer";
 import type { ContactSection, Settings } from "@/sanity/lib/types";
-import { C } from "@/components/sections/colors";
+import { C, textSafe } from "@/components/sections/colors";
 
 const StarsCanvas = dynamic(() => import("@/components/canvas/Stars"), { ssr: false });
 
@@ -53,7 +53,7 @@ const ContactView = ({ sections, settings }: ContactViewProps) => {
               <div key={card.label} className="info-card flex items-center gap-4 px-6 py-4 rounded-2xl" style={{ background: C.card, border: `1px solid ${card.color}20` }}>
                 <span className="text-2xl" aria-hidden>{card.icon}</span>
                 <div>
-                  <p className="text-xs uppercase tracking-widest mb-0.5" style={{ color: card.color }}>{card.label}</p>
+                  <p className="text-xs uppercase tracking-widest mb-0.5" style={{ color: textSafe(card.color) }}>{card.label}</p>
                   {card.href ? (
                     <a href={card.href} target="_blank" rel="noreferrer" className="text-sm font-medium hover:underline" style={{ color: C.white }}>{card.value}</a>
                   ) : (

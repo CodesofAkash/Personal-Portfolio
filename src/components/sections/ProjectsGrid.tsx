@@ -5,7 +5,7 @@ import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type { Project } from "@/sanity/lib/types";
-import { C } from "./colors";
+import { C, textSafe } from "./colors";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -30,7 +30,7 @@ const VideoPreview = ({ src, accent }: { src?: string; accent: string }) => {
           <div className="w-14 h-14 rounded-full border-2 flex items-center justify-center mx-auto mb-3" style={{ borderColor: `${accent}60` }}>
             <span className="text-2xl">▶</span>
           </div>
-          <p className="text-sm font-medium" style={{ color: accent }}>Video preview</p>
+          <p className="text-sm font-medium" style={{ color: textSafe(accent) }}>Video preview</p>
           <p className="text-xs mt-1" style={{ color: C.dim }}>Coming soon</p>
         </div>
       </div>
@@ -89,7 +89,7 @@ const ScreenshotsCarousel = ({ screenshots, accent, name }: { screenshots: strin
       <div className="relative w-full rounded-xl overflow-hidden flex items-center justify-center" style={{ aspectRatio: "4/3", background: `linear-gradient(135deg,${accent}10,#0f172a)` }}>
         <div className="flex flex-col items-center gap-3">
           <div className="w-8 h-8 rounded-full border-2 border-transparent animate-spin" style={{ borderTopColor: accent, borderRightColor: `${accent}40` }} />
-          <p className="text-xs" style={{ color: accent }}>
+          <p className="text-xs" style={{ color: textSafe(accent) }}>
             Loading {screenshots.filter((s, i) => s && loaded[i]).length} / {screenshots.filter((s) => s).length}
           </p>
         </div>
@@ -145,7 +145,7 @@ const ExpandedCard = ({ project, onClose }: { project: EnrichedProject; onClose:
       <div className="p-6 sm:p-10">
         <div className="exp-section flex items-start justify-between gap-4 mb-8">
           <div className="flex-1">
-            <p className="text-xs uppercase tracking-widest mb-2" style={{ color: accent }}>Featured Project</p>
+            <p className="text-xs uppercase tracking-widest mb-2" style={{ color: textSafe(accent) }}>Featured Project</p>
             <h2 className="font-black leading-tight mb-3" style={{ fontSize: "clamp(1.8rem,4vw,3.5rem)", color: C.white, fontFamily: "'Bebas Neue','Impact',sans-serif" }}>{project.name}</h2>
             <p className="text-[16px] leading-relaxed max-w-2xl" style={{ color: C.dim }}>{project.description}</p>
           </div>
@@ -170,7 +170,7 @@ const ExpandedCard = ({ project, onClose }: { project: EnrichedProject; onClose:
             <p className="text-xs uppercase tracking-widest mb-3" style={{ color: C.dim }}>Tech Stack</p>
             <div className="flex flex-wrap gap-2">
               {project.tags.map((tag) => (
-                <span key={tag.name} className="px-3 py-1.5 rounded-full text-xs font-semibold" style={{ background: `${accent}18`, color: accent, border: `1px solid ${accent}30` }}>{tag.name}</span>
+                <span key={tag.name} className="px-3 py-1.5 rounded-full text-xs font-semibold" style={{ background: `${accent}18`, color: textSafe(accent), border: `1px solid ${accent}30` }}>{tag.name}</span>
               ))}
             </div>
           </div>
@@ -240,6 +240,7 @@ const CompactCard = ({ project, isActive, onClick, index }: { project: EnrichedP
             alt={project.name}
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            priority={index === 0}
             className="transition-transform duration-700"
             style={{ objectFit: "cover", transform: hovering ? "scale(1.06)" : "scale(1)" }}
           />
@@ -253,7 +254,7 @@ const CompactCard = ({ project, isActive, onClick, index }: { project: EnrichedP
         )}
         {!project.video && (
           <div className="absolute inset-0 transition-opacity duration-500 flex items-center justify-center" style={{ opacity: hovering ? 1 : 0, background: `rgba(5,8,22,0.65)` }}>
-            <span className="text-sm font-medium px-4 py-2 rounded-full" style={{ background: `${accent}25`, color: accent, border: `1px solid ${accent}40` }}>Click to expand</span>
+            <span className="text-sm font-medium px-4 py-2 rounded-full" style={{ background: `${accent}25`, color: textSafe(accent), border: `1px solid ${accent}40` }}>Click to expand</span>
           </div>
         )}
         <div className="absolute top-0 left-0 right-0 h-0.5 transition-opacity duration-300" style={{ background: `linear-gradient(90deg,transparent,${accent},transparent)`, opacity: hovering || isActive ? 1 : 0 }} />
@@ -268,7 +269,7 @@ const CompactCard = ({ project, isActive, onClick, index }: { project: EnrichedP
         <p className="text-sm leading-relaxed flex-1 mb-4 line-clamp-2" style={{ color: C.dim }}>{project.description}</p>
         <div className="flex flex-wrap gap-1.5">
           {project.tags.slice(0, 3).map((tag) => (
-            <span key={tag.name} className="px-2.5 py-0.5 rounded-full text-[11px] font-medium" style={{ background: `${accent}14`, color: accent, border: `1px solid ${accent}22` }}>{tag.name}</span>
+            <span key={tag.name} className="px-2.5 py-0.5 rounded-full text-[11px] font-medium" style={{ background: `${accent}14`, color: textSafe(accent), border: `1px solid ${accent}22` }}>{tag.name}</span>
           ))}
         </div>
       </div>

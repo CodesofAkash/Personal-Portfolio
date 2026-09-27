@@ -6,7 +6,7 @@ import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type { FeaturedProjectsSection, Project } from "@/sanity/lib/types";
-import { C } from "./colors";
+import { C, textSafe } from "./colors";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -86,13 +86,13 @@ const ProjectCard = ({
         <p className="text-sm leading-relaxed flex-1 line-clamp-3 mb-4" style={{ color: C.dim }}>{description}</p>
         <div className="flex flex-wrap gap-2 mb-4">
           {tags.map((tag) => (
-            <span key={tag.name} className="px-2.5 py-1 rounded-full text-[11px] font-medium" style={{ background: `${accent}15`, color: accent, border: `1px solid ${accent}25` }}>
+            <span key={tag.name} className="px-2.5 py-1 rounded-full text-[11px] font-medium" style={{ background: `${accent}15`, color: textSafe(accent), border: `1px solid ${accent}25` }}>
               #{tag.name}
             </span>
           ))}
         </div>
         {link && (
-          <a href={link} target="_blank" rel="noreferrer" className="text-center text-sm font-semibold py-2.5 rounded-xl transition-all duration-200 hover:scale-[1.02]" style={{ background: `${accent}20`, color: accent, border: `1px solid ${accent}30` }}>
+          <a href={link} target="_blank" rel="noreferrer" className="text-center text-sm font-semibold py-2.5 rounded-xl transition-all duration-200 hover:scale-[1.02]" style={{ background: `${accent}20`, color: textSafe(accent), border: `1px solid ${accent}30` }}>
             Live Demo →
           </a>
         )}
@@ -122,7 +122,7 @@ const FeaturedProjects = ({ section, projects }: { section: FeaturedProjectsSect
       <div className="max-w-7xl mx-auto">
         <div ref={headRef} className="mb-12">
           {h?.eyebrow && (
-            <p className="text-sm uppercase tracking-widest mb-3" style={{ color: C.rose }}>{h.eyebrow}</p>
+            <p className="text-sm uppercase tracking-widest mb-3" style={{ color: textSafe(C.rose) }}>{h.eyebrow}</p>
           )}
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
             {h?.heading && (
@@ -134,7 +134,7 @@ const FeaturedProjects = ({ section, projects }: { section: FeaturedProjectsSect
               <Link
                 href={h.cta.href}
                 className="flex-shrink-0 px-6 py-2.5 rounded-xl text-sm font-semibold border transition-all duration-200 hover:scale-105"
-                style={{ borderColor: `${C.violet}40`, color: C.violet, background: `${C.violet}10` }}
+                style={{ borderColor: `${C.violet}40`, color: textSafe(C.violet), background: `${C.violet}10` }}
               >
                 {h.cta.text}
               </Link>

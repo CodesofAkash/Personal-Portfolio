@@ -5,7 +5,7 @@ import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type { Experience, ExperienceSection } from "@/sanity/lib/types";
-import { C } from "./colors";
+import { C, textSafe } from "./colors";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -64,7 +64,7 @@ const ExperienceTimeline = ({ section, experiences }: { section: ExperienceSecti
                         )}
                       </div>
                       <div>
-                        <p className="text-xs uppercase tracking-widest" style={{ color: accent }}>{exp.companyName}</p>
+                        <p className="text-xs uppercase tracking-widest" style={{ color: textSafe(accent) }}>{exp.companyName}</p>
                         <p className="text-xs" style={{ color: C.dim }}>{exp.date}</p>
                       </div>
                     </div>
