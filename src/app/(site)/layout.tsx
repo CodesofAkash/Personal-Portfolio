@@ -40,7 +40,6 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const settings = await getSettings();
-  const logoUrl = resolveImageUrl(settings?.logo);
   const { isEnabled: isDraft } = await draftMode();
 
   const personStructuredData = {
@@ -85,13 +84,13 @@ export default async function RootLayout({
         <div className="relative z-0 bg-primary min-h-screen flex flex-col">
           <Navbar
             brandName={settings?.name}
-            logoUrl={logoUrl}
+            logo={settings?.logo}
             navLinks={settings?.navLinks ?? []}
           />
           <main className="flex-1 pt-[68px]">{children}</main>
           <Footer
             brandName={settings?.name}
-            logoUrl={logoUrl}
+            logo={settings?.logo}
             tagline={settings?.tagline}
             socials={settings?.socials ?? []}
           />

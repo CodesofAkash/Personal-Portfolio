@@ -6,6 +6,17 @@
 export interface SanityImageValue {
   asset?: { _ref?: string; _id?: string; url?: string };
   alt?: string;
+  iconSvg?: string;
+}
+
+// AK-SAN-064 — only the first segment's tag sets the semantic heading level;
+// later segments only ever change color treatment. Segments render joined
+// by a single space; a literal "\n" inside a segment's text is a line break.
+export interface HeadingSegment {
+  _key?: string;
+  text: string;
+  style?: "default" | "muted" | "brand" | "outline";
+  tag?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 }
 
 export interface Seo {
@@ -66,7 +77,7 @@ export interface ResolvedCtaBtn extends ResolvedLink {
 
 export interface SectionHeader {
   eyebrow?: string;
-  heading?: string;
+  heading?: HeadingSegment[];
   paragraph?: string;
   cta?: ResolvedCtaBtn;
 }
@@ -75,8 +86,7 @@ export interface HeroSection {
   _key: string;
   _type: "heroSection";
   eyebrow: string;
-  greeting: string;
-  name: string;
+  heading: HeadingSegment[];
   subheadLine1: string;
   subheadLine2: string;
   primaryCta?: ResolvedCtaBtn;
@@ -96,8 +106,7 @@ export interface AboutHeroSection {
 export interface ProjectsHeroSection {
   _key: string;
   _type: "projectsHeroSection";
-  headingLine1: string;
-  headingHighlight: string;
+  heading: HeadingSegment[];
   subheading: string;
 }
 
@@ -105,7 +114,7 @@ export interface ContactHeroSection {
   _key: string;
   _type: "contactHeroSection";
   eyebrow: string;
-  heading: string;
+  heading: HeadingSegment[];
   subheading: string;
 }
 
@@ -144,7 +153,6 @@ export interface CtaSection {
   _key: string;
   _type: "ctaSection";
   sectionHeader: SectionHeader;
-  headingHighlight?: string;
   secondaryCta?: ResolvedCtaBtn;
 }
 

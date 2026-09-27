@@ -47,7 +47,7 @@ const SEO_FIELDS = /* groq */ `seo{ title, description, ogImage }`;
 // ── Site settings ────────────────────────────────────────────────────────
 
 const SETTINGS_QUERY = /* groq */ `*[_id == "settings"][0]{
-  name, tagline, logo, favicon,
+  name, tagline, "logo": logo{asset->{_id,url}, alt, iconSvg}, favicon,
   "navLinks": navLinks[]${linkFragment},
   socials, email, location,
   analytics, verification, scripts, cookieConsent, maintenance, notFound,
@@ -61,7 +61,7 @@ const HOME_PAGE_QUERY = /* groq */ `*[_id == "homePage"][0]{
   sections[]{
     _key, _type,
     _type == "heroSection" => {
-      eyebrow, greeting, name, subheadLine1, subheadLine2,
+      eyebrow, heading, subheadLine1, subheadLine2,
       primaryCta${ctaBtnFragment}, secondaryCta${ctaBtnFragment}
     },
     _type == "statsSection" => { sectionHeader${sectionHeaderFragment}, stats },
@@ -81,7 +81,7 @@ const ABOUT_PAGE_QUERY = /* groq */ `*[_id == "aboutPage"][0]{
     _type == "statsSection" => { sectionHeader${sectionHeaderFragment}, stats },
     _type == "experienceSection" => { sectionHeader${sectionHeaderFragment} },
     _type == "techSection" => { sectionHeader${sectionHeaderFragment} },
-    _type == "ctaSection" => { sectionHeader${sectionHeaderFragment}, headingHighlight, secondaryCta${ctaBtnFragment} }
+    _type == "ctaSection" => { sectionHeader${sectionHeaderFragment}, secondaryCta${ctaBtnFragment} }
   },
   ${SEO_FIELDS}
 }`;
@@ -89,8 +89,8 @@ const ABOUT_PAGE_QUERY = /* groq */ `*[_id == "aboutPage"][0]{
 const PROJECTS_PAGE_QUERY = /* groq */ `*[_id == "projectsPage"][0]{
   sections[]{
     _key, _type,
-    _type == "projectsHeroSection" => { headingLine1, headingHighlight, subheading },
-    _type == "ctaSection" => { sectionHeader${sectionHeaderFragment}, headingHighlight, secondaryCta${ctaBtnFragment} }
+    _type == "projectsHeroSection" => { heading, subheading },
+    _type == "ctaSection" => { sectionHeader${sectionHeaderFragment}, secondaryCta${ctaBtnFragment} }
   },
   ${SEO_FIELDS}
 }`;

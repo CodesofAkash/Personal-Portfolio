@@ -5,6 +5,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type { CtaSection } from "@/sanity/lib/types";
 import Cta from "./Cta";
+import Heading from "./Heading";
 import { C } from "./colors";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -23,7 +24,7 @@ const CtaPanel = ({ section }: { section: CtaSection }) => {
   }, []);
 
   const h = section.sectionHeader;
-  if (!h?.heading) return null;
+  if (!h?.heading?.length) return null;
 
   return (
     <section className="px-6 sm:px-16 py-24" style={{ borderTop: `1px solid ${C.border}` }}>
@@ -31,15 +32,11 @@ const CtaPanel = ({ section }: { section: CtaSection }) => {
         <div className="absolute top-0 right-0 w-64 h-64 pointer-events-none" style={{ background: `radial-gradient(circle at top right,${C.teal}20,transparent 70%)` }} />
 
         {h.eyebrow && <p className="text-sm uppercase tracking-widest mb-4" style={{ color: C.teal }}>{h.eyebrow}</p>}
-        <h2 className="font-black mb-6" style={{ fontSize: "clamp(2rem,5vw,4rem)", color: C.white, fontFamily: "'Bebas Neue',sans-serif" }}>
-          {h.heading}
-          {section.headingHighlight && (
-            <>
-              <br />
-              <span style={{ color: C.violet }}>{section.headingHighlight}</span>
-            </>
-          )}
-        </h2>
+        <Heading
+          segments={h.heading}
+          className="font-black mb-6"
+          style={{ fontSize: "clamp(2rem,5vw,4rem)", color: C.white, fontFamily: "'Bebas Neue',sans-serif" }}
+        />
         {h.paragraph && (
           <p className="max-w-lg mx-auto mb-10 text-[17px] leading-relaxed" style={{ color: C.dim }}>
             {h.paragraph}

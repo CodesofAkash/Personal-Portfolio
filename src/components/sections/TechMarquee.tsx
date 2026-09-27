@@ -5,6 +5,7 @@ import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type { Technology, TechSection } from "@/sanity/lib/types";
+import Heading from "./Heading";
 import { C } from "./colors";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -63,10 +64,13 @@ const TechMarquee = ({ section, technologies }: { section: TechSection; technolo
     <section ref={ref} className="py-24 overflow-hidden">
       <div className="px-6 sm:px-16 max-w-7xl mx-auto mb-12">
         {h?.eyebrow && <p className="text-sm uppercase tracking-widest mb-3" style={{ color: C.amber }}>{h.eyebrow}</p>}
-        {h?.heading && (
-          <h2 ref={headRef} className="font-black" style={{ fontSize: "clamp(2rem,6vw,5rem)", color: C.white, fontFamily: "'Bebas Neue',sans-serif" }}>
-            {h.heading}
-          </h2>
+        {h?.heading && h.heading.length > 0 && (
+          <Heading
+            ref={headRef}
+            segments={h.heading}
+            className="font-black"
+            style={{ fontSize: "clamp(2rem,6vw,5rem)", color: C.white, fontFamily: "'Bebas Neue',sans-serif" }}
+          />
         )}
       </div>
 

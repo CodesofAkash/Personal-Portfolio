@@ -5,7 +5,13 @@ export const aboutHeroSection = defineType({
   title: "Hero (About)",
   type: "object",
   fields: [
-    defineField({ name: "name", type: "string", description: "Large animated name, e.g. 'Akash Sharma'.", validation: (r) => r.required() }),
+    defineField({
+      name: "name",
+      type: "string",
+      description:
+        "Large heading, animated in one character at a time — deliberately a plain string rather than headingSegments, since the per-character GSAP animation needs one continuous string, e.g. 'Akash Sharma'.",
+      validation: (r) => r.required(),
+    }),
     defineField({
       name: "tags",
       type: "array",

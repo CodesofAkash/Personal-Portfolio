@@ -61,6 +61,19 @@ function navLink(label, fixedRoute) {
 function sectionHeader({ eyebrow, heading, paragraph, cta }) {
   return { _type: "sectionHeader", eyebrow, heading, paragraph, ...(cta ? { cta } : {}) };
 }
+// A single default-style segment, for the common case of a one-line heading.
+function heading(text) {
+  return [{ _type: "headingSegment", _key: key(), text }];
+}
+// Explicit segments, e.g. heading.seg("Let's build something\n"),
+// heading.seg("remarkable.", "brand") for a two-line, two-tone heading.
+heading.seg = (text, style, tag) => ({
+  _type: "headingSegment",
+  _key: key(),
+  text,
+  ...(style ? { style } : {}),
+  ...(tag ? { tag } : {}),
+});
 
 async function main() {
   console.log("Uploading brand assets...");
@@ -119,8 +132,7 @@ async function main() {
         _type: "heroSection",
         _key: key(),
         eyebrow: "Full-Stack Developer · Available for hire",
-        greeting: "Hi, I'm",
-        name: "Akash.",
+        heading: [heading.seg("Hi, I'm "), heading.seg("Akash.", "brand")],
         subheadLine1: "Full-stack developer. Self-taught. Fast learner.",
         subheadLine2:
           "Two years of self-teaching, multiple projects in production, and AI as a daily tool — not to replace my thinking, but to sharpen it and ship faster.",
@@ -132,7 +144,7 @@ async function main() {
         _key: key(),
         sectionHeader: sectionHeader({
           eyebrow: "Who I am",
-          heading: "Akash Sharma.",
+          heading: heading("Akash Sharma."),
           paragraph:
             "Full-stack developer who went from zero to shipping production apps in under two years — entirely self-taught. I specialise in real-time systems, 3D web experiences, and end-to-end application development. Every project has a live URL.",
           cta: ctaBtn("More about me →", "/about", "primary"),
@@ -148,14 +160,14 @@ async function main() {
         _key: key(),
         sectionHeader: sectionHeader({
           eyebrow: "What I've built",
-          heading: "Featured Projects.",
+          heading: heading("Featured Projects."),
           cta: ctaBtn("View all →", "/projects", "secondary"),
         }),
       },
       {
         _type: "testimonialsSection",
         _key: key(),
-        sectionHeader: sectionHeader({ eyebrow: "Kind words", heading: "What people say." }),
+        sectionHeader: sectionHeader({ eyebrow: "Kind words", heading: heading("What people say.") }),
       },
     ],
     seo: {
@@ -193,24 +205,23 @@ async function main() {
       {
         _type: "experienceSection",
         _key: key(),
-        sectionHeader: sectionHeader({ eyebrow: "How I got here", heading: "My Journey." }),
+        sectionHeader: sectionHeader({ eyebrow: "How I got here", heading: heading("My Journey.") }),
       },
       {
         _type: "techSection",
         _key: key(),
-        sectionHeader: sectionHeader({ eyebrow: "Tools of the trade", heading: "Tech Stack." }),
+        sectionHeader: sectionHeader({ eyebrow: "Tools of the trade", heading: heading("Tech Stack.") }),
       },
       {
         _type: "ctaSection",
         _key: key(),
         sectionHeader: sectionHeader({
           eyebrow: "What's next",
-          heading: "Let's build something",
+          heading: [heading.seg("Let's build something\n"), heading.seg("remarkable.", "brand")],
           paragraph:
             "Available immediately for full-time roles, internships, and remote positions. India-based — open to relocation or fully remote worldwide.",
           cta: ctaBtn("Get in touch", "/contact", "primary"),
         }),
-        headingHighlight: "remarkable.",
         secondaryCta: ctaBtn("See projects", "/projects", "secondary"),
       },
     ],
@@ -229,8 +240,7 @@ async function main() {
       {
         _type: "projectsHeroSection",
         _key: key(),
-        headingLine1: "What I've",
-        headingHighlight: "Built.",
+        heading: [heading.seg("What I've\n"), heading.seg("Built.", "outline")],
         subheading: "Click any project to expand it. Every project ships to production.",
       },
       {
@@ -238,7 +248,7 @@ async function main() {
         _key: key(),
         sectionHeader: sectionHeader({
           eyebrow: "Interested in collaborating?",
-          heading: "Let's build the next one together.",
+          heading: heading("Let's build the next one together."),
           paragraph: "Always looking for interesting problems to solve and great people to work with.",
           cta: ctaBtn("Start a conversation →", "/contact", "primary"),
         }),
@@ -260,7 +270,7 @@ async function main() {
         _type: "contactHeroSection",
         _key: key(),
         eyebrow: "Get in touch",
-        heading: "Let's Talk.",
+        heading: heading("Let's Talk."),
         subheading:
           "I'm currently seeking my first professional role in web development — frontend, backend, or full-stack. If you're hiring, have a project that needs building, or just want to connect, I'd welcome the conversation.",
       },
