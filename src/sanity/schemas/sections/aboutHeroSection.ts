@@ -1,27 +1,44 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
+import { ACCENT_VARIANTS } from "../objects/constants";
 
+// `name` stays a plain string, not headingSegments: the per-character GSAP
+// split-text animation needs one continuous string.
 export const aboutHeroSection = defineType({
   name: "aboutHeroSection",
   title: "Hero (About)",
   type: "object",
   fields: [
+    defineField({ name: "eyebrow", type: "string" }),
     defineField({
       name: "name",
       type: "string",
-      description:
-        "Large heading, animated in one character at a time — deliberately a plain string rather than headingSegments, since the per-character GSAP animation needs one continuous string, e.g. 'Akash Sharma'.",
+      description: "Large animated heading, e.g. 'Akash Sharma'.",
       validation: (r) => r.required(),
     }),
     defineField({
       name: "tags",
+      title: "Tags",
       type: "array",
-      description: "Short badges under the name.",
-      of: [defineArrayMember({ type: "string" })],
-      validation: (r) => r.min(1).max(4).warning("More than 4 tags starts to wrap awkwardly."),
+      of: [
+        defineArrayMember({
+          type: "object",
+          name: "tag",
+          fields: [
+            defineField({ name: "text", type: "string", validation: (r) => r.required() }),
+            defineField({
+              name: "variant",
+              type: "string",
+              options: { list: ACCENT_VARIANTS, layout: "radio", direction: "horizontal" },
+              initialValue: "violet",
+            }),
+          ],
+          preview: { select: { title: "text", subtitle: "variant" } },
+        }),
+      ],
+      validation: (r) => r.max(4).warning("More than 4 tags starts to wrap awkwardly."),
     }),
     defineField({ name: "bio", type: "text", rows: 4, validation: (r) => r.required() }),
-    defineField({ name: "primaryCta", title: "Primary button", type: "ctaBtn" }),
-    defineField({ name: "secondaryCta", title: "Secondary button", type: "ctaBtn" }),
+    defineField({ name: "ctas", title: "Buttons", type: "ctaBtns" }),
   ],
   preview: { select: { title: "name" }, prepare: ({ title }) => ({ title: title || "Hero", subtitle: "About hero" }) },
 });

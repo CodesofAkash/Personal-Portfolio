@@ -3,18 +3,61 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import type { NavLink, SanityImageValue } from "@/sanity/lib/types";
+import type { NavigationItem, SanityImageValue } from "@/sanity/lib/types";
 import Icon from "@/components/Icon";
 
 interface NavbarProps {
   brandName?: string;
   logo?: SanityImageValue;
-  navLinks: NavLink[];
+  navigationItems: NavigationItem[];
 }
 
-const Navbar = ({ brandName, logo, navLinks }: NavbarProps) => {
+const NavDropdown = ({ item, isActive }: { item: NavigationItem; isActive: (href: string) => boolean }) => {
+  const [open, setOpen] = useState(false);
+  const children = item.children ?? [];
+  if (children.length === 0) return null;
+
+  return (
+    <div className="relative" onMouseEnter={() => setOpen(true)} onMouseLeave={() => setOpen(false)}>
+      <button
+        type="button"
+        className="relative px-4 py-2 rounded-lg text-[14px] font-medium transition-all duration-200 flex items-center gap-1"
+        style={{ color: "#94a3b8" }}
+        onClick={() => setOpen((p) => !p)}
+        aria-expanded={open}
+      >
+        {item.label}
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={`w-3 h-3 transition-transform duration-200 ${open ? "rotate-180" : ""}`}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+        </svg>
+      </button>
+      {open && (
+        <div
+          className="absolute top-full left-0 mt-1 min-w-45 rounded-xl overflow-hidden py-1.5"
+          style={{ background: "#0f172a", border: "1px solid rgba(148,163,184,0.12)", boxShadow: "0 20px 40px rgba(0,0,0,0.4)" }}
+        >
+          {children.map((child) => (
+            <Link
+              key={child._key}
+              href={child.href || "#"}
+              target={child.target === "_blank" ? "_blank" : undefined}
+              rel={child.target === "_blank" ? "noreferrer" : undefined}
+              className="block px-4 py-2.5 text-[14px] font-medium transition-colors duration-150 hover:bg-white/5"
+              style={{ color: isActive(child.href) ? "#f8fafc" : "#94a3b8" }}
+            >
+              {child.label}
+            </Link>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+const Navbar = ({ brandName, logo, navigationItems }: NavbarProps) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
+  const isActive = (href: string) => pathname === href;
 
   return (
     <nav
@@ -49,25 +92,30 @@ const Navbar = ({ brandName, logo, navLinks }: NavbarProps) => {
         </Link>
 
         <ul className="list-none hidden sm:flex flex-row items-center gap-1">
-          {navLinks.map((link) => {
-            const isActive = pathname === link.href;
-            return (
-              <li key={link.href}>
+          {navigationItems.map((item) =>
+            item.children && item.children.length > 0 ? (
+              <li key={item._key}>
+                <NavDropdown item={item} isActive={isActive} />
+              </li>
+            ) : (
+              <li key={item._key}>
                 <Link
-                  href={link.href}
+                  href={item.href || "#"}
+                  target={item.target === "_blank" ? "_blank" : undefined}
+                  rel={item.target === "_blank" ? "noreferrer" : undefined}
                   className="relative px-4 py-2 rounded-lg text-[14px] font-medium transition-all duration-200 group"
-                  style={{ color: isActive ? "#f8fafc" : "#94a3b8" }}
+                  style={{ color: isActive(item.href) ? "#f8fafc" : "#94a3b8" }}
                 >
                   <span
                     className="absolute inset-0 rounded-lg transition-opacity duration-200"
                     style={{
-                      background: isActive
+                      background: isActive(item.href)
                         ? "linear-gradient(135deg,rgba(124,58,237,0.2),rgba(13,148,136,0.15))"
                         : "rgba(148,163,184,0)",
-                      opacity: isActive ? 1 : 0,
+                      opacity: isActive(item.href) ? 1 : 0,
                     }}
                   />
-                  {isActive && (
+                  {isActive(item.href) && (
                     <span
                       className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full"
                       style={{ background: "#7c3aed" }}
@@ -77,14 +125,14 @@ const Navbar = ({ brandName, logo, navLinks }: NavbarProps) => {
                     className="absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200"
                     style={{ background: "rgba(148,163,184,0.06)" }}
                   />
-                  <span className="relative">{link.label}</span>
+                  <span className="relative">{item.label}</span>
                 </Link>
               </li>
-            );
-          })}
+            ),
+          )}
         </ul>
 
-        {navLinks.length > 0 && (
+        {navigationItems.length > 0 && (
           <button
             className="sm:hidden flex items-center justify-center w-9 h-9 rounded-lg transition-colors duration-200"
             style={{ background: "rgba(148,163,184,0.08)" }}
@@ -111,33 +159,48 @@ const Navbar = ({ brandName, logo, navLinks }: NavbarProps) => {
       <div
         className="sm:hidden overflow-hidden transition-all duration-300 ease-in-out"
         style={{
-          maxHeight: menuOpen ? "300px" : "0px",
+          maxHeight: menuOpen ? "480px" : "0px",
           opacity: menuOpen ? 1 : 0,
         }}
       >
         <div className="flex flex-col gap-1 pt-3 pb-2 px-1">
-          {navLinks.map((link) => {
-            const isActive = pathname === link.href;
-            return (
+          {navigationItems.map((item) => (
+            <div key={item._key}>
               <Link
-                key={link.href}
-                href={link.href}
+                href={item.href || "#"}
+                target={item.target === "_blank" ? "_blank" : undefined}
+                rel={item.target === "_blank" ? "noreferrer" : undefined}
                 onClick={() => setMenuOpen(false)}
                 className="flex items-center gap-3 px-4 py-3 rounded-xl text-[15px] font-medium transition-all duration-200"
                 style={{
-                  color: isActive ? "#f8fafc" : "#94a3b8",
-                  background: isActive
+                  color: isActive(item.href) ? "#f8fafc" : "#94a3b8",
+                  background: isActive(item.href)
                     ? "linear-gradient(135deg,rgba(124,58,237,0.18),rgba(13,148,136,0.12))"
                     : "transparent",
-                  borderLeft: isActive
-                    ? "2px solid #7c3aed"
-                    : "2px solid transparent",
+                  borderLeft: isActive(item.href) ? "2px solid #7c3aed" : "2px solid transparent",
                 }}
               >
-                {link.label}
+                {item.label}
               </Link>
-            );
-          })}
+              {item.children && item.children.length > 0 && (
+                <div className="flex flex-col gap-0.5 ml-4 border-l" style={{ borderColor: "rgba(148,163,184,0.15)" }}>
+                  {item.children.map((child) => (
+                    <Link
+                      key={child._key}
+                      href={child.href || "#"}
+                      target={child.target === "_blank" ? "_blank" : undefined}
+                      rel={child.target === "_blank" ? "noreferrer" : undefined}
+                      onClick={() => setMenuOpen(false)}
+                      className="px-4 py-2 text-[14px]"
+                      style={{ color: "#94a3b8" }}
+                    >
+                      {child.label}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
         </div>
       </div>
     </nav>

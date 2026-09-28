@@ -1,16 +1,17 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type { StatsSection } from "@/sanity/lib/types";
 import Heading from "./Heading";
+import Cta from "./Cta";
 import { C } from "./colors";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const STAT_COLORS = [C.violet, C.teal, C.amber, C.rose];
+const VARIANT_COLOR: Record<string, string> = { violet: C.violet, teal: C.teal, amber: C.amber, rose: C.rose };
+const statColor = (variant?: string) => VARIANT_COLOR[variant ?? "violet"] ?? C.violet;
 
 // Renders two ways depending on whether a sectionHeader is set: Home's
 // "About" panel (header + text on the left, stats on the right) or About's
@@ -70,27 +71,25 @@ const Stats = ({ section }: { section: StatsSection }) => {
                 {h.paragraph}
               </p>
             )}
-            {h.cta?.text && (
-              <Link
-                href={h.cta.href}
-                className="inline-flex items-center gap-2 px-7 py-3 rounded-xl font-semibold text-white transition-all duration-200 hover:scale-105"
-                style={{ background: `linear-gradient(135deg,${C.violet},${C.teal})` }}
-              >
-                {h.cta.text}
-              </Link>
+            {h.ctas && h.ctas.length > 0 && (
+              <div className="flex flex-wrap gap-4">
+                {h.ctas.map((cta) => (
+                  <Cta key={cta.text} cta={cta} />
+                ))}
+              </div>
             )}
           </div>
 
           <div className="stat-item flex flex-row lg:flex-col gap-4">
-            {section.stats.map((s, i) => (
+            {section.stats.map((s) => (
               <div
                 key={s.label}
                 className="flex-1 lg:flex-none flex flex-col items-center text-center rounded-2xl px-8 py-6"
-                style={{ background: C.card, border: `1px solid ${STAT_COLORS[i % STAT_COLORS.length]}20` }}
+                style={{ background: C.card, border: `1px solid ${statColor(s.variant)}20` }}
               >
                 <span
                   className="font-black text-4xl"
-                  style={{ color: STAT_COLORS[i % STAT_COLORS.length], fontFamily: "'Bebas Neue',monospace" }}
+                  style={{ color: statColor(s.variant), fontFamily: "'Bebas Neue',monospace" }}
                 >
                   {s.value}
                 </span>
@@ -112,11 +111,11 @@ const Stats = ({ section }: { section: StatsSection }) => {
       style={{ borderTop: `1px solid ${C.border}`, borderBottom: `1px solid ${C.border}` }}
     >
       <div className="max-w-7xl mx-auto grid grid-cols-2 sm:grid-cols-4 gap-8">
-        {section.stats.map((s, i) => (
+        {section.stats.map((s) => (
           <div key={s.label} className="stat-item flex flex-col items-center text-center">
             <span
               className="font-black text-5xl mb-1"
-              style={{ color: STAT_COLORS[i % STAT_COLORS.length], fontFamily: "'Bebas Neue',monospace" }}
+              style={{ color: statColor(s.variant), fontFamily: "'Bebas Neue',monospace" }}
             >
               {s.value}
             </span>

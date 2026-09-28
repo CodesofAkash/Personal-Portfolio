@@ -6,7 +6,7 @@ import type { AboutHeroSection } from "@/sanity/lib/types";
 import Cta from "./Cta";
 import { C, textSafe } from "./colors";
 
-const TAG_COLORS = [C.violet, C.teal, C.amber, C.rose];
+const VARIANT_COLOR: Record<string, string> = { violet: C.violet, teal: C.teal, amber: C.amber, rose: C.rose };
 
 const AboutHero = ({ section }: { section: AboutHeroSection }) => {
   const heroRef = useRef<HTMLElement>(null);
@@ -45,6 +45,10 @@ const AboutHero = ({ section }: { section: AboutHeroSection }) => {
 
       <div className="hero-line w-20 h-1 mb-8 rounded-full" style={{ background: `linear-gradient(90deg,${C.violet},${C.teal})` }} />
 
+      {section.eyebrow && (
+        <p className="text-sm uppercase tracking-widest mb-3" style={{ color: C.teal }}>{section.eyebrow}</p>
+      )}
+
       <h1 className="font-black leading-none mb-6 overflow-hidden" style={{ fontSize: "clamp(3rem,10vw,8rem)", fontFamily: "'Bebas Neue','Impact',sans-serif", color: C.white, perspective: "600px" }}>
         {section.name.split("").map((char, i) => (
           <span key={i} className="hero-char inline-block" style={{ whiteSpace: char === " " ? "pre" : "normal" }}>
@@ -55,11 +59,11 @@ const AboutHero = ({ section }: { section: AboutHeroSection }) => {
 
       {tags.length > 0 && (
         <div className="flex flex-wrap gap-3 mb-8">
-          {tags.map((tag, i) => {
-            const tagColor = TAG_COLORS[i % TAG_COLORS.length];
+          {tags.map((tag) => {
+            const tagColor = VARIANT_COLOR[tag.variant ?? "violet"] ?? C.violet;
             return (
-              <span key={tag} className="hero-tag px-4 py-1.5 rounded-full text-sm font-medium border" style={{ borderColor: tagColor, color: textSafe(tagColor), background: `${tagColor}18` }}>
-                {tag}
+              <span key={tag.text} className="hero-tag px-4 py-1.5 rounded-full text-sm font-medium border" style={{ borderColor: tagColor, color: textSafe(tagColor), background: `${tagColor}18` }}>
+                {tag.text}
               </span>
             );
           })}
@@ -70,10 +74,11 @@ const AboutHero = ({ section }: { section: AboutHeroSection }) => {
         {section.bio}
       </p>
 
-      {(section.primaryCta || section.secondaryCta) && (
+      {section.ctas && section.ctas.length > 0 && (
         <div className="flex flex-wrap gap-4">
-          <span className="hero-cta"><Cta cta={section.primaryCta} /></span>
-          <span className="hero-cta"><Cta cta={section.secondaryCta} /></span>
+          {section.ctas.map((cta) => (
+            <span key={cta.text} className="hero-cta"><Cta cta={cta} /></span>
+          ))}
         </div>
       )}
 

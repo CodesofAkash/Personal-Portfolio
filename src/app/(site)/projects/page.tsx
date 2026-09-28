@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import ProjectsView from "./ProjectsView";
-import { getProjects, getProjectsPage, getSettings } from "@/sanity/lib/queries";
+import { getProjectsPage, getSettings } from "@/sanity/lib/queries";
 import { buildMetadata } from "@/sanity/lib/seo";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -9,6 +9,6 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function Page() {
-  const [projectsPage, projects] = await Promise.all([getProjectsPage(), getProjects()]);
-  return <ProjectsView sections={projectsPage?.sections ?? []} projects={projects} />;
+  const projectsPage = await getProjectsPage();
+  return <ProjectsView sections={projectsPage?.sections ?? []} />;
 }

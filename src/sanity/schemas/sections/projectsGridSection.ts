@@ -1,20 +1,20 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
 import { SELECTION_MODES } from "../objects/constants";
 
-interface FeaturedProjectsSectionParent {
+interface ProjectsGridSectionParent {
   mode?: "all" | "manual";
 }
 
-export const featuredProjectsSection = defineType({
-  name: "featuredProjectsSection",
-  title: "Featured projects",
+// The Projects page's main grid — was previously hardcoded to always show
+// every project, with no Sanity-side control at all.
+export const projectsGridSection = defineType({
+  name: "projectsGridSection",
+  title: "Projects grid",
   type: "object",
   fields: [
-    defineField({ name: "sectionHeader", type: "sectionHeader", validation: (r) => r.required() }),
     defineField({
       name: "mode",
       title: "Which projects to show",
-      description: "\"All\" shows the first 3 by each project's own order value.",
       type: "string",
       options: { list: SELECTION_MODES, layout: "radio" },
       initialValue: "all",
@@ -25,12 +25,11 @@ export const featuredProjectsSection = defineType({
       description: "Shown in this order, regardless of each project's own order value.",
       type: "array",
       of: [defineArrayMember({ type: "reference", to: [{ type: "project" }] })],
-      hidden: ({ parent }: { parent?: FeaturedProjectsSectionParent }) => parent?.mode !== "manual",
+      hidden: ({ parent }: { parent?: ProjectsGridSectionParent }) => parent?.mode !== "manual",
       validation: (r) => r.unique(),
     }),
   ],
   preview: {
-    select: { title: "sectionHeader.heading.0.text" },
-    prepare: ({ title }) => ({ title: title || "Featured projects", subtitle: "Pulls from Projects collection" }),
+    prepare: () => ({ title: "Projects grid", subtitle: "Pulls from Projects collection" }),
   },
 });

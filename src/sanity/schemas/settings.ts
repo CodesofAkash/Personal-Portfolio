@@ -1,4 +1,4 @@
-import { defineArrayMember, defineField, defineType } from "sanity";
+import { defineField, defineType } from "sanity";
 
 // Single-locale project: identity, navigation, SEO, analytics and switches
 // all live in one document. The site/global split other projects in this
@@ -12,7 +12,9 @@ export const settings = defineType({
   description: "Everything outside the page content: brand, navigation, SEO defaults, analytics, and site-wide switches.",
   groups: [
     { name: "identity", title: "Identity", default: true },
-    { name: "navigation", title: "Navigation" },
+    { name: "header", title: "Header" },
+    { name: "footer", title: "Footer" },
+    { name: "contact", title: "Contact" },
     { name: "seo", title: "SEO" },
     { name: "analytics", title: "Analytics" },
     { name: "scripts", title: "Scripts & consent" },
@@ -27,12 +29,6 @@ export const settings = defineType({
       validation: (r) => r.required(),
     }),
     defineField({
-      name: "tagline",
-      type: "string",
-      group: "identity",
-      description: "Short line shown near the brand name.",
-    }),
-    defineField({
       name: "logo",
       type: "imageWithAlt",
       group: "identity",
@@ -44,47 +40,21 @@ export const settings = defineType({
       group: "identity",
       description: "Browser tab icon. Falls back to the logo if left empty.",
     }),
-    defineField({
-      name: "navLinks",
-      title: "Header navigation",
-      type: "array",
-      group: "navigation",
-      description: "Links shown in the navbar.",
-      of: [defineArrayMember({ type: "link" })],
-      validation: (r) => r.required().min(1),
-    }),
-    defineField({
-      name: "socials",
-      title: "Social links",
-      type: "array",
-      group: "navigation",
-      description: "Rendered in the footer and on the contact page.",
-      of: [
-        defineArrayMember({
-          type: "object",
-          name: "social",
-          fields: [
-            defineField({ name: "label", type: "string", validation: (r) => r.required() }),
-            defineField({ name: "url", type: "url", validation: (r) => r.required() }),
-          ],
-          preview: { select: { title: "label", subtitle: "url" } },
-        }),
-      ],
-      validation: (r) => r.required().min(1),
-    }),
+    defineField({ name: "header", type: "header", group: "header", validation: (r) => r.required() }),
+    defineField({ name: "footer", type: "footer", group: "footer", validation: (r) => r.required() }),
     defineField({
       name: "email",
       title: "Contact email",
       type: "string",
-      group: "navigation",
-      description: "Shown on the contact page and used for the 'mailto:' link.",
+      group: "contact",
+      description: "Used as the contact form's delivery address.",
       validation: (r) => r.required().email(),
     }),
     defineField({
       name: "location",
       type: "string",
-      group: "navigation",
-      description: "Shown on the contact page, e.g. 'India · Open to Remote'.",
+      group: "contact",
+      description: "e.g. 'India · Open to Remote'.",
     }),
     defineField({
       name: "seo",

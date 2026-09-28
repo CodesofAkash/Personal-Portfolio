@@ -21,7 +21,7 @@ export const statsSection = defineType({
     }),
   ],
   preview: {
-    select: { title: "sectionHeader.heading" },
+    select: { title: "sectionHeader.heading.0.text" },
     prepare: ({ title }) => ({ title: title || "Stats", subtitle: "Stats" }),
   },
 });

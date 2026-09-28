@@ -1,13 +1,28 @@
-import { defineField, defineType } from "sanity";
+import { defineArrayMember, defineField, defineType } from "sanity";
 
 export const contactHeroSection = defineType({
   name: "contactHeroSection",
   title: "Hero (Contact)",
   type: "object",
   fields: [
-    defineField({ name: "eyebrow", type: "string", description: "e.g. 'Get in touch'.", validation: (r) => r.required() }),
-    defineField({ name: "heading", type: "headingSegments", description: "e.g. 'Let's Talk.'.", validation: (r) => r.required() }),
-    defineField({ name: "subheading", type: "text", rows: 3, validation: (r) => r.required() }),
+    defineField({ name: "sectionHeader", type: "sectionHeader", validation: (r) => r.required() }),
+    defineField({
+      name: "items",
+      title: "Contact info",
+      description: "e.g. email, GitHub, location.",
+      type: "array",
+      of: [defineArrayMember({ type: "contactItem" })],
+    }),
+    defineField({
+      name: "model",
+      title: "3D model",
+      type: "file",
+      description: "The 3D globe shown beside the contact form.",
+      options: { accept: ".glb,.gltf" },
+    }),
   ],
-  preview: { select: { title: "heading.0.text" }, prepare: ({ title }) => ({ title: title || "Hero", subtitle: "Contact hero" }) },
+  preview: {
+    select: { title: "sectionHeader.heading.0.text" },
+    prepare: ({ title }) => ({ title: title || "Hero", subtitle: "Contact hero" }),
+  },
 });

@@ -5,6 +5,7 @@ import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type { LegalPage } from "@/sanity/lib/types";
+import { textSafe } from "@/components/sections/colors";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -115,7 +116,7 @@ const TermsView = ({ content }: TermsViewProps) => {
                 <span
                   aria-hidden="true"
                   className="flex-shrink-0 font-black text-3xl leading-none select-none"
-                  style={{ color: `${color}35`, fontFamily: "'Bebas Neue',monospace" }}
+                  style={{ color: `${textSafe(color)}b8`, fontFamily: "'Bebas Neue',monospace" }}
                 >
                   {String(i + 1).padStart(2, "0")}
                 </span>

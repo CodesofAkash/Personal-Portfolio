@@ -1,14 +1,24 @@
 import { seo } from "./seo";
 import { link } from "./objects/link";
 import { ctaBtn } from "./objects/ctaBtn";
+import { ctaBtns } from "./objects/ctaBtns";
 import { sectionHeader } from "./objects/sectionHeader";
 import { stat } from "./objects/stat";
 import { headingSegments } from "./objects/headingSegments";
 import { imageWithAlt } from "./objects/imageWithAlt";
+import { socialLink } from "./objects/socialLink";
+import { navigationItem } from "./objects/navigationItem";
+import { linkList } from "./objects/linkList";
+import { header } from "./objects/header";
+import { footer } from "./objects/footer";
+import { contactItem } from "./objects/contactItem";
+import { formField } from "./objects/formField";
 import { heroSection } from "./sections/heroSection";
 import { aboutHeroSection } from "./sections/aboutHeroSection";
 import { projectsHeroSection } from "./sections/projectsHeroSection";
+import { projectsGridSection } from "./sections/projectsGridSection";
 import { contactHeroSection } from "./sections/contactHeroSection";
+import { contactFormSection } from "./sections/contactFormSection";
 import { statsSection } from "./sections/statsSection";
 import { featuredProjectsSection } from "./sections/featuredProjectsSection";
 import { testimonialsSection } from "./sections/testimonialsSection";
@@ -31,15 +41,25 @@ export const schemaTypes = [
   seo,
   link,
   ctaBtn,
+  ctaBtns,
   sectionHeader,
   stat,
   headingSegments,
   imageWithAlt,
+  socialLink,
+  navigationItem,
+  linkList,
+  header,
+  footer,
+  contactItem,
+  formField,
   // Page-builder sections
   heroSection,
   aboutHeroSection,
   projectsHeroSection,
+  projectsGridSection,
   contactHeroSection,
+  contactFormSection,
   statsSection,
   featuredProjectsSection,
   testimonialsSection,

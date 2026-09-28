@@ -14,10 +14,10 @@ export const sectionHeader = defineType({
     defineField({ name: "heading", type: "headingSegments" }),
     defineField({ name: "paragraph", type: "text", rows: 3 }),
     defineField({
-      name: "cta",
-      title: "CTA button",
-      type: "ctaBtn",
-      description: "Optional — leave empty if this section's layout has no button slot.",
+      name: "ctas",
+      title: "Buttons",
+      type: "ctaBtns",
+      description: "Add as many buttons as this section needs — including none.",
     }),
   ],
   preview: {

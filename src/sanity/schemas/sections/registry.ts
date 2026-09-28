@@ -17,7 +17,9 @@ export const SECTION_REGISTRY: SectionRegistryEntry[] = [
   { type: "techSection", pages: ["aboutPage"] },
   { type: "ctaSection", pages: ["aboutPage", "projectsPage"] },
   { type: "projectsHeroSection", pages: ["projectsPage"] },
+  { type: "projectsGridSection", pages: ["projectsPage"] },
   { type: "contactHeroSection", pages: ["contactPage"] },
+  { type: "contactFormSection", pages: ["contactPage"] },
 ];
 
 export function sectionsFor(page: SectionRegistryEntry["pages"][number]) {

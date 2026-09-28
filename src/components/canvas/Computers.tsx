@@ -30,7 +30,7 @@ const Computers = ({ scene, isMobile }: { scene: Group; isMobile: boolean }) => 
   </mesh>
 );
 
-const ComputersCanvas = () => {
+const ComputersCanvas = ({ modelUrl }: { modelUrl?: string }) => {
   const [isMobile, setIsMobile] = useState(() =>
     typeof window !== "undefined"
       ? window.matchMedia("(max-width: 500px)").matches
@@ -44,7 +44,7 @@ const ComputersCanvas = () => {
     return () => mq.removeEventListener("change", handler);
   }, []);
 
-  const { scene, progress, failed } = useSafeGLTF(MODELS.desktopPc);
+  const { scene, progress, failed } = useSafeGLTF(modelUrl || MODELS.desktopPc);
 
   return (
     <div className="absolute inset-0">

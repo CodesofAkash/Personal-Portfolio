@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import type { Technology, TechSection } from "@/sanity/lib/types";
+import type { TechSection } from "@/sanity/lib/types";
 import Heading from "./Heading";
 import { C } from "./colors";
 
@@ -23,7 +23,8 @@ const Pill = ({ name, icon }: { name: string; icon?: string }) => (
   </div>
 );
 
-const TechMarquee = ({ section, technologies }: { section: TechSection; technologies: Technology[] }) => {
+const TechMarquee = ({ section }: { section: TechSection }) => {
+  const technologies = section.technologies;
   const ref = useRef<HTMLElement>(null);
   const headRef = useRef<HTMLHeadingElement>(null);
   const row1Ref = useRef<HTMLDivElement>(null);
