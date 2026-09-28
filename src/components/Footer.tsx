@@ -1,26 +1,33 @@
 "use client";
 
 import Link from "next/link";
-import type { Social, SanityImageValue } from "@/sanity/lib/types";
+import type { Footer as FooterData, SanityImageValue } from "@/sanity/lib/types";
 import { textSafe } from "@/components/sections/colors";
 import Icon from "@/components/Icon";
 
 const C = {
   violet: "#7c3aed",
   teal: "#0d9488",
+  amber: "#d97706",
+  rose: "#e11d48",
   white: "#f8fafc",
   dim: "#94a3b8",
   border: "rgba(148,163,184,0.08)",
 };
 
+const VARIANT_COLOR: Record<string, string> = { violet: C.violet, teal: C.teal, amber: C.amber, rose: C.rose };
+const variantColor = (variant?: string) => VARIANT_COLOR[variant ?? "violet"] ?? C.violet;
+
 interface FooterProps {
   brandName?: string;
   logo?: SanityImageValue;
-  tagline?: string;
-  socials: Social[];
+  footer?: FooterData;
 }
 
-const Footer = ({ brandName, logo, tagline, socials }: FooterProps) => {
+const Footer = ({ brandName, logo, footer }: FooterProps) => {
+  const socials = footer?.socials ?? [];
+  const linkLists = footer?.linkLists ?? [];
+
   return (
     <footer
       style={{ background: "#050816", borderTop: `1px solid ${C.border}` }}
@@ -45,91 +52,68 @@ const Footer = ({ brandName, logo, tagline, socials }: FooterProps) => {
                 </span>
               )}
             </Link>
-            {tagline && (
+            {footer?.description && (
               <p className="text-[14px] leading-relaxed" style={{ color: C.dim }}>
-                {tagline}
+                {footer.description}
               </p>
             )}
             {socials.length > 0 && (
               <div className="flex items-center gap-3 mt-1">
-                {socials.map((s) => (
-                  <a
-                    key={s.label}
-                    href={s.url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="px-4 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 hover:scale-105"
-                    style={{
-                      background: "rgba(124,58,237,0.12)",
-                      color: textSafe(C.violet),
-                      border: `1px solid rgba(124,58,237,0.2)`,
-                    }}
-                  >
-                    {s.label}
-                  </a>
-                ))}
+                {socials.map((s) => {
+                  const color = variantColor(s.variant);
+                  return (
+                    <a
+                      key={s._key}
+                      href={s.href}
+                      target={s.target === "_blank" ? "_blank" : undefined}
+                      rel={s.target === "_blank" ? "noreferrer" : undefined}
+                      className="px-4 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 hover:scale-105"
+                      style={{
+                        background: `${color}1f`,
+                        color: textSafe(color),
+                        border: `1px solid ${color}33`,
+                      }}
+                    >
+                      {s.label}
+                    </a>
+                  );
+                })}
               </div>
             )}
           </div>
 
-          <div className="flex gap-16">
-            <div className="flex flex-col gap-3">
-              <p
-                className="text-xs uppercase tracking-widest mb-1"
-                style={{ color: C.teal }}
-              >
-                Pages
-              </p>
-              {[
-                { to: "/about", label: "About" },
-                { to: "/projects", label: "Projects" },
-                { to: "/contact", label: "Contact" },
-              ].map((l) => (
-                <Link
-                  key={l.to}
-                  href={l.to}
-                  className="text-sm transition-colors duration-200 hover:translate-x-1 inline-block"
-                  style={{ color: C.dim }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.color = C.white;
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.color = C.dim;
-                  }}
-                >
-                  {l.label}
-                </Link>
+          {linkLists.length > 0 && (
+            <div className="flex gap-16">
+              {linkLists.map((list) => (
+                <div key={list.title} className="flex flex-col gap-3">
+                  <p
+                    className="text-xs uppercase tracking-widest mb-1"
+                    style={{ color: C.teal }}
+                  >
+                    {list.title}
+                  </p>
+                  {list.links.map((l) => (
+                    <Link
+                      key={l.href}
+                      href={l.href}
+                      target={l.target === "_blank" ? "_blank" : undefined}
+                      rel={l.target === "_blank" ? "noreferrer" : undefined}
+                      className="text-sm transition-colors duration-200 hover:translate-x-1 inline-block"
+                      style={{ color: C.dim }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.color = C.white;
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.color = C.dim;
+                      }}
+                    >
+                      {l.label}
+                    </Link>
+                  ))}
+                </div>
               ))}
             </div>
-
-            <div className="flex flex-col gap-3">
-              <p
-                className="text-xs uppercase tracking-widest mb-1"
-                style={{ color: C.teal }}
-              >
-                Legal
-              </p>
-              {[
-                { to: "/privacy", label: "Privacy Policy" },
-                { to: "/terms", label: "Terms of Service" },
-              ].map((l) => (
-                <Link
-                  key={l.to}
-                  href={l.to}
-                  className="text-sm transition-colors duration-200 hover:translate-x-1 inline-block"
-                  style={{ color: C.dim }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.color = C.white;
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.color = C.dim;
-                  }}
-                >
-                  {l.label}
-                </Link>
-              ))}
-            </div>
-          </div>
+          )}
         </div>
 
         <div
@@ -140,13 +124,16 @@ const Footer = ({ brandName, logo, tagline, socials }: FooterProps) => {
         />
 
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="text-xs" style={{ color: C.dim }}>
-            © {new Date().getFullYear()} {brandName ?? "Akash Sharma"} — Built with Next.js,
-            Three.js & GSAP
-          </p>
-          <p className="text-xs" style={{ color: `${C.dim}cc` }}>
-            Designed & developed by {brandName ?? "Akash"}
-          </p>
+          {footer?.copyrightText && (
+            <p className="text-xs" style={{ color: C.dim }}>
+              {footer.copyrightText}
+            </p>
+          )}
+          {footer?.creditText && (
+            <p className="text-xs" style={{ color: `${C.dim}cc` }}>
+              {footer.creditText}
+            </p>
+          )}
         </div>
       </div>
     </footer>

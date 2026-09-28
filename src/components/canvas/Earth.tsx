@@ -12,8 +12,8 @@ const Earth = ({ scene }: { scene: Group }) => (
   <primitive object={scene} scale={2.5} position-y={0} rotation-y={0} />
 );
 
-const EarthCanvas = () => {
-  const { scene, progress, failed } = useSafeGLTF(MODELS.planet);
+const EarthCanvas = ({ modelUrl }: { modelUrl?: string }) => {
+  const { scene, progress, failed } = useSafeGLTF(modelUrl || MODELS.planet);
 
   if (!scene) {
     return <ModelFallback label="3D Earth" loading={!failed} progress={progress} />;

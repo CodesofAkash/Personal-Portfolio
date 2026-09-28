@@ -17,8 +17,14 @@ export const heroSection = defineType({
     }),
     defineField({ name: "subheadLine1", type: "string", validation: (r) => r.required() }),
     defineField({ name: "subheadLine2", type: "text", rows: 3, validation: (r) => r.required() }),
-    defineField({ name: "primaryCta", title: "Primary button", type: "ctaBtn" }),
-    defineField({ name: "secondaryCta", title: "Secondary button", type: "ctaBtn" }),
+    defineField({ name: "ctas", title: "Buttons", type: "ctaBtns" }),
+    defineField({
+      name: "model",
+      title: "3D model",
+      type: "file",
+      description: "The 3D computer shown beside the hero text. Leave empty to keep the built-in default.",
+      options: { accept: ".glb,.gltf" },
+    }),
   ],
   preview: { select: { title: "heading.0.text" }, prepare: ({ title }) => ({ title: title || "Hero", subtitle: "Home hero" }) },
 });

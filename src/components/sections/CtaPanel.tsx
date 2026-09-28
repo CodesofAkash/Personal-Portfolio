@@ -42,10 +42,13 @@ const CtaPanel = ({ section }: { section: CtaSection }) => {
             {h.paragraph}
           </p>
         )}
-        <div className="flex flex-wrap justify-center gap-4">
-          <Cta cta={h.cta} size="lg" />
-          <Cta cta={section.secondaryCta} size="lg" />
-        </div>
+        {h.ctas && h.ctas.length > 0 && (
+          <div className="flex flex-wrap justify-center gap-4">
+            {h.ctas.map((cta) => (
+              <Cta key={cta.text} cta={cta} size="lg" />
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );

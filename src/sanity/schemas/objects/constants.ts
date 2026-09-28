@@ -38,3 +38,16 @@ export const HEADING_TAGS = [
   { title: "H5", value: "h5" },
   { title: "H6", value: "h6" },
 ];
+
+export const SELECTION_MODES = [
+  { title: "All (their own order)", value: "all" },
+  { title: "Choose manually", value: "manual" },
+];
+
+// Hex values live in src/components/sections/colors.ts.
+export const ACCENT_VARIANTS = [
+  { title: "Violet", value: "violet" },
+  { title: "Teal", value: "teal" },
+  { title: "Amber", value: "amber" },
+  { title: "Rose", value: "rose" },
+];

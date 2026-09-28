@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import HomeView from "./HomeView";
-import { getHomePage, getProjects, getSettings, getTestimonials } from "@/sanity/lib/queries";
+import { getHomePage, getSettings, getTestimonials } from "@/sanity/lib/queries";
 import { buildMetadata } from "@/sanity/lib/seo";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -9,17 +9,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function Page() {
-  const [homePage, projects, testimonials] = await Promise.all([
-    getHomePage(),
-    getProjects(),
-    getTestimonials(),
-  ]);
+  const [homePage, testimonials] = await Promise.all([getHomePage(), getTestimonials()]);
 
-  return (
-    <HomeView
-      sections={homePage?.sections ?? []}
-      projects={projects}
-      testimonials={testimonials}
-    />
-  );
+  return <HomeView sections={homePage?.sections ?? []} testimonials={testimonials} />;
 }

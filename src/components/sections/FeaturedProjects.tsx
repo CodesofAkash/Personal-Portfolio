@@ -102,9 +102,9 @@ const ProjectCard = ({
   );
 };
 
-const FeaturedProjects = ({ section, projects }: { section: FeaturedProjectsSection; projects: Project[] }) => {
+const FeaturedProjects = ({ section }: { section: FeaturedProjectsSection }) => {
   const headRef = useRef<HTMLDivElement>(null);
-  const featured = projects.slice(0, 3);
+  const featured = section.projects;
 
   useEffect(() => {
     const el = headRef.current;
@@ -133,15 +133,16 @@ const FeaturedProjects = ({ section, projects }: { section: FeaturedProjectsSect
                 style={{ fontSize: "clamp(2rem,6vw,5rem)", color: C.white, fontFamily: "'Bebas Neue','Impact',sans-serif" }}
               />
             )}
-            {h?.cta?.text && (
+            {h?.ctas?.map((cta) => (
               <Link
-                href={h.cta.href}
+                key={cta.text}
+                href={cta.href}
                 className="flex-shrink-0 px-6 py-2.5 rounded-xl text-sm font-semibold border transition-all duration-200 hover:scale-105"
                 style={{ borderColor: `${C.violet}40`, color: textSafe(C.violet), background: `${C.violet}10` }}
               >
-                {h.cta.text}
+                {cta.text}
               </Link>
-            )}
+            ))}
           </div>
         </div>
 

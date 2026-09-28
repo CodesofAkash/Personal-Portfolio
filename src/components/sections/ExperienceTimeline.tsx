@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import type { Experience, ExperienceSection } from "@/sanity/lib/types";
+import type { ExperienceSection } from "@/sanity/lib/types";
 import Heading from "./Heading";
 import { C, textSafe } from "./colors";
 
@@ -12,7 +12,8 @@ gsap.registerPlugin(ScrollTrigger);
 
 const ACCENTS = [C.violet, C.teal, C.amber, C.violet, C.rose, C.teal, C.amber];
 
-const ExperienceTimeline = ({ section, experiences }: { section: ExperienceSection; experiences: Experience[] }) => {
+const ExperienceTimeline = ({ section }: { section: ExperienceSection }) => {
+  const experiences = section.experiences;
   const ref = useRef<HTMLElement>(null);
   const headRef = useRef<HTMLHeadingElement>(null);
 

@@ -48,7 +48,7 @@ export default async function RootLayout({
     name: settings?.name,
     url: process.env.NEXT_PUBLIC_SITE_URL,
     jobTitle: "Full-Stack Developer",
-    sameAs: settings?.socials?.map((s) => s.url) ?? [],
+    sameAs: settings?.footer?.socials?.map((s) => s.href) ?? [],
   };
 
   if (settings?.maintenance?.enabled) {
@@ -85,14 +85,13 @@ export default async function RootLayout({
           <Navbar
             brandName={settings?.name}
             logo={settings?.logo}
-            navLinks={settings?.navLinks ?? []}
+            navigationItems={settings?.header?.navigationItems ?? []}
           />
           <main className="flex-1 pt-[68px]">{children}</main>
           <Footer
             brandName={settings?.name}
             logo={settings?.logo}
-            tagline={settings?.tagline}
-            socials={settings?.socials ?? []}
+            footer={settings?.footer}
           />
         </div>
         <ToastProvider />

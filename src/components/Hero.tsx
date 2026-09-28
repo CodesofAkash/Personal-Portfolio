@@ -35,7 +35,7 @@ const Hero = ({ section }: HeroProps) => {
     <section className="relative w-full h-screen mx-auto overflow-hidden">
       <div className="absolute inset-0" style={{ zIndex: 1 }}>
         <Suspense fallback={<CanvasLoader />}>
-          <ComputersCanvas />
+          <ComputersCanvas modelUrl={section.model} />
         </Suspense>
       </div>
 
@@ -94,15 +94,16 @@ const Hero = ({ section }: HeroProps) => {
             </p>
           </motion.div>
 
-          {(section.primaryCta || section.secondaryCta) && (
+          {section.ctas && section.ctas.length > 0 && (
             <motion.div
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
               className="flex flex-wrap gap-4 mt-8"
             >
-              <Cta cta={section.primaryCta} />
-              <Cta cta={section.secondaryCta} />
+              {section.ctas.map((cta) => (
+                <Cta key={cta.text} cta={cta} />
+              ))}
             </motion.div>
           )}
         </div>

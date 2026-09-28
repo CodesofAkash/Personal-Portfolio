@@ -6,7 +6,7 @@ export const testimonialsSection = defineType({
   type: "object",
   fields: [defineField({ name: "sectionHeader", type: "sectionHeader", validation: (r) => r.required() })],
   preview: {
-    select: { title: "sectionHeader.heading" },
+    select: { title: "sectionHeader.heading.0.text" },
     prepare: ({ title }) => ({ title: title || "Testimonials", subtitle: "Pulls from Testimonials collection" }),
   },
 });

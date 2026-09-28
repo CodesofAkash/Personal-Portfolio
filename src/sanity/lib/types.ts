@@ -25,22 +25,46 @@ export interface Seo {
   ogImage?: SanityImageValue;
 }
 
-export interface NavLink extends ResolvedLink {
+// Self-referencing: an item with children is a dropdown, not a plain link.
+export interface NavigationItem extends ResolvedLink {
+  _key: string;
+  label: string;
+  children?: NavigationItem[];
+}
+
+export interface SocialLink extends ResolvedLink {
+  _key: string;
+  label: string;
+  variant?: string;
+}
+
+export interface LinkItem extends ResolvedLink {
   label: string;
 }
 
-export interface Social {
-  label: string;
-  url: string;
+export interface LinkList {
+  title: string;
+  links: LinkItem[];
+}
+
+export interface Header {
+  navigationItems: NavigationItem[];
+}
+
+export interface Footer {
+  description?: string;
+  socials?: SocialLink[];
+  linkLists?: LinkList[];
+  copyrightText?: string;
+  creditText?: string;
 }
 
 export interface Settings {
   name?: string;
-  tagline?: string;
   logo?: SanityImageValue;
   favicon?: SanityImageValue;
-  navLinks?: NavLink[];
-  socials?: Social[];
+  header?: Header;
+  footer?: Footer;
   email?: string;
   location?: string;
   seo?: Seo;
@@ -61,6 +85,12 @@ export interface Settings {
 export interface Stat {
   value: string;
   label: string;
+  variant?: string;
+}
+
+export interface Tag {
+  text: string;
+  variant?: string;
 }
 
 // Resolved at the data layer (AK-CMS-025) — components never see linkType,
@@ -79,7 +109,7 @@ export interface SectionHeader {
   eyebrow?: string;
   heading?: HeadingSegment[];
   paragraph?: string;
-  cta?: ResolvedCtaBtn;
+  ctas?: ResolvedCtaBtn[];
 }
 
 export interface HeroSection {
@@ -89,33 +119,54 @@ export interface HeroSection {
   heading: HeadingSegment[];
   subheadLine1: string;
   subheadLine2: string;
-  primaryCta?: ResolvedCtaBtn;
-  secondaryCta?: ResolvedCtaBtn;
+  ctas?: ResolvedCtaBtn[];
+  model?: string;
 }
 
 export interface AboutHeroSection {
   _key: string;
   _type: "aboutHeroSection";
+  eyebrow?: string;
   name: string;
-  tags?: string[];
+  tags?: Tag[];
   bio: string;
-  primaryCta?: ResolvedCtaBtn;
-  secondaryCta?: ResolvedCtaBtn;
+  ctas?: ResolvedCtaBtn[];
 }
 
 export interface ProjectsHeroSection {
   _key: string;
   _type: "projectsHeroSection";
-  heading: HeadingSegment[];
-  subheading: string;
+  sectionHeader: SectionHeader;
+}
+
+export interface ContactItem extends ResolvedLink {
+  _key: string;
+  image?: SanityImageValue;
+  label: string;
+  value: string;
+  variant?: string;
 }
 
 export interface ContactHeroSection {
   _key: string;
   _type: "contactHeroSection";
-  eyebrow: string;
-  heading: HeadingSegment[];
-  subheading: string;
+  sectionHeader: SectionHeader;
+  items?: ContactItem[];
+  model?: string;
+}
+
+export interface FormField {
+  name: "name" | "email" | "message";
+  label: string;
+  placeholder?: string;
+  type: "text" | "email" | "tel" | "textarea";
+}
+
+export interface ContactFormSection {
+  _key: string;
+  _type: "contactFormSection";
+  fields: FormField[];
+  submitButtonText: string;
 }
 
 export interface StatsSection {
@@ -125,10 +176,14 @@ export interface StatsSection {
   stats: Stat[];
 }
 
+export type SelectionMode = "all" | "manual";
+
 export interface FeaturedProjectsSection {
   _key: string;
   _type: "featuredProjectsSection";
   sectionHeader: SectionHeader;
+  mode?: SelectionMode;
+  projects: Project[];
 }
 
 export interface TestimonialsSection {
@@ -141,19 +196,29 @@ export interface ExperienceSection {
   _key: string;
   _type: "experienceSection";
   sectionHeader: SectionHeader;
+  mode?: SelectionMode;
+  experiences: Experience[];
 }
 
 export interface TechSection {
   _key: string;
   _type: "techSection";
   sectionHeader: SectionHeader;
+  mode?: SelectionMode;
+  technologies: Technology[];
 }
 
 export interface CtaSection {
   _key: string;
   _type: "ctaSection";
   sectionHeader: SectionHeader;
-  secondaryCta?: ResolvedCtaBtn;
+}
+
+export interface ProjectsGridSection {
+  _key: string;
+  _type: "projectsGridSection";
+  mode?: SelectionMode;
+  projects: Project[];
 }
 
 export type HomeSection =
@@ -169,9 +234,9 @@ export type AboutSection =
   | TechSection
   | CtaSection;
 
-export type ProjectsSection = ProjectsHeroSection | CtaSection;
+export type ProjectsSection = ProjectsHeroSection | ProjectsGridSection | CtaSection;
 
-export type ContactSection = ContactHeroSection;
+export type ContactSection = ContactHeroSection | ContactFormSection;
 
 export interface HomePage {
   sections?: HomeSection[];

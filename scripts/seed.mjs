@@ -55,25 +55,44 @@ const key = () => `k${keyCounter++}`;
 function ctaBtn(text, fixedRoute, variant) {
   return { _type: "ctaBtn", _key: key(), text, linkType: "fixedRoute", fixedRoute, target: "_self", variant };
 }
-function navLink(label, fixedRoute) {
+function linkItem(label, fixedRoute) {
   return { _type: "link", _key: key(), label, linkType: "fixedRoute", fixedRoute, target: "_self" };
 }
-function sectionHeader({ eyebrow, heading, paragraph, cta }) {
-  return { _type: "sectionHeader", eyebrow, heading, paragraph, ...(cta ? { cta } : {}) };
+function navItem(label, fixedRoute, children) {
+  return {
+    _type: "navigationItem", _key: key(), label, linkType: "fixedRoute", fixedRoute, target: "_self",
+    ...(children ? { children } : {}),
+  };
 }
-// A single default-style segment, for the common case of a one-line heading.
-function heading(text) {
-  return [{ _type: "headingSegment", _key: key(), text }];
+function socialLink(label, url, variant) {
+  return { _type: "socialLink", _key: key(), label, variant, linkType: "external", url, target: "_blank" };
 }
-// Explicit segments, e.g. heading.seg("Let's build something\n"),
-// heading.seg("remarkable.", "brand") for a two-line, two-tone heading.
-heading.seg = (text, style, tag) => ({
-  _type: "headingSegment",
-  _key: key(),
-  text,
-  ...(style ? { style } : {}),
-  ...(tag ? { tag } : {}),
-});
+function linkList(title, links) {
+  return { _type: "linkList", _key: key(), title, links };
+}
+function contactItem(label, value, variant, linkOpts) {
+  return { _type: "contactItem", _key: key(), label, value, variant, ...(linkOpts ?? {}) };
+}
+function formField(name, label, placeholder, type) {
+  return { _type: "formField", _key: key(), name, label, placeholder, type };
+}
+function sectionHeader({ eyebrow, heading, paragraph, ctas }) {
+  return { _type: "sectionHeader", eyebrow, heading, paragraph, ...(ctas ? { ctas } : {}) };
+}
+// A single default-style segment at the given heading level.
+function heading(text, tag) {
+  return [{ _type: "headingSegment", _key: key(), text, style: "default", tag }];
+}
+// Multiple segments sharing one semantic level, e.g.
+// heading.multi("h1", ["Hi, I'm "], ["Akash.", "brand"]).
+heading.multi = (tag, ...segs) =>
+  segs.map(([text, style]) => ({
+    _type: "headingSegment",
+    _key: key(),
+    text,
+    style: style ?? "default",
+    tag,
+  }));
 
 async function main() {
   console.log("Uploading brand assets...");
@@ -94,18 +113,36 @@ async function main() {
     _id: "settings",
     _type: "settings",
     name: "Akash Sharma",
-    tagline: "Full-stack developer building real-time systems, 3D experiences, and production-ready web apps.",
     logo: logoWithAlt,
     favicon: logo,
-    navLinks: [
-      navLink("About", "/about"),
-      navLink("Projects", "/projects"),
-      navLink("Contact", "/contact"),
-    ],
-    socials: [
-      { _type: "social", _key: "github", label: "GitHub", url: "https://github.com/CodesofAkash" },
-      { _type: "social", _key: "linkedin", label: "LinkedIn", url: "https://www.linkedin.com/in/codesofakash" },
-    ],
+    header: {
+      navigationItems: [
+        navItem("About", "/about"),
+        navItem("Projects", "/projects"),
+        navItem("Contact", "/contact"),
+      ],
+    },
+    footer: {
+      description:
+        "Full-stack developer building real-time systems, 3D experiences, and production-ready web apps.",
+      socials: [
+        socialLink("GitHub", "https://github.com/CodesofAkash", "violet"),
+        socialLink("LinkedIn", "https://www.linkedin.com/in/codesofakash", "teal"),
+      ],
+      linkLists: [
+        linkList("Pages", [
+          linkItem("About", "/about"),
+          linkItem("Projects", "/projects"),
+          linkItem("Contact", "/contact"),
+        ]),
+        linkList("Legal", [
+          linkItem("Privacy Policy", "/privacy"),
+          linkItem("Terms of Service", "/terms"),
+        ]),
+      ],
+      copyrightText: `© ${new Date().getFullYear()} Akash Sharma — Built with Next.js, Three.js & GSAP`,
+      creditText: "Designed & developed by Akash Sharma",
+    },
     email: "akashcodesharma@gmail.com",
     location: "India · Open to Remote",
     seo: {
@@ -132,27 +169,26 @@ async function main() {
         _type: "heroSection",
         _key: key(),
         eyebrow: "Full-Stack Developer · Available for hire",
-        heading: [heading.seg("Hi, I'm "), heading.seg("Akash.", "brand")],
+        heading: heading.multi("h1", ["Hi, I'm "], ["Akash.", "brand"]),
         subheadLine1: "Full-stack developer. Self-taught. Fast learner.",
         subheadLine2:
           "Two years of self-teaching, multiple projects in production, and AI as a daily tool — not to replace my thinking, but to sharpen it and ship faster.",
-        primaryCta: ctaBtn("See my work →", "/projects", "primary"),
-        secondaryCta: ctaBtn("Get in touch", "/contact", "secondary"),
+        ctas: [ctaBtn("See my work →", "/projects", "primary"), ctaBtn("Get in touch", "/contact", "secondary")],
       },
       {
         _type: "statsSection",
         _key: key(),
         sectionHeader: sectionHeader({
           eyebrow: "Who I am",
-          heading: heading("Akash Sharma."),
+          heading: heading("Akash Sharma.", "h2"),
           paragraph:
             "Full-stack developer who went from zero to shipping production apps in under two years — entirely self-taught. I specialise in real-time systems, 3D web experiences, and end-to-end application development. Every project has a live URL.",
-          cta: ctaBtn("More about me →", "/about", "primary"),
+          ctas: [ctaBtn("More about me →", "/about", "primary")],
         }),
         stats: [
-          { _type: "stat", _key: key(), value: "1.5+", label: "Years building" },
-          { _type: "stat", _key: key(), value: "10+", label: "Projects shipped" },
-          { _type: "stat", _key: key(), value: "7+", label: "Technologies" },
+          { _type: "stat", _key: key(), value: "1.5+", label: "Years building", variant: "violet" },
+          { _type: "stat", _key: key(), value: "10+", label: "Projects shipped", variant: "teal" },
+          { _type: "stat", _key: key(), value: "7+", label: "Technologies", variant: "amber" },
         ],
       },
       {
@@ -160,14 +196,15 @@ async function main() {
         _key: key(),
         sectionHeader: sectionHeader({
           eyebrow: "What I've built",
-          heading: heading("Featured Projects."),
-          cta: ctaBtn("View all →", "/projects", "secondary"),
+          heading: heading("Featured Projects.", "h2"),
+          ctas: [ctaBtn("View all →", "/projects", "secondary")],
         }),
+        mode: "all",
       },
       {
         _type: "testimonialsSection",
         _key: key(),
-        sectionHeader: sectionHeader({ eyebrow: "Kind words", heading: heading("What people say.") }),
+        sectionHeader: sectionHeader({ eyebrow: "Kind words", heading: heading("What people say.", "h2") }),
       },
     ],
     seo: {
@@ -185,44 +222,50 @@ async function main() {
       {
         _type: "aboutHeroSection",
         _key: key(),
+        eyebrow: "Full-Stack Developer",
         name: "Akash Sharma",
-        tags: ["Builder by Practice", "Curious by Nature", "BCA Student", "Open to Opportunities"],
+        tags: [
+          { _type: "tag", _key: key(), text: "Builder by Practice", variant: "violet" },
+          { _type: "tag", _key: key(), text: "Curious by Nature", variant: "teal" },
+          { _type: "tag", _key: key(), text: "BCA Student", variant: "amber" },
+          { _type: "tag", _key: key(), text: "Open to Opportunities", variant: "rose" },
+        ],
         bio:
           "Self-taught developer driven by curiosity and consistency. What started as learning HTML two years ago evolved into building complete, production-ready applications independently. I value clarity, ownership, and continuous improvement — and I'm now seeking my first professional opportunity to contribute, learn, and grow within a strong engineering team.",
-        primaryCta: ctaBtn("See my work →", "/projects", "primary"),
-        secondaryCta: ctaBtn("Get in touch", "/contact", "secondary"),
+        ctas: [ctaBtn("See my work →", "/projects", "primary"), ctaBtn("Get in touch", "/contact", "secondary")],
       },
       {
         _type: "statsSection",
         _key: key(),
         stats: [
-          { _type: "stat", _key: key(), value: "2+", label: "Years of Development" },
-          { _type: "stat", _key: key(), value: "10+", label: "Projects Shipped" },
-          { _type: "stat", _key: key(), value: "10+", label: "Technologies Applied" },
-          { _type: "stat", _key: key(), value: "∞", label: "Curiosity & Growth" },
+          { _type: "stat", _key: key(), value: "2+", label: "Years of Development", variant: "violet" },
+          { _type: "stat", _key: key(), value: "10+", label: "Projects Shipped", variant: "teal" },
+          { _type: "stat", _key: key(), value: "10+", label: "Technologies Applied", variant: "amber" },
+          { _type: "stat", _key: key(), value: "∞", label: "Curiosity & Growth", variant: "rose" },
         ],
       },
       {
         _type: "experienceSection",
         _key: key(),
-        sectionHeader: sectionHeader({ eyebrow: "How I got here", heading: heading("My Journey.") }),
+        sectionHeader: sectionHeader({ eyebrow: "How I got here", heading: heading("My Journey.", "h2") }),
+        mode: "all",
       },
       {
         _type: "techSection",
         _key: key(),
-        sectionHeader: sectionHeader({ eyebrow: "Tools of the trade", heading: heading("Tech Stack.") }),
+        sectionHeader: sectionHeader({ eyebrow: "Tools of the trade", heading: heading("Tech Stack.", "h2") }),
+        mode: "all",
       },
       {
         _type: "ctaSection",
         _key: key(),
         sectionHeader: sectionHeader({
           eyebrow: "What's next",
-          heading: [heading.seg("Let's build something\n"), heading.seg("remarkable.", "brand")],
+          heading: heading.multi("h2", ["Let's build something\n"], ["remarkable.", "brand"]),
           paragraph:
             "Available immediately for full-time roles, internships, and remote positions. India-based — open to relocation or fully remote worldwide.",
-          cta: ctaBtn("Get in touch", "/contact", "primary"),
+          ctas: [ctaBtn("Get in touch", "/contact", "primary"), ctaBtn("See projects", "/projects", "secondary")],
         }),
-        secondaryCta: ctaBtn("See projects", "/projects", "secondary"),
       },
     ],
     seo: {
@@ -240,17 +283,20 @@ async function main() {
       {
         _type: "projectsHeroSection",
         _key: key(),
-        heading: [heading.seg("What I've\n"), heading.seg("Built.", "outline")],
-        subheading: "Click any project to expand it. Every project ships to production.",
+        sectionHeader: sectionHeader({
+          heading: heading.multi("h1", ["What I've\n"], ["Built.", "outline"]),
+          paragraph: "Click any project to expand it. Every project ships to production.",
+        }),
       },
+      { _type: "projectsGridSection", _key: key(), mode: "all" },
       {
         _type: "ctaSection",
         _key: key(),
         sectionHeader: sectionHeader({
           eyebrow: "Interested in collaborating?",
-          heading: heading("Let's build the next one together."),
+          heading: heading("Let's build the next one together.", "h2"),
           paragraph: "Always looking for interesting problems to solve and great people to work with.",
-          cta: ctaBtn("Start a conversation →", "/contact", "primary"),
+          ctas: [ctaBtn("Start a conversation →", "/contact", "primary")],
         }),
       },
     ],
@@ -269,10 +315,31 @@ async function main() {
       {
         _type: "contactHeroSection",
         _key: key(),
-        eyebrow: "Get in touch",
-        heading: heading("Let's Talk."),
-        subheading:
-          "I'm currently seeking my first professional role in web development — frontend, backend, or full-stack. If you're hiring, have a project that needs building, or just want to connect, I'd welcome the conversation.",
+        sectionHeader: sectionHeader({
+          eyebrow: "Get in touch",
+          heading: heading("Let's Talk.", "h1"),
+          paragraph:
+            "I'm currently seeking my first professional role in web development — frontend, backend, or full-stack. If you're hiring, have a project that needs building, or just want to connect, I'd welcome the conversation.",
+        }),
+        items: [
+          contactItem("Email", "akashcodesharma@gmail.com", "violet", {
+            linkType: "email", email: "akashcodesharma@gmail.com", target: "_self",
+          }),
+          contactItem("GitHub", "github.com/CodesofAkash", "teal", {
+            linkType: "external", url: "https://github.com/CodesofAkash", target: "_blank",
+          }),
+          contactItem("Location", "India · Open to Remote", "amber"),
+        ],
+      },
+      {
+        _type: "contactFormSection",
+        _key: key(),
+        fields: [
+          formField("name", "Your Name", "What's your name?", "text"),
+          formField("email", "Your Email", "What's your email?", "email"),
+          formField("message", "Your Message", "What do you want to say?", "textarea"),
+        ],
+        submitButtonText: "Send",
       },
     ],
     seo: {
