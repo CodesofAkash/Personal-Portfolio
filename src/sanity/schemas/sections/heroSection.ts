@@ -20,10 +20,9 @@ export const heroSection = defineType({
     defineField({ name: "ctas", title: "Buttons", type: "ctaBtns" }),
     defineField({
       name: "model",
-      title: "3D model",
-      type: "file",
-      description: "The 3D computer shown beside the hero text. Leave empty to keep the built-in default.",
-      options: { accept: ".glb,.gltf" },
+      title: "3D model URL",
+      type: "url",
+      description: "The .glb/.gltf shown beside the hero text, hosted on Cloudinary (or any CDN) — paste the fetch URL here, not an upload. Leave empty to keep the built-in default.",
     }),
   ],
   preview: { select: { title: "heading.0.text" }, prepare: ({ title }) => ({ title: title || "Hero", subtitle: "Home hero" }) },

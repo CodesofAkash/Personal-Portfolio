@@ -132,8 +132,7 @@ const HOME_PAGE_QUERY = /* groq */ `*[_id == "homePage"][0]{
   sections[]{
     _key, _type,
     _type == "heroSection" => {
-      eyebrow, heading, subheadLine1, subheadLine2, ctas[]${ctaBtnFragment},
-      "model": model.asset->url
+      eyebrow, heading, subheadLine1, subheadLine2, ctas[]${ctaBtnFragment}, model
     },
     _type == "statsSection" => { sectionHeader${sectionHeaderFragment}, stats },
     _type == "featuredProjectsSection" => {
@@ -183,7 +182,7 @@ const CONTACT_PAGE_QUERY = /* groq */ `*[_id == "contactPage"][0]{
     _type == "contactHeroSection" => {
       sectionHeader${sectionHeaderFragment},
       items[]${contactItemFragment},
-      "model": model.asset->url
+      model
     },
     _type == "contactFormSection" => {
       fields[]{ name, label, placeholder, type },
