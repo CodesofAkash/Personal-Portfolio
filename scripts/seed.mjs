@@ -29,6 +29,10 @@ const client = createClient({
 
 const CDN = "https://res.cloudinary.com/ddawd3kp5/image/upload";
 const VCDN = "https://res.cloudinary.com/ddawd3kp5/video/upload";
+// Seeded as-is so the field is populated from day one — swap for a Cloudinary
+// URL in Studio once the models are moved there; the frontend already just
+// takes whatever URL this field holds.
+const MODEL_CDN = "https://d1una6qv9iebr4.cloudfront.net";
 
 async function uploadImage(path, filename) {
   const buffer = readFileSync(path);
@@ -174,6 +178,7 @@ async function main() {
         subheadLine2:
           "Two years of self-teaching, multiple projects in production, and AI as a daily tool — not to replace my thinking, but to sharpen it and ship faster.",
         ctas: [ctaBtn("See my work →", "/projects", "primary"), ctaBtn("Get in touch", "/contact", "secondary")],
+        model: `${MODEL_CDN}/desktop_pc/scene.gltf`,
       },
       {
         _type: "statsSection",
@@ -330,6 +335,7 @@ async function main() {
           }),
           contactItem("Location", "India · Open to Remote", "amber"),
         ],
+        model: `${MODEL_CDN}/planet/scene.gltf`,
       },
       {
         _type: "contactFormSection",

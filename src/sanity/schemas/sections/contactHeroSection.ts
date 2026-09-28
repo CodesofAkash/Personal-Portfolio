@@ -15,10 +15,9 @@ export const contactHeroSection = defineType({
     }),
     defineField({
       name: "model",
-      title: "3D model",
-      type: "file",
-      description: "The 3D globe shown beside the contact form.",
-      options: { accept: ".glb,.gltf" },
+      title: "3D model URL",
+      type: "url",
+      description: "The .glb/.gltf shown beside the contact form, hosted on Cloudinary (or any CDN) — paste the fetch URL here, not an upload. Leave empty to keep the built-in default.",
     }),
   ],
   preview: {
