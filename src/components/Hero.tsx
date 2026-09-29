@@ -32,35 +32,48 @@ const Hero = ({ section }: HeroProps) => {
   if (!section) return null;
 
   return (
-    <section className="relative w-full h-screen mx-auto overflow-hidden">
-      <div className="absolute inset-0" style={{ zIndex: 1 }}>
-        <Suspense fallback={<CanvasLoader />}>
-          <ComputersCanvas modelUrl={section.model} />
-        </Suspense>
-      </div>
-
+    <section className="relative w-full min-h-screen flex items-center overflow-hidden" style={{ background: "#050816" }}>
+      {/* Custom background — a grid plus two soft glows, not a template image. */}
       <div
-        className={`${styles.paddingX} absolute inset-0 top-[20px] max-w-7xl mx-auto flex items-start gap-5`}
-        style={{ zIndex: 10, pointerEvents: "none" }}
-      >
-        <div className="flex flex-col justify-center items-center mt-1">
-          <div
-            className="w-5 h-5 rounded-full"
-            style={{ background: "#7c3aed" }}
-          />
-          <div className="w-1 sm:h-80 h-40 violet-gradient" />
-        </div>
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          backgroundImage:
+            "linear-gradient(#7c3aed08 1px,transparent 1px),linear-gradient(90deg,#7c3aed08 1px,transparent 1px)",
+          backgroundSize: "56px 56px",
+        }}
+      />
+      <div
+        className="absolute -top-24 -left-24 w-[32rem] h-[32rem] rounded-full pointer-events-none"
+        style={{ background: "radial-gradient(circle,#7c3aed1a 0%,transparent 70%)" }}
+      />
+      <div
+        className="absolute bottom-0 right-0 w-[28rem] h-[28rem] rounded-full pointer-events-none"
+        style={{ background: "radial-gradient(circle,#0d94881a 0%,transparent 70%)" }}
+      />
 
-        <div style={{ maxWidth: "520px", pointerEvents: "auto" }}>
-          <motion.p
+      <div className={`relative z-10 w-full max-w-7xl mx-auto ${styles.paddingX} grid lg:grid-cols-2 gap-12 items-center pt-28 pb-20 lg:py-20`}>
+        <div style={{ maxWidth: "560px" }}>
+          <motion.div
             initial={{ opacity: 0, y: -16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="text-xs uppercase tracking-widest mb-4 font-semibold"
-            style={{ color: "#0d9488", letterSpacing: "0.18em" }}
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-6"
+            style={{ background: "rgba(13,148,136,0.1)", border: "1px solid rgba(13,148,136,0.3)" }}
           >
-            {section.eyebrow}
-          </motion.p>
+            <span className="relative flex h-2 w-2">
+              <span
+                className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75"
+                style={{ background: "#0d9488" }}
+              />
+              <span className="relative inline-flex rounded-full h-2 w-2" style={{ background: "#0d9488" }} />
+            </span>
+            <span
+              className="text-xs uppercase tracking-widest font-semibold"
+              style={{ color: "#0d9488", letterSpacing: "0.14em" }}
+            >
+              {section.eyebrow}
+            </span>
+          </motion.div>
 
           <motion.div
             initial={{ opacity: 0, y: 24 }}
@@ -86,7 +99,7 @@ const Hero = ({ section }: HeroProps) => {
               style={{
                 fontSize: "16px",
                 lineHeight: "1.7",
-                color: "#d6d6d6",
+                color: "#94a3b8",
                 maxWidth: "480px",
               }}
             >
@@ -107,25 +120,27 @@ const Hero = ({ section }: HeroProps) => {
             </motion.div>
           )}
         </div>
+
+        <div className="relative w-full h-[360px] sm:h-[440px] lg:h-[560px]">
+          <Suspense fallback={<CanvasLoader />}>
+            <ComputersCanvas modelUrl={section.model} />
+          </Suspense>
+        </div>
       </div>
 
       <div
-        className="absolute xs:bottom-24 bottom-32 w-full flex justify-center items-center"
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
         style={{ zIndex: 10 }}
       >
         <a href="#about" aria-label="Scroll to About section">
           <div
-            className="w-[35px] h-[64px] rounded-3xl border-4 flex justify-center items-start p-2"
-            style={{ borderColor: "#475569" }}
+            className="w-[30px] h-[54px] rounded-full border-2 flex justify-center items-start p-1.5"
+            style={{ borderColor: "rgba(148,163,184,0.4)" }}
           >
             <motion.div
-              animate={{ y: [0, 24, 0] }}
-              transition={{
-                duration: 1.5,
-                repeat: Infinity,
-                repeatType: "loop",
-              }}
-              className="w-3 h-3 rounded-full mb-1"
+              animate={{ y: [0, 20, 0] }}
+              transition={{ duration: 1.5, repeat: Infinity, repeatType: "loop" }}
+              className="w-2 h-2 rounded-full"
               style={{ background: "#7c3aed" }}
             />
           </div>
