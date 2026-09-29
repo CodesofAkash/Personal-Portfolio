@@ -1,4 +1,4 @@
-import { defineField, defineType } from "sanity";
+import { defineArrayMember, defineField, defineType } from "sanity";
 
 // Home page hero. Distinct from aboutHeroSection/projectsHeroSection/
 // contactHeroSection — each hero's fields genuinely differ, so they are
@@ -9,6 +9,12 @@ export const heroSection = defineType({
   type: "object",
   fields: [
     defineField({ name: "eyebrow", type: "string", description: "e.g. 'Full-Stack Developer · Available for hire'.", validation: (r) => r.required() }),
+    defineField({
+      name: "name",
+      type: "string",
+      description: "Full name, plain text — shown in the 3D model's rotate-to-reveal identity panel, e.g. 'Akash Sharma.'",
+      validation: (r) => r.required(),
+    }),
     defineField({
       name: "heading",
       type: "headingSegments",
@@ -23,6 +29,19 @@ export const heroSection = defineType({
       title: "3D model URL",
       type: "url",
       description: "The .glb/.gltf shown beside the hero text, hosted on Cloudinary (or any CDN) — paste the fetch URL here, not an upload. Leave empty to keep the built-in default.",
+    }),
+    defineField({
+      name: "bgImage",
+      title: "Background image URL",
+      type: "url",
+      description: "Photo behind the 3D model, hosted on Cloudinary (or any CDN) — paste the fetch URL here, not an upload. Leave empty for the plain grid/glow background.",
+    }),
+    defineField({
+      name: "stats",
+      title: "Reveal-panel stats",
+      type: "array",
+      of: [defineArrayMember({ type: "stat" })],
+      description: "Shown as extra panels while rotating the 3D model — independent of the Stats section further down the page, so it's fine for these to repeat or differ.",
     }),
   ],
   preview: { select: { title: "heading.0.text" }, prepare: ({ title }) => ({ title: title || "Hero", subtitle: "Home hero" }) },

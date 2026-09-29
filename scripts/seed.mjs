@@ -175,12 +175,19 @@ async function main() {
         _type: "heroSection",
         _key: key(),
         eyebrow: "Full-Stack Developer · Open to Opportunities",
+        name: "Akash Sharma.",
         heading: heading.multi("h1", ["Hi, I'm "], ["Akash.", "gradient"]),
         subheadLine1: "I build production web applications with React, Next.js, TypeScript, and Node.js.",
         subheadLine2:
           "From e-commerce and CMS-driven platforms to real-time applications and interactive experiences, I enjoy building products that work beyond the demo.",
         ctas: [ctaBtn("See my work →", "/projects", "primary"), ctaBtn("Get in touch", "/contact", "secondary")],
-        model: `${MODEL_CDN}/desktop_pc/scene.gltf`,
+        model: `${MODEL_CDN}/corvette/corvette-optimized.glb`,
+        bgImage: "https://res.cloudinary.com/ddawd3kp5/image/upload/v1790678417/herobg_vd56ah.jpg",
+        stats: [
+          { _type: "stat", _key: key(), value: "2+", label: "Years Building", variant: "violet" },
+          { _type: "stat", _key: key(), value: "6 Months", label: "Professional Experience", variant: "teal" },
+          { _type: "stat", _key: key(), value: "Production", label: "Applications", variant: "amber" },
+        ],
       },
       {
         _type: "statsSection",

@@ -28,6 +28,14 @@ coverage
 # logs
 logs
 *.log
+
+# local-only 3D model candidates being compared before one is picked and
+# uploaded to a real CDN — too large to ever belong in git history
+public/assets/models/
+
+# local-only background candidates being compared before one is picked —
+# at least one carries a stock-site watermark and must never be committed
+public/assets/bgs/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
