@@ -193,7 +193,7 @@ async function main() {
           ctas: [ctaBtn("More about me →", "/about", "primary")],
         }),
         stats: [
-          { _type: "stat", _key: key(), value: "2+", label: "Years building", variant: "violet" },
+          { _type: "stat", _key: key(), value: "2+", label: "Years Building", variant: "violet" },
           { _type: "stat", _key: key(), value: "6 Months", label: "Professional Experience", variant: "teal" },
           { _type: "stat", _key: key(), value: "Production", label: "Applications", variant: "amber" },
         ],
@@ -245,10 +245,9 @@ async function main() {
         _type: "statsSection",
         _key: key(),
         stats: [
-          { _type: "stat", _key: key(), value: "2+", label: "Years of Development", variant: "violet" },
+          { _type: "stat", _key: key(), value: "2+", label: "Years Building", variant: "violet" },
           { _type: "stat", _key: key(), value: "6 Months", label: "Professional Experience", variant: "teal" },
           { _type: "stat", _key: key(), value: "Production", label: "Applications", variant: "amber" },
-          { _type: "stat", _key: key(), value: "Always", label: "Learning", variant: "rose" },
         ],
       },
       {
@@ -534,42 +533,25 @@ async function main() {
   }
 
   console.log("Seeding technologies...");
-  // Icons kept only for techs that already had a real Cloudinary asset — the
-  // rest fall back to a first-letter pill (technology.icon is optional) until
-  // real icons are sourced for them.
+  // Reduced to technologies with a real icon asset — ChatGPT/Akash's call:
+  // prefer a shorter, visually consistent marquee over 30+ pills where most
+  // fall back to a first-letter placeholder. Add an entry back once it has
+  // a real icon, rather than inventing one.
   const technologies = [
     { name: "JavaScript", icon: `${CDN}/js_svckyk.svg` },
     { name: "TypeScript", icon: `${CDN}/typescript_dqkj0j.png` },
     { name: "React.js", icon: `${CDN}/reactjs_mykfpg.png` },
     { name: "Next.js", icon: `${CDN}/nextjs_f6qd7x.png` },
     { name: "Tailwind CSS", icon: `${CDN}/tailwind_gkafu4.png` },
-    { name: "Zustand" },
-    { name: "TanStack Query" },
     { name: "Node.js", icon: `${CDN}/nodejs_ur2zox.png` },
     { name: "Express.js", icon: `${CDN}/express_ml2xwr.svg` },
-    { name: "REST APIs" },
-    { name: "Next.js Server Actions" },
-    { name: "Zod" },
-    { name: "Sanity" },
-    { name: "Payload CMS" },
-    { name: "Medusa" },
-    { name: "PostgreSQL" },
     { name: "Prisma", icon: `${CDN}/prisma_b3owp4.svg` },
     { name: "MongoDB", icon: `${CDN}/mongodb_sf0rxe.png` },
-    { name: "Mongoose" },
-    { name: "LiveKit" },
-    { name: "WebRTC" },
     { name: "Three.js", icon: `${CDN}/threejs_dlcegx.svg` },
-    { name: "React Three Fiber" },
     { name: "GSAP", icon: `${CDN}/gsap_boaydq.png` },
     { name: "Git", icon: `${CDN}/git_jplhr2.png` },
-    { name: "GitHub" },
-    { name: "Docker" },
     { name: "Postman", icon: `${CDN}/postman_g8ikuc.png` },
-    { name: "Vercel" },
-    { name: "Render" },
     { name: "Figma", icon: `${CDN}/figma_y3pmrr.png` },
-    { name: "Linux" },
   ];
   for (let i = 0; i < technologies.length; i++) {
     const t = technologies[i];
@@ -580,6 +562,15 @@ async function main() {
       icon: t.icon,
       order: i,
     });
+  }
+  // createOrReplace never deletes — clean up any technology-N left over from
+  // a previous, longer seed run (the list has shrunk more than once).
+  const staleTechIds = Array.from({ length: 40 }, (_, i) => `technology-${i}`)
+    .slice(technologies.length);
+  if (staleTechIds.length > 0) {
+    const tx = client.transaction();
+    for (const id of staleTechIds) tx.delete(id);
+    await tx.commit({ visibility: "async" });
   }
 
   console.log("Seeding testimonials...");

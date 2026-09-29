@@ -23,11 +23,7 @@ const HomeView = ({ sections, testimonials }: HomeViewProps) => {
 
   return (
     <div style={{ background: "#050816", color: "#f8fafc" }}>
-      {heroSection && (
-        <div className="bg-hero-pattern bg-cover bg-no-repeat bg-center">
-          <SectionRenderer sections={[heroSection]} />
-        </div>
-      )}
+      {heroSection && <SectionRenderer sections={[heroSection]} />}
       <SectionRenderer sections={restSections} testimonials={testimonials} />
     </div>
   );
