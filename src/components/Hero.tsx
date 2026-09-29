@@ -7,12 +7,13 @@ import { styles } from "@/styles";
 import CanvasLoader from "@/components/Loader";
 import Cta from "@/components/sections/Cta";
 import Heading from "@/components/sections/Heading";
+import type { HeroRevealPanel } from "@/components/canvas/HeroCarExperience";
 import type { HeroSection } from "@/sanity/lib/types";
 
 // Three.js/R3F/drei is a large client bundle with no SSR value (WebGL needs
 // the browser) — loading it off the initial JS payload cuts unused JS and
 // render-blocking work on every other page that doesn't need it.
-const ComputersCanvas = dynamic(() => import("@/components/canvas/Computers"), {
+const HeroCarExperience = dynamic(() => import("@/components/canvas/HeroCarExperience"), {
   ssr: false,
   loading: () => (
     <div className="w-full h-full flex items-center justify-center">
@@ -28,8 +29,56 @@ interface HeroProps {
   section: HeroSection | undefined;
 }
 
+const STAT_SIDES: Array<"left" | "right"> = ["right", "left"];
+
 const Hero = ({ section }: HeroProps) => {
   if (!section) return null;
+
+  // The reveal panels are a decorative bonus on the model, not a second
+  // source of information — everything they show (name, eyebrow, the two
+  // subhead lines, the stats) already exists statically below, so nothing
+  // is ever hidden behind rotate-the-model-to-read-it.
+  const panels: HeroRevealPanel[] = [
+    {
+      side: "left",
+      content: (
+        <>
+          <p className="text-xs uppercase tracking-widest mb-1" style={{ color: "#0d9488" }}>{section.eyebrow}</p>
+          <p className="text-xl font-bold" style={{ color: "#f8fafc" }}>{section.name}</p>
+        </>
+      ),
+    },
+    {
+      side: "right",
+      content: (
+        <>
+          <p className="text-xs uppercase tracking-widest mb-1" style={{ color: "#0d9488" }}>What I build</p>
+          <p className="text-sm" style={{ color: "#cbd5e1" }}>{section.subheadLine1}</p>
+        </>
+      ),
+    },
+    {
+      side: "left",
+      content: (
+        <>
+          <p className="text-xs uppercase tracking-widest mb-1" style={{ color: "#0d9488" }}>How I build it</p>
+          <p className="text-sm" style={{ color: "#cbd5e1" }}>{section.subheadLine2}</p>
+        </>
+      ),
+    },
+    ...(section.stats ?? []).map((stat, i) => ({
+      side: STAT_SIDES[i % 2],
+      content: (
+        <>
+          <p className="text-xs uppercase tracking-widest mb-1" style={{ color: "#0d9488" }}>By the numbers</p>
+          <p style={{ color: "#f8fafc" }}>
+            <span className="text-3xl font-bold">{stat.value}</span>
+          </p>
+          <p className="text-sm" style={{ color: "#cbd5e1" }}>{stat.label}</p>
+        </>
+      ),
+    })),
+  ];
 
   return (
     <section className="relative w-full h-screen overflow-hidden" style={{ background: "#050816" }}>
@@ -51,7 +100,7 @@ const Hero = ({ section }: HeroProps) => {
       {/* The 3D model — big, centered, filling the hero, not confined to a corner. */}
       <div className="absolute inset-0" style={{ zIndex: 1 }}>
         <Suspense fallback={<CanvasLoader />}>
-          <ComputersCanvas modelUrl={section.model} />
+          <HeroCarExperience modelUrl={section.model} panels={panels} />
         </Suspense>
       </div>
 

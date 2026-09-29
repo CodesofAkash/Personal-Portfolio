@@ -116,11 +116,13 @@ export interface HeroSection {
   _key: string;
   _type: "heroSection";
   eyebrow: string;
+  name: string;
   heading: HeadingSegment[];
   subheadLine1: string;
   subheadLine2: string;
   ctas?: ResolvedCtaBtn[];
   model?: string;
+  stats?: Stat[];
 }
 
 export interface AboutHeroSection {
