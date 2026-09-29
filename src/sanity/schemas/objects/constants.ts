@@ -28,6 +28,7 @@ export const HEADING_STYLES = [
   { title: "Muted", value: "muted" },
   { title: "Brand (violet)", value: "brand" },
   { title: "Outline", value: "outline" },
+  { title: "Gradient (multi-color)", value: "gradient" },
 ];
 
 export const HEADING_TAGS = [
