@@ -128,10 +128,12 @@ async function main() {
     },
     footer: {
       description:
-        "Full-stack developer building real-time systems, 3D experiences, and production-ready web apps.",
+        "Full-stack developer building production web applications with React, Next.js, TypeScript, CMS and commerce platforms.",
       socials: [
         socialLink("GitHub", "https://github.com/CodesofAkash", "violet"),
         socialLink("LinkedIn", "https://www.linkedin.com/in/codesofakash", "teal"),
+        socialLink("X", "https://x.com/CodesOfAkash", "amber"),
+        socialLink("Instagram", "https://www.instagram.com/codesofakash/", "rose"),
       ],
       linkLists: [
         linkList("Pages", [
@@ -144,15 +146,15 @@ async function main() {
           linkItem("Terms of Service", "/terms"),
         ]),
       ],
-      copyrightText: `© ${new Date().getFullYear()} Akash Sharma — Built with Next.js, Three.js & GSAP`,
+      copyrightText: `© ${new Date().getFullYear()} Akash Sharma — Built with Next.js, TypeScript & modern web technologies`,
       creditText: "Designed & developed by Akash Sharma",
     },
     email: "akashcodesharma@gmail.com",
     location: "India · Open to Remote",
     seo: {
-      title: "Akash Sharma | Full-Stack Developer & 3D Web Specialist",
+      title: "Akash Sharma | Full-Stack Developer",
       description:
-        "Akash Sharma - Full-stack developer specializing in React, Three.js, Node.js, and real-time systems. Portfolio showcasing production-ready projects.",
+        "Akash Sharma is a Full-Stack Developer specializing in React, Next.js, TypeScript, Node.js, headless CMS and commerce platforms, building production web applications and interactive experiences.",
       ...(ogImage ? { ogImage } : {}),
     },
     cookieConsent: { enabled: false },
@@ -172,11 +174,11 @@ async function main() {
       {
         _type: "heroSection",
         _key: key(),
-        eyebrow: "Full-Stack Developer · Available for hire",
+        eyebrow: "Full-Stack Developer · Open to Opportunities",
         heading: heading.multi("h1", ["Hi, I'm "], ["Akash.", "brand"]),
-        subheadLine1: "Full-stack developer. Self-taught. Fast learner.",
+        subheadLine1: "I build production web applications with React, Next.js, TypeScript, and Node.js.",
         subheadLine2:
-          "Two years of self-teaching, multiple projects in production, and AI as a daily tool — not to replace my thinking, but to sharpen it and ship faster.",
+          "From e-commerce and CMS-driven platforms to real-time applications and interactive experiences, I enjoy building products that work beyond the demo.",
         ctas: [ctaBtn("See my work →", "/projects", "primary"), ctaBtn("Get in touch", "/contact", "secondary")],
         model: `${MODEL_CDN}/desktop_pc/scene.gltf`,
       },
@@ -187,13 +189,13 @@ async function main() {
           eyebrow: "Who I am",
           heading: heading("Akash Sharma.", "h2"),
           paragraph:
-            "Full-stack developer who went from zero to shipping production apps in under two years — entirely self-taught. I specialise in real-time systems, 3D web experiences, and end-to-end application development. Every project has a live URL.",
+            "Full-stack developer with professional experience building and maintaining production web applications across e-commerce, event platforms, CMS-driven websites, and commerce backends. I work across frontend, backend, APIs, CMS architecture, databases, debugging, performance, accessibility, and security.",
           ctas: [ctaBtn("More about me →", "/about", "primary")],
         }),
         stats: [
-          { _type: "stat", _key: key(), value: "1.5+", label: "Years building", variant: "violet" },
-          { _type: "stat", _key: key(), value: "10+", label: "Projects shipped", variant: "teal" },
-          { _type: "stat", _key: key(), value: "7+", label: "Technologies", variant: "amber" },
+          { _type: "stat", _key: key(), value: "2+", label: "Years building", variant: "violet" },
+          { _type: "stat", _key: key(), value: "6 Months", label: "Professional Experience", variant: "teal" },
+          { _type: "stat", _key: key(), value: "Production", label: "Applications", variant: "amber" },
         ],
       },
       {
@@ -213,9 +215,9 @@ async function main() {
       },
     ],
     seo: {
-      title: "Akash Sharma | Full-Stack Developer & 3D Web Specialist",
+      title: "Akash Sharma | Full-Stack Developer",
       description:
-        "Full-stack developer specializing in React, Three.js, Node.js. 10+ projects shipped. Self-taught developer building real-time systems and 3D web experiences.",
+        "Full-stack developer building production web applications with React, Next.js, TypeScript, Node.js, CMS and commerce platforms.",
     },
   });
 
@@ -230,23 +232,23 @@ async function main() {
         eyebrow: "Full-Stack Developer",
         name: "Akash Sharma",
         tags: [
-          { _type: "tag", _key: key(), text: "Builder by Practice", variant: "violet" },
+          { _type: "tag", _key: key(), text: "Production Builder", variant: "violet" },
           { _type: "tag", _key: key(), text: "Curious by Nature", variant: "teal" },
-          { _type: "tag", _key: key(), text: "BCA Student", variant: "amber" },
+          { _type: "tag", _key: key(), text: "BCA Graduate", variant: "amber" },
           { _type: "tag", _key: key(), text: "Open to Opportunities", variant: "rose" },
         ],
         bio:
-          "Self-taught developer driven by curiosity and consistency. What started as learning HTML two years ago evolved into building complete, production-ready applications independently. I value clarity, ownership, and continuous improvement — and I'm now seeking my first professional opportunity to contribute, learn, and grow within a strong engineering team.",
-        ctas: [ctaBtn("See my work →", "/projects", "primary"), ctaBtn("Get in touch", "/contact", "secondary")],
+          "Full-stack developer who started coding in December 2023 and grew from self-directed learning and personal projects into professional development work. I've worked on production e-commerce, event, CMS, and commerce applications using React, Next.js, TypeScript, Node.js, Sanity, Payload CMS, Medusa, PostgreSQL and more. I value ownership, clear problem solving, understanding root causes, and continuously improving how software is built.",
+        ctas: [ctaBtn("See my work →", "/projects", "primary"), ctaBtn("Get in touch →", "/contact", "secondary")],
       },
       {
         _type: "statsSection",
         _key: key(),
         stats: [
           { _type: "stat", _key: key(), value: "2+", label: "Years of Development", variant: "violet" },
-          { _type: "stat", _key: key(), value: "10+", label: "Projects Shipped", variant: "teal" },
-          { _type: "stat", _key: key(), value: "10+", label: "Technologies Applied", variant: "amber" },
-          { _type: "stat", _key: key(), value: "∞", label: "Curiosity & Growth", variant: "rose" },
+          { _type: "stat", _key: key(), value: "6 Months", label: "Professional Experience", variant: "teal" },
+          { _type: "stat", _key: key(), value: "Production", label: "Applications", variant: "amber" },
+          { _type: "stat", _key: key(), value: "Always", label: "Learning", variant: "rose" },
         ],
       },
       {
@@ -268,15 +270,15 @@ async function main() {
           eyebrow: "What's next",
           heading: heading.multi("h2", ["Let's build something\n"], ["remarkable.", "brand"]),
           paragraph:
-            "Available immediately for full-time roles, internships, and remote positions. India-based — open to relocation or fully remote worldwide.",
-          ctas: [ctaBtn("Get in touch", "/contact", "primary"), ctaBtn("See projects", "/projects", "secondary")],
+            "I'm currently open to full-time software engineering opportunities where I can continue building real products, take ownership, and grow as a full-stack developer. India-based and open to remote opportunities.",
+          ctas: [ctaBtn("Get in touch →", "/contact", "primary"), ctaBtn("See projects →", "/projects", "secondary")],
         }),
       },
     ],
     seo: {
       title: "About Akash Sharma | Full-Stack Developer",
       description:
-        "Learn about my journey from self-taught developer to shipping production-ready apps. Experience with React, Node.js, Three.js, and modern web technologies.",
+        "Akash Sharma's journey from self-directed learning and personal projects to professional full-stack development, with experience across React, Next.js, TypeScript, CMS, commerce, and real-time applications.",
     },
   });
 
@@ -290,7 +292,7 @@ async function main() {
         _key: key(),
         sectionHeader: sectionHeader({
           heading: heading.multi("h1", ["What I've\n"], ["Built.", "outline"]),
-          paragraph: "Click any project to expand it. Every project ships to production.",
+          paragraph: "A selection of projects I've built across full-stack applications, CMS-driven experiences, e-commerce, real-time systems, and interactive web.",
         }),
       },
       { _type: "projectsGridSection", _key: key(), mode: "all" },
@@ -300,15 +302,15 @@ async function main() {
         sectionHeader: sectionHeader({
           eyebrow: "Interested in collaborating?",
           heading: heading("Let's build the next one together.", "h2"),
-          paragraph: "Always looking for interesting problems to solve and great people to work with.",
+          paragraph: "I'm interested in building useful products, solving difficult problems, and working with people who care about good software.",
           ctas: [ctaBtn("Start a conversation →", "/contact", "primary")],
         }),
       },
     ],
     seo: {
-      title: "Projects | Akash Sharma - Full-Stack Developer",
+      title: "Projects | Akash Sharma — Full-Stack Developer",
       description:
-        "Explore my portfolio of production-ready projects including real-time systems, 3D web experiences, and full-stack applications.",
+        "Explore Akash Sharma's projects across full-stack web development, real-time applications, e-commerce, CMS-driven experiences, and interactive web.",
     },
   });
 
@@ -324,7 +326,7 @@ async function main() {
           eyebrow: "Get in touch",
           heading: heading("Let's Talk.", "h1"),
           paragraph:
-            "I'm currently seeking my first professional role in web development — frontend, backend, or full-stack. If you're hiring, have a project that needs building, or just want to connect, I'd welcome the conversation.",
+            "I'm currently open to full-time software engineering opportunities, project conversations, and professional connections. If you're hiring, have a project that needs building, or want to connect, I'd be happy to hear from you.",
         }),
         items: [
           contactItem("Email", "akashcodesharma@gmail.com", "violet", {
@@ -351,7 +353,7 @@ async function main() {
     seo: {
       title: "Contact Akash Sharma | Get in Touch",
       description:
-        "Interested in collaborating? Get in touch with me via email or social media. Available for freelance work and full-time opportunities.",
+        "Get in touch with Akash Sharma about full-time opportunities, projects, collaboration, or professional connections.",
     },
   });
 
@@ -400,11 +402,13 @@ async function main() {
       key: "open-stream",
       name: "OpenStream — Live Streaming Platform",
       description:
-        "A real-time live streaming platform enabling creators to broadcast instantly and engage through concurrent chat. Built using LiveKit for WebRTC-based media transport, Prisma for relational data management, and deployed on Vercel. Focused on clean architecture, state management, and scalable real-time event handling.",
+        "A full-stack live streaming platform for real-time video and audience interaction. Creators can stream from the browser using LiveKit through a custom studio supporting camera, microphone, screen sharing, multiple sources, and audio controls. It also includes real-time chat, creator/community interactions, authentication, and persistent application data.",
       tags: [
         { name: "Next.js", color: "blue-text-gradient" },
         { name: "LiveKit", color: "green-text-gradient" },
+        { name: "React", color: "blue-text-gradient" },
         { name: "Prisma", color: "pink-text-gradient" },
+        { name: "PostgreSQL", color: "orange-text-gradient" },
         { name: "WebRTC", color: "orange-text-gradient" },
       ],
       image: `${CDN}/OpenStreamImage-1_sntrdd.jpg`,
@@ -419,18 +423,19 @@ async function main() {
       sourceCodeLink: "https://github.com/CodesofAkash/open-stream",
       link: "https://open-stream.codesofakash.in",
       learning:
-        "Building OpenStream strengthened my understanding of real-time architecture — managing WebRTC connections, handling concurrent chat events, and maintaining consistent UI state across multiple participants.",
+        "Real-time architecture, WebRTC media flows, LiveKit, complex client state, authentication, database design, and building reliable real-time UX.",
       order: 0,
     },
     {
       key: "velvet-pour",
-      name: "Velvet Pour — Cocktail Brand Experience",
+      name: "Velvet Pour — CMS-Driven Web Experience",
       description:
-        "A motion-first single-page website built to explore advanced GSAP and ScrollTrigger animation workflows. Designed with immersive transitions, timeline-based sequencing, and smooth scroll interactions to create a cinematic browsing experience for a cocktail brand.",
+        "A cinematic CMS-driven web experience built with Next.js, Sanity and GSAP. Content and page structure are managed through Sanity, while motion design, scroll storytelling and interactive visuals create an immersive frontend. The project also became an exercise in internationalized content, performance optimisation, and building a polished production-style marketing site.",
       tags: [
         { name: "Next.js", color: "blue-text-gradient" },
-        { name: "GSAP", color: "green-text-gradient" },
         { name: "Sanity", color: "pink-text-gradient" },
+        { name: "GSAP", color: "green-text-gradient" },
+        { name: "TypeScript", color: "orange-text-gradient" },
       ],
       image: `${CDN}/mojito-cocktail-6_kudebd.jpg`,
       video: `${VCDN}/mojito-cocktail-video_mehx0v.mp4`,
@@ -446,18 +451,20 @@ async function main() {
       sourceCodeLink: "https://github.com/CodesofAkash/mojito-cocktail",
       link: "https://mojito-cocktail.vercel.app",
       learning:
-        "This project helped me master animation sequencing, scroll-based triggers, and performance optimisation for motion-heavy interfaces — understanding how to keep frame rates smooth while running complex GSAP timelines.",
+        "Sanity CMS, schema-driven content, editor-managed websites, internationalized content, GSAP sequencing and scroll interactions, and performance optimisation for motion-heavy interfaces.",
       order: 1,
     },
     {
       key: "apple-phone",
       name: "Apple Phone — 3D E-Commerce Experience",
       description:
-        "An interactive product experience combining Three.js-powered 3D iPhone models with a complete e-commerce workflow. Features variant selection, cart state management, and a demo payment flow — built independently using AI as an assistant, without tutorial guidance.",
+        "An interactive 3D e-commerce experience combining React, Three.js/React Three Fiber and GSAP with product variants, cart state, authentication, order handling, and Stripe Payment Intents checkout. Developed independently with AI as an implementation assistant while retaining architectural ownership and decision-making.",
       tags: [
-        { name: "Three.js", color: "blue-text-gradient" },
-        { name: "React.js", color: "green-text-gradient" },
+        { name: "React", color: "blue-text-gradient" },
+        { name: "Three.js", color: "green-text-gradient" },
+        { name: "React Three Fiber", color: "green-text-gradient" },
         { name: "GSAP", color: "pink-text-gradient" },
+        { name: "Node.js", color: "orange-text-gradient" },
         { name: "PostgreSQL", color: "orange-text-gradient" },
       ],
       image: `${CDN}/apple-phone-1_f16sbh.jpg`,
@@ -468,9 +475,12 @@ async function main() {
         `${CDN}/apple-phone-5_lyjlpi.jpg`, `${CDN}/apple-phone-6_um5zij.jpg`,
       ],
       sourceCodeLink: "https://github.com/CodesofAkash/apple-phone",
-      link: "https://apple-phone--codesofakash.vercel.app",
+      // No public demo right now — backend infrastructure is offline. Left
+      // unset rather than a URL to nowhere; the frontend already hides the
+      // "Live Demo" button when link is empty.
+      link: undefined,
       learning:
-        "Building this without a tutorial forced me to make real architectural decisions — integrating 3D rendering, cart state, and backend persistence into a single coherent system. This was the first project I designed end to end independently.",
+        "Architectural decision-making across frontend, 3D rendering, application state, authentication, backend persistence, and payment flows.",
       order: 2,
     },
   ];
@@ -499,13 +509,14 @@ async function main() {
     antonio: "https://avatars.githubusercontent.com/u/35677084?s=200&v=4",
   };
   const experiences = [
-    { title: "Web Development Foundations", companyName: "Independent Learning", icon: LOGOS.apnaCollege, iconBg: "#E6DEDD", date: "December 2023 – Early 2024", points: ["Began coding the day I purchased my first laptop, starting with HTML, CSS, and JavaScript fundamentals.", "Built small logic-based projects — Rock Paper Scissors, Snake Game, Calculator, and a YouTube UI clone — to understand how the web actually works.", "Practiced responsive layouts using Flexbox and CSS Grid while strengthening core JavaScript understanding.", "Developed early debugging discipline by solving layout and logic issues independently."] },
-    { title: "Frontend & Full-Stack Exploration", companyName: "Project-Based Learning", icon: LOGOS.codeWithHarry, iconBg: "#383E56", date: "Early – Mid 2024", points: ["Learned React fundamentals including hooks, component architecture, props, and state management.", "Built frontend clones — Spotify UI and Twitter homepage — to reverse-engineer complex layout systems.", "Moved into backend development with Node.js, Express, and MongoDB to understand full-stack data flow.", "Built learning-stage full-stack applications including a creator-support platform (Give Me a Chai) and API-driven projects tested via Postman and HTTPie."] },
-    { title: "Backend Focus & DSA Beginnings", companyName: "Self-Study Phase", icon: LOGOS.apnaCollege, iconBg: "#E6DEDD", date: "Mid 2024", points: ["Shifted deeper into backend architecture, API design, and database relationships.", "Started structured Data Structures & Algorithms practice in Java, progressing through arrays, linked lists, trees, and binary search.", "Developed stronger logical thinking through consistent problem-solving practice.", "Paused DSA and active development due to personal challenges — stepped away for an extended period."] },
-    { title: "Interruption & Reset", companyName: "Personal Phase", icon: LOGOS.codeWithHarry, iconBg: "#1a1a2e", date: "Late 2024", points: ["Experienced a significant pause in consistent development due to personal circumstances.", "Several earlier projects became inactive or were abandoned during this period.", "Used this time to gain perspective on discipline, long-term consistency, and the cost of scattered focus.", "Made a quiet decision to restart with more intentionality — fewer projects, deeper ownership."] },
-    { title: "Rebuilding Through Advanced Projects", companyName: "Focused Re-Entry", icon: LOGOS.jsMastery, iconBg: "#E6DEDD", date: "2025", points: ["Restarted development with project-driven learning in Three.js and GSAP to rebuild momentum and interest.", "Built interactive 3D product showcases, GSAP animation-heavy landing pages, and a backend-driven social platform.", "Explored real-time systems by building a Twitch-style live streaming platform (LiveKit) and a Zoom-style conferencing app.", "Studied microservices architecture concepts through an Uber-style backend experiment."] },
-    { title: "Refinement, Prioritisation & AI-Assisted Development", companyName: "Independent Development", icon: LOGOS.antonio, iconBg: "#383E56", date: "Late 2025 – Early 2026", points: ["Stopped maintaining scattered experiments and chose to refine a focused set of projects deeply.", "Scaled and restructured OpenStream (Twitch clone) independently — improving architecture, stability, and feature depth.", "Converted the Apple 3D showcase into a functioning e-commerce system with cart logic, variant selection, and a demo payment flow.", "Used AI tools as accelerators for refactoring and iteration while maintaining full architectural ownership and decision-making.", "Integrated AWS CloudFront CDN for asset delivery — first hands-on cloud infrastructure work."] },
-    { title: "Professional Preparation & Future Direction", companyName: "Career Focus", icon: LOGOS.apnaCollege, iconBg: "#E6DEDD", date: "2026 – Present", points: ["Finalising portfolio, resume, and public presence in preparation for first professional role.", "Restarted structured DSA practice in C++ to strengthen core problem-solving foundations.", "Designing a large-scale college content library platform with role-based access, resource management, mentorship features, and tiered architecture — the most complete system I will have independently designed.", "Actively seeking first internship or full-time opportunity to apply accumulated skills within a collaborative engineering environment."] },
+    { title: "Web Development Foundations", companyName: "Independent Learning", icon: LOGOS.apnaCollege, iconBg: "#E6DEDD", date: "December 2023 – Early 2024", points: ["Started coding in December 2023 with HTML, CSS, and JavaScript fundamentals.", "Built small projects including Rock Paper Scissors, Snake Game, Calculator, and a YouTube UI clone.", "Practiced responsive layouts with Flexbox and CSS Grid.", "Developed early debugging and problem-solving habits."] },
+    { title: "Frontend & Full-Stack Exploration", companyName: "Project-Based Learning", icon: LOGOS.codeWithHarry, iconBg: "#383E56", date: "Early – Mid 2024", points: ["Learned React fundamentals including hooks, component architecture, props, and state.", "Built Spotify and Twitter UI clones to understand complex layouts and components.", "Moved into Node.js, Express, and MongoDB to understand full-stack data flow.", "Built learning-stage full-stack and API-driven applications using tools such as Postman."] },
+    { title: "Backend Focus & DSA Beginnings", companyName: "Self-Study", icon: LOGOS.apnaCollege, iconBg: "#E6DEDD", date: "Mid 2024", points: ["Went deeper into backend architecture, API design, and database relationships.", "Started structured DSA practice in Java, progressing through arrays, linked lists, trees, and binary search.", "Strengthened logical thinking through problem solving.", "Later paused structured DSA and active development before restarting with a more focused approach."] },
+    { title: "Rebuilding Through Advanced Projects", companyName: "Focused Development", icon: LOGOS.jsMastery, iconBg: "#E6DEDD", date: "2025", points: ["Restarted development through project-driven learning in Three.js and GSAP.", "Built interactive 3D product experiences, animation-heavy interfaces, and full-stack applications.", "Explored real-time systems through a Twitch-style streaming platform using LiveKit.", "Moved from tutorial-based learning toward independent implementation."] },
+    { title: "Refinement & Independent Product Development", companyName: "Late 2025 – Early 2026", icon: LOGOS.antonio, iconBg: "#383E56", date: "Late 2025 – Early 2026", points: ["Focused on fewer projects with deeper ownership.", "Expanded OpenStream into a more complete live streaming platform.", "Developed the Apple 3D experience into a broader e-commerce system with variants, cart, authentication, orders, and payment integration.", "Used AI tools as development accelerators while retaining ownership of architecture and decisions."] },
+    { title: "Production-Oriented Development", companyName: "Early 2026", icon: LOGOS.jsMastery, iconBg: "#1a1a2e", date: "Early 2026", points: ["Built and refined CMS-driven and commerce-oriented projects using Sanity, Payload CMS, Medusa, Next.js, PostgreSQL, and related tools.", "Strengthened understanding of content modelling, commerce flows, API integration, performance, accessibility, and production-oriented application structure.", "Shifted from simply making projects work toward making them maintainable, reliable, and presentable as real products."] },
+    { title: "Full-Stack Developer Intern", companyName: "WeframeTech", iconBg: "#7c3aed", date: "2026", points: ["Worked on production web applications across e-commerce, event registration and ticketing, CMS-driven content platforms, and commerce backends.", "Built and maintained frontend functionality using Next.js, React, TypeScript, and Tailwind CSS, including product discovery, cart, checkout, order tracking, customer accounts, reviews, and saved items.", "Worked extensively with Sanity and Payload CMS, including schemas, page-builder systems, dynamic content, custom endpoints, lifecycle hooks, and editor-managed websites.", "Contributed to a Medusa v2 commerce backend with reviews, saved items, advertising, revenue reporting, and server-side abuse protections.", "Worked on event registration and ticketing features including PDF tickets, QR-code tickets, and browser-based camera scanning.", "Investigated and fixed production issues involving caching, Server Actions, authentication, pagination, accessibility, performance, and application security.", "Worked with Git/GitHub and collaborative pull-request workflows across multiple production repositories."] },
+    { title: "Current Direction", companyName: "Career & Independent Development", icon: LOGOS.apnaCollege, iconBg: "#E6DEDD", date: "September 2026 – Present", points: ["Completing a six-month professional internship and transitioning into the next full-time software engineering opportunity.", "Continuing structured DSA practice in C++ alongside development.", "Continuing OpenStream, Apple 3D E-Commerce, and portfolio work while keeping the project set focused.", "Updating public work across GitHub, LinkedIn, X, Instagram, and the portfolio.", "Looking for full-time opportunities where I can continue growing as a full-stack developer and take ownership of real products."] },
   ];
   for (let i = 0; i < experiences.length; i++) {
     const e = experiences[i];
@@ -523,26 +534,42 @@ async function main() {
   }
 
   console.log("Seeding technologies...");
+  // Icons kept only for techs that already had a real Cloudinary asset — the
+  // rest fall back to a first-letter pill (technology.icon is optional) until
+  // real icons are sourced for them.
   const technologies = [
     { name: "JavaScript", icon: `${CDN}/js_svckyk.svg` },
     { name: "TypeScript", icon: `${CDN}/typescript_dqkj0j.png` },
     { name: "React.js", icon: `${CDN}/reactjs_mykfpg.png` },
     { name: "Next.js", icon: `${CDN}/nextjs_f6qd7x.png` },
     { name: "Tailwind CSS", icon: `${CDN}/tailwind_gkafu4.png` },
-    { name: "Three.js", icon: `${CDN}/threejs_dlcegx.svg` },
-    { name: "GSAP", icon: `${CDN}/gsap_boaydq.png` },
+    { name: "Zustand" },
+    { name: "TanStack Query" },
     { name: "Node.js", icon: `${CDN}/nodejs_ur2zox.png` },
     { name: "Express.js", icon: `${CDN}/express_ml2xwr.svg` },
-    { name: "Socket.IO", icon: `${CDN}/socketio_vonskh.png` },
+    { name: "REST APIs" },
+    { name: "Next.js Server Actions" },
+    { name: "Zod" },
+    { name: "Sanity" },
+    { name: "Payload CMS" },
+    { name: "Medusa" },
+    { name: "PostgreSQL" },
+    { name: "Prisma", icon: `${CDN}/prisma_b3owp4.svg` },
     { name: "MongoDB", icon: `${CDN}/mongodb_sf0rxe.png` },
-    { name: "Prisma ORM", icon: `${CDN}/prisma_b3owp4.svg` },
+    { name: "Mongoose" },
+    { name: "LiveKit" },
+    { name: "WebRTC" },
+    { name: "Three.js", icon: `${CDN}/threejs_dlcegx.svg` },
+    { name: "React Three Fiber" },
+    { name: "GSAP", icon: `${CDN}/gsap_boaydq.png` },
     { name: "Git", icon: `${CDN}/git_jplhr2.png` },
+    { name: "GitHub" },
+    { name: "Docker" },
     { name: "Postman", icon: `${CDN}/postman_g8ikuc.png` },
-    { name: "AWS", icon: `${CDN}/aws-2_bj0olj.svg` },
+    { name: "Vercel" },
+    { name: "Render" },
     { name: "Figma", icon: `${CDN}/figma_y3pmrr.png` },
-    { name: "WordPress", icon: `${CDN}/wordpress_l38kfs.png` },
-    { name: "C++", icon: `${CDN}/cpp_k9uf4z.svg` },
-    { name: "Java", icon: `${CDN}/java_ieeb3s.svg` },
+    { name: "Linux" },
   ];
   for (let i = 0; i < technologies.length; i++) {
     const t = technologies[i];
