@@ -15,7 +15,7 @@ export interface SanityImageValue {
 export interface HeadingSegment {
   _key?: string;
   text: string;
-  style?: "default" | "muted" | "brand" | "outline";
+  style?: "default" | "muted" | "brand" | "outline" | "gradient";
   tag?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 }
 

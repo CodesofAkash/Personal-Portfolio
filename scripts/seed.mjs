@@ -175,7 +175,7 @@ async function main() {
         _type: "heroSection",
         _key: key(),
         eyebrow: "Full-Stack Developer · Open to Opportunities",
-        heading: heading.multi("h1", ["Hi, I'm "], ["Akash.", "brand"]),
+        heading: heading.multi("h1", ["Hi, I'm "], ["Akash.", "gradient"]),
         subheadLine1: "I build production web applications with React, Next.js, TypeScript, and Node.js.",
         subheadLine2:
           "From e-commerce and CMS-driven platforms to real-time applications and interactive experiences, I enjoy building products that work beyond the demo.",

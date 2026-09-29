@@ -7,6 +7,12 @@ const SEGMENT_STYLE: Record<NonNullable<HeadingSegment["style"]>, CSSProperties>
   muted: { color: C.dim },
   brand: { color: C.violet },
   outline: { WebkitTextStroke: `2px ${C.violet}`, color: "transparent" },
+  gradient: {
+    backgroundImage: `linear-gradient(135deg, ${C.violet}, ${C.rose}, ${C.amber})`,
+    WebkitBackgroundClip: "text",
+    backgroundClip: "text",
+    color: "transparent",
+  },
 };
 
 interface HeadingProps {
