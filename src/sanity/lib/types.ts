@@ -122,6 +122,7 @@ export interface HeroSection {
   subheadLine2: string;
   ctas?: ResolvedCtaBtn[];
   model?: string;
+  bgImage?: string;
   stats?: Stat[];
 }
 

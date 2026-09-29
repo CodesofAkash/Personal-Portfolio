@@ -132,7 +132,7 @@ const HOME_PAGE_QUERY = /* groq */ `*[_id == "homePage"][0]{
   sections[]{
     _key, _type,
     _type == "heroSection" => {
-      eyebrow, name, heading, subheadLine1, subheadLine2, ctas[]${ctaBtnFragment}, model, stats
+      eyebrow, name, heading, subheadLine1, subheadLine2, ctas[]${ctaBtnFragment}, model, bgImage, stats
     },
     _type == "statsSection" => { sectionHeader${sectionHeaderFragment}, stats },
     _type == "featuredProjectsSection" => {

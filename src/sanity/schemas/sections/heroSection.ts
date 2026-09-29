@@ -31,6 +31,12 @@ export const heroSection = defineType({
       description: "The .glb/.gltf shown beside the hero text, hosted on Cloudinary (or any CDN) — paste the fetch URL here, not an upload. Leave empty to keep the built-in default.",
     }),
     defineField({
+      name: "bgImage",
+      title: "Background image URL",
+      type: "url",
+      description: "Photo behind the 3D model, hosted on Cloudinary (or any CDN) — paste the fetch URL here, not an upload. Leave empty for the plain grid/glow background.",
+    }),
+    defineField({
       name: "stats",
       title: "Reveal-panel stats",
       type: "array",

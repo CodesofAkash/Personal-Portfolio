@@ -181,10 +181,8 @@ async function main() {
         subheadLine2:
           "From e-commerce and CMS-driven platforms to real-time applications and interactive experiences, I enjoy building products that work beyond the demo.",
         ctas: [ctaBtn("See my work →", "/projects", "primary"), ctaBtn("Get in touch", "/contact", "secondary")],
-        // TODO once the Chevrolet model is uploaded to S3/CloudFront and optimized:
-        // replace with its real URL (or just paste it straight into Sanity Studio —
-        // this field is CMS-editable, no redeploy needed either way).
-        model: `${MODEL_CDN}/desktop_pc/scene.gltf`,
+        model: `${MODEL_CDN}/corvette/corvette-optimized.glb`,
+        bgImage: "https://res.cloudinary.com/ddawd3kp5/image/upload/v1790678417/herobg_vd56ah.jpg",
         stats: [
           { _type: "stat", _key: key(), value: "2+", label: "Years Building", variant: "violet" },
           { _type: "stat", _key: key(), value: "6 Months", label: "Professional Experience", variant: "teal" },
