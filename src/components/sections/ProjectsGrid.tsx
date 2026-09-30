@@ -250,7 +250,21 @@ const CompactCard = ({ project, isActive, onClick, index }: { project: EnrichedP
           </div>
         )}
         {project.video && (
-          <video ref={vidRef} src={project.video} muted loop playsInline className="absolute inset-0 w-full h-full transition-opacity duration-500" style={{ objectFit: "cover", opacity: hovering ? 1 : 0 }} />
+          // preload="none" — this video sits in the DOM (opacity:0) for
+          // every card in the grid on initial load, not just the hovered
+          // one; without an explicit hint, browsers can start fetching
+          // metadata for all of them at once. hover's own .play() call
+          // triggers loading exactly when it's actually needed.
+          <video
+            ref={vidRef}
+            src={project.video}
+            muted
+            loop
+            playsInline
+            preload="none"
+            className="absolute inset-0 w-full h-full transition-opacity duration-500"
+            style={{ objectFit: "cover", opacity: hovering ? 1 : 0 }}
+          />
         )}
         {!project.video && (
           <div className="absolute inset-0 transition-opacity duration-500 flex items-center justify-center" style={{ opacity: hovering ? 1 : 0, background: `rgba(5,8,22,0.65)` }}>
