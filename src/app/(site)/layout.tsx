@@ -81,13 +81,25 @@ export default async function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(personStructuredData) }}
         />
-        <div className="relative z-0 bg-primary min-h-screen flex flex-col">
+        {/* min-h-dvh, not min-h-screen (100vh) — Hero.tsx sizes itself off
+            100dvh, and if vh/dvh ever resolve even a few px apart in a given
+            browser, that mismatch alone shows up as a gap at the bottom of
+            the hero. Keeping every full-height reference on the same unit
+            removes the possibility entirely. */}
+        <div className="relative z-0 bg-primary min-h-dvh flex flex-col">
           <Navbar
             brandName={settings?.name}
             logo={settings?.logo}
             navigationItems={settings?.header?.navigationItems ?? []}
           />
-          <main className="flex-1 pt-[68px]">{children}</main>
+          {/* Plain inline style, not Tailwind's pt-(--navbar-height) — that
+              arbitrary-custom-property syntax measurably failed to apply at
+              all (confirmed via a live rect.top readout showing 0 instead
+              of the navbar's height), leaving content to render underneath
+              the fixed navbar. Inline style has no such ambiguity. */}
+          <main className="flex-1" style={{ paddingTop: "var(--navbar-height)" }}>
+            {children}
+          </main>
           <Footer
             brandName={settings?.name}
             logo={settings?.logo}

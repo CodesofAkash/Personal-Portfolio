@@ -15,10 +15,49 @@
   --font-sans: var(--font-poppins), sans-serif;
 }
 
+:root {
+  /* Fallback for the very first paint before Navbar's ResizeObserver
+     measures and overwrites this (see Navbar.tsx) — layout.tsx's <main>
+     padding and Hero.tsx's height calc both read this custom property. */
+  --navbar-height: 68px;
+
+  /* Single shared scale for every hero UI element (markers, the reveal
+     panel, the point navigator, the scroll indicator) — each one sizes
+     itself as calc(var(--hero-ui-unit) * someMultiplier) instead of its
+     own independently hand-tuned clamp(). Hand-tuning ~15 separate clamp()
+     expressions was the actual bug: each saturated (hit its own min/max)
+     at a different, too-narrow viewport width, so elements stopped growing
+     at ordinary desktop widths (maxed out by ~1600px) while also drifting
+     out of proportion with each other. One calibrated curve, reused
+     everywhere, keeps every element proportional to every other one and
+     gives real room to grow before saturating:
+       ~375px (phone):    ≈0.79rem
+       ~1440px (laptop):  ≈0.99rem  (the original design's implicit baseline)
+       ~1920px (desktop): ≈1.08rem
+       ~3840px (4K):      ≈1.44rem
+       saturates only past ~5200px, i.e. never in practice. */
+  --hero-ui-unit: clamp(0.85rem, 0.3vw + 0.72rem, 1.7rem);
+}
+
 html,
 body {
   scroll-behavior: smooth;
   color-scheme: dark;
+  /* Safety net against horizontal page scroll — the hero's full-bleed
+     background/canvas and its absolutely-positioned overlay (markers, the
+     reveal panel, the navigator) are the likely source if anything ever
+     pokes past the viewport edge on a narrow screen, but this guarantees
+     no horizontal scrollbar regardless of which element it is. */
+  overflow-x: hidden;
+  /* scroll-snap-type removed entirely — every variant of it (mandatory,
+     proximity, with/without scroll-snap-stop) fought the fixed navbar:
+     without scroll-padding-top accounting for it, the browser's snap
+     mechanism auto-corrects scroll position to align content's raw top
+     edge with the viewport top instead of the space below the navbar,
+     which both recreated the "gap" the height calc was fixing and caused
+     scrolling past the hero to bounce back. Confirmed via a live
+     getBoundingClientRect() readout showing the page sitting auto-scrolled
+     by ~65px (the navbar's own height) with this enabled. */
 }
 
 * {

@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { Group } from "three";
+import type { AnimationClip, Group } from "three";
 import { GLTFLoader, type GLTF } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { MeshoptDecoder } from "three/examples/jsm/libs/meshopt_decoder.module.js";
 
 interface SafeGLTFState {
   scene: Group | null;
+  animations: AnimationClip[];
   progress: number;
   failed: boolean;
 }
@@ -21,6 +22,7 @@ interface SafeGLTFState {
 export function useSafeGLTF(url: string): SafeGLTFState {
   const [state, setState] = useState<SafeGLTFState>({
     scene: null,
+    animations: [],
     progress: 0,
     failed: false,
   });
@@ -28,16 +30,16 @@ export function useSafeGLTF(url: string): SafeGLTFState {
   useEffect(() => {
     let cancelled = false;
 
-    // The Corvette model is compressed with EXT_meshopt_compression — without
-    // this decoder registered, GLTFLoader can't decompress the vertex
-    // buffers and silently produces garbage/NaN positions instead of
-    // erroring, which is what "Featured 3D model unavailable" traced back to.
+    // Compressed models here use EXT_meshopt_compression — without this
+    // decoder registered, GLTFLoader can't decompress the vertex buffers
+    // and silently produces garbage/NaN positions instead of erroring,
+    // which is what "Featured 3D model unavailable" once traced back to.
     const loader = new GLTFLoader();
     loader.setMeshoptDecoder(MeshoptDecoder);
     loader.load(
       url,
       (gltf: GLTF) => {
-        if (!cancelled) setState({ scene: gltf.scene, progress: 100, failed: false });
+        if (!cancelled) setState({ scene: gltf.scene, animations: gltf.animations, progress: 100, failed: false });
       },
       (event: ProgressEvent) => {
         if (!cancelled && event.lengthComputable) {
@@ -45,7 +47,7 @@ export function useSafeGLTF(url: string): SafeGLTFState {
         }
       },
       () => {
-        if (!cancelled) setState({ scene: null, progress: 0, failed: true });
+        if (!cancelled) setState({ scene: null, animations: [], progress: 0, failed: true });
       },
     );
 
