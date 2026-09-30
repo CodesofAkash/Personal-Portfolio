@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { NavigationItem, SanityImageValue } from "@/sanity/lib/types";
@@ -58,9 +58,34 @@ const Navbar = ({ brandName, logo, navigationItems }: NavbarProps) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
   const isActive = (href: string) => pathname === href;
+  const navRef = useRef<HTMLElement>(null);
+
+  // Publishes the navbar's real measured height as a CSS custom property —
+  // layout.tsx's <main> padding and Hero.tsx's viewport-height calc both
+  // read this instead of each guessing the same hardcoded pixel number.
+  // Two places agreeing on a magic number is exactly how they drift out of
+  // sync (a real gap showed up at 100% zoom from a few px of mismatch);
+  // one measured source of truth can't drift. ResizeObserver also covers
+  // the navbar wrapping to a second line on narrow screens.
+  useEffect(() => {
+    const el = navRef.current;
+    if (!el) return;
+    const publish = () => document.documentElement.style.setProperty("--navbar-height", `${el.offsetHeight}px`);
+    publish();
+    const observer = new ResizeObserver(publish);
+    observer.observe(el);
+    // Belt-and-suspenders alongside ResizeObserver — some browsers don't
+    // reliably re-fire it purely from a browser zoom change.
+    window.addEventListener("resize", publish);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", publish);
+    };
+  }, []);
 
   return (
     <nav
+      ref={navRef}
       className="w-full fixed top-0 z-20 px-6 sm:px-16 py-4"
       style={{
         background: "rgba(5,8,22,0.75)",
