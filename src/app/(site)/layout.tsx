@@ -19,6 +19,19 @@ const poppins = Poppins({
   display: "swap",
 });
 
+// Without this, every page under this layout is fully static (prerendered
+// once, at build time) — a Sanity content edit is live in the CMS
+// immediately, but nobody sees it until the next deploy, which defeats the
+// actual point of a CMS. Set once here (a layout's revalidate applies to
+// every route beneath it), not per-page. SanityLive (below) still pushes
+// instant updates to a tab that's already open when a change happens; this
+// is what makes a *fresh* page load pick it up too, without either needing
+// a redeploy. 60s balances "edits go live fast" against Sanity API load —
+// tune down for content that needs to be more immediate, or add on-demand
+// revalidation (a Sanity webhook calling revalidateTag) if 60s ever isn't
+// fast enough.
+export const revalidate = 60;
+
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSettings();
   return {
