@@ -12,6 +12,15 @@ import { getSettings } from "@/sanity/lib/queries";
 import { buildMetadata } from "@/sanity/lib/seo";
 import { resolveImageUrl } from "@/sanity/lib/image";
 
+// A purely static route (no revalidate config at all) is baked permanently
+// at build time and is NOT eligible for on-demand revalidation — a webhook
+// calling revalidatePath() against it reports success but is a silent
+// no-op, since there's no ISR cache entry for it to invalidate. This large
+// interval exists only to make the route ISR-eligible; it's never actually
+// waited out in practice because /api/revalidate's on-demand call is what
+// does the real work on every Sanity publish.
+export const revalidate = 31536000;
+
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
