@@ -46,9 +46,11 @@ export async function POST(request: NextRequest) {
   // in theory: revalidatePath alone visibly forced the page to regenerate
   // every time, yet it kept re-reading the same stale tagged fetch result.
   revalidatePath("/", "layout");
-  // Next 16 requires a profile as the second argument — { expire: 0 } asks
-  // for the closest thing to immediate expiration available outside a
-  // Server Action (updateTag is Server-Action-only).
-  revalidateTag("sanity", { expire: 0 });
+  // Next 16 requires a profile as the second argument. A raw { expire: 0 }
+  // object (tried first) left stale/revalidate unset, which may not force
+  // an actual recompute — confirmed via a direct webhook call still
+  // serving stale content afterward. "max" is the named profile Next
+  // itself documents for this exact call shape.
+  revalidateTag("sanity", "max");
   return NextResponse.json({ revalidated: true, now: Date.now() });
 }

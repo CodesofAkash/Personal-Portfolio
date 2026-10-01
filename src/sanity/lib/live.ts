@@ -46,8 +46,13 @@ export async function sanityFetch<T = unknown>({
     // actually being cleared by it: the page regenerated on every webhook
     // call, yet kept re-reading this same stale cached result each time.
     // Tagging it lets /api/revalidate target this exact entry directly
-    // with revalidateTag(), the mechanism Next documents for this.
-    next: { tags: ["sanity"] },
+    // with revalidateTag(), the mechanism Next documents for this. The
+    // revalidate window matches the page's own 60s fallback in layout.tsx
+    // deliberately: if this were long (e.g. a year) while the page
+    // revalidates every 60s, a regenerated page would still just re-read
+    // this same long-lived cached fetch result on every regeneration,
+    // silently defeating the 60s safety net entirely.
+    next: { tags: ["sanity"], revalidate: 60 },
   });
   if (!res.ok) {
     throw new Error(`[sanity] query failed: ${res.status} ${res.statusText}`);
