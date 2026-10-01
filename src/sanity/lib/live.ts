@@ -39,6 +39,15 @@ export async function sanityFetch<T = unknown>({
   }
   const res = await fetch(`${queryUrl}?${search.toString()}`, {
     headers: readToken ? { Authorization: `Bearer ${readToken}` } : undefined,
+    // Full Route Cache (the page shell) and Data Cache (this fetch's own
+    // result) are separate caches. revalidatePath() reliably invalidates
+    // the former — confirmed via Vercel's cache header flipping to
+    // REVALIDATED — but a plain untagged fetch's Data Cache entry wasn't
+    // actually being cleared by it: the page regenerated on every webhook
+    // call, yet kept re-reading this same stale cached result each time.
+    // Tagging it lets /api/revalidate target this exact entry directly
+    // with revalidateTag(), the mechanism Next documents for this.
+    next: { tags: ["sanity"] },
   });
   if (!res.ok) {
     throw new Error(`[sanity] query failed: ${res.status} ${res.statusText}`);
