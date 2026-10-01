@@ -41,5 +41,21 @@ export async function POST(request: NextRequest) {
   }
 
   revalidatePath("/", "layout");
+
+  // revalidatePath() only marks the page stale — Vercel's actual
+  // regeneration runs lazily on whichever request happens to hit the page
+  // next, which is what produces the 15s-2min variance seen in testing:
+  // nothing forces it to run until some real visitor's request triggers
+  // it. Fetching the page here, inside the webhook itself, forces that
+  // regeneration to run immediately instead, so a real visitor lands on
+  // an already-fresh cached page. Sanity doesn't care if this adds a
+  // couple of seconds to the webhook's own response time. Awaited, not
+  // fire-and-forget — an unawaited request risks being killed when this
+  // function returns, since Vercel can tear down the runtime right after
+  // the response is sent. request.url's origin (not a hardcoded site URL)
+  // so this keeps working correctly against preview deployments too.
+  const origin = new URL(request.url).origin;
+  await fetch(origin, { cache: "no-store" }).catch(() => {});
+
   return NextResponse.json({ revalidated: true, now: Date.now() });
 }
