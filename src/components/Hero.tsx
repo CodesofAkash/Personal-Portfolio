@@ -74,16 +74,24 @@ const Hero = ({ section }: HeroProps) => {
     // scroll-past in a way that both recreated a gap and bounced scrolling
     // back. Confirmed via a live rect measurement showing the page sitting
     // auto-scrolled by exactly the navbar's height with it enabled.
-    // overflow-x-hidden only (not overflow-hidden) on this and the inner
-    // div — the scroll button below deliberately sits half outside hero's
-    // own box, straddling the boundary with the next section, and full
+    // overflow-x-hidden (not overflow-hidden) on this and the inner div —
+    // the scroll button below deliberately sits half outside hero's own
+    // box, straddling the boundary with the next section, and full
     // overflow-hidden would clip that half away. Horizontal clipping still
-    // matters (the full-bleed background), vertical doesn't need it.
+    // matters (the full-bleed background), vertical doesn't need it —
+    // except per the CSS overflow spec, setting only overflow-x and
+    // leaving overflow-y unset doesn't actually leave it 'visible': the
+    // browser computes an unset axis as 'auto' as soon as the other axis
+    // is anything but 'visible', and 'auto' clips overflow just like
+    // 'hidden' does. Confirmed this was silently clipping the straddling
+    // half (a hard cutoff at the box edge, not the button's natural
+    // rounded bottom) despite this comment's original intent — explicit
+    // overflow-y-visible is what actually keeps it visible.
     // zIndex:2 — without an explicit stacking level, the next section
     // (later in the DOM, default z-index:auto) would paint over that
     // straddling half by normal DOM-order stacking; this lifts hero above
     // it. Still well under the navbar's z-20.
-    <section className="relative w-full overflow-x-hidden" style={{ background: "#050816", zIndex: 2 }}>
+    <section className="relative w-full overflow-x-hidden overflow-y-visible" style={{ background: "#050816", zIndex: 2 }}>
       {/* Exactly the visible viewport, never more/less — reads the same
           measured --navbar-height custom property <main>'s padding uses
           (Navbar.tsx publishes it via ResizeObserver), so navbar + this
@@ -93,7 +101,7 @@ const Hero = ({ section }: HeroProps) => {
           background — the model and its reveal points go beyond the
           navbar's max-w-7xl content column too, unlike every other
           section on the site. */}
-      <div className="relative w-full overflow-x-hidden" style={{ height: "calc(100dvh - var(--navbar-height))" }}>
+      <div className="relative w-full overflow-x-hidden overflow-y-visible" style={{ height: "calc(100dvh - var(--navbar-height))" }}>
         <div
           className="absolute inset-0"
           style={{ background: "radial-gradient(circle at 30% 35%, #7c1d1d 0%, #2a0a0a 45%, #000000 85%)" }}
