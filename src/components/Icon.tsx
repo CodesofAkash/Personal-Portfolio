@@ -1,7 +1,23 @@
-import DOMPurify from "isomorphic-dompurify";
+import createDOMPurify from "dompurify";
+import { parseHTML } from "linkedom";
 import Image from "next/image";
 import type { SanityImageValue } from "@/sanity/lib/types";
 import { resolveImageUrl } from "@/sanity/lib/image";
+
+// Not isomorphic-dompurify — it pulls in jsdom, whose own dependency tree
+// (html-encoding-sniffer -> an ESM-only package) breaks CommonJS interop
+// when Turbopack bundles it into Vercel's deployed serverless function.
+// Confirmed via production runtime logs: every page regeneration touching
+// this component crashed before producing output, and even explicitly
+// excluding jsdom via next.config.ts's serverExternalPackages didn't stop
+// Turbopack from still inlining it — confirmed locally by grepping the
+// built chunk afterward. linkedom is a much lighter, pure-JS DOM with no
+// such dependency; this keeps DOMPurify's own well-tested SVG sanitization
+// logic unchanged, just runs it on a DOM that actually bundles cleanly.
+// This component only ever renders server-side, so one shared instance is
+// enough — no browser-vs-Node branching needed.
+const { window } = parseHTML("<!DOCTYPE html><html><body></body></html>");
+const DOMPurify = createDOMPurify(window as unknown as Parameters<typeof createDOMPurify>[0]);
 
 interface IconProps {
   image?: SanityImageValue;
