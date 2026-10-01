@@ -74,24 +74,25 @@ const Hero = ({ section }: HeroProps) => {
     // scroll-past in a way that both recreated a gap and bounced scrolling
     // back. Confirmed via a live rect measurement showing the page sitting
     // auto-scrolled by exactly the navbar's height with it enabled.
-    // overflow-x-hidden (not overflow-hidden) on this and the inner div —
-    // the scroll button below deliberately sits half outside hero's own
-    // box, straddling the boundary with the next section, and full
-    // overflow-hidden would clip that half away. Horizontal clipping still
-    // matters (the full-bleed background), vertical doesn't need it —
-    // except per the CSS overflow spec, setting only overflow-x and
-    // leaving overflow-y unset doesn't actually leave it 'visible': the
-    // browser computes an unset axis as 'auto' as soon as the other axis
-    // is anything but 'visible', and 'auto' clips overflow just like
-    // 'hidden' does. Confirmed this was silently clipping the straddling
-    // half (a hard cutoff at the box edge, not the button's natural
-    // rounded bottom) despite this comment's original intent — explicit
-    // overflow-y-visible is what actually keeps it visible.
+    // No overflow-x-hidden here, deliberately — the scroll button below
+    // sits half outside hero's own box, straddling the boundary with the
+    // next section, and ANY non-visible overflow-x forces overflow-y to
+    // compute as 'auto' instead of 'visible' per the CSS overflow spec
+    // (confirmed via DevTools' Computed panel: overflow-y showed 'auto'
+    // despite an explicit overflow-y-visible class declaring otherwise —
+    // the spec converts a declared 'visible' on one axis to 'auto' the
+    // moment the other axis isn't 'visible' or 'clip', with no way to
+    // override it short of making both axes visible). 'auto' still clips
+    // unscrolled content exactly like 'hidden' does, which is what was
+    // silently cutting the button off at this box's edge. Global
+    // horizontal-scrollbar protection still exists — html/body's own
+    // overflow-x:hidden in globals.css — so this element doesn't need its
+    // own local copy; it was redundant and is what caused this.
     // zIndex:2 — without an explicit stacking level, the next section
     // (later in the DOM, default z-index:auto) would paint over that
     // straddling half by normal DOM-order stacking; this lifts hero above
     // it. Still well under the navbar's z-20.
-    <section className="relative w-full overflow-x-hidden overflow-y-visible" style={{ background: "#050816", zIndex: 2 }}>
+    <section className="relative w-full" style={{ background: "#050816", zIndex: 2 }}>
       {/* Exactly the visible viewport, never more/less — reads the same
           measured --navbar-height custom property <main>'s padding uses
           (Navbar.tsx publishes it via ResizeObserver), so navbar + this
@@ -101,7 +102,7 @@ const Hero = ({ section }: HeroProps) => {
           background — the model and its reveal points go beyond the
           navbar's max-w-7xl content column too, unlike every other
           section on the site. */}
-      <div className="relative w-full overflow-x-hidden overflow-y-visible" style={{ height: "calc(100dvh - var(--navbar-height))" }}>
+      <div className="relative w-full" style={{ height: "calc(100dvh - var(--navbar-height))" }}>
         <div
           className="absolute inset-0"
           style={{ background: "radial-gradient(circle at 30% 35%, #7c1d1d 0%, #2a0a0a 45%, #000000 85%)" }}
