@@ -1,6 +1,6 @@
 import { defineLive } from "next-sanity/live";
 import { client } from "./client";
-import { readToken } from "../env";
+import { readToken, projectId, dataset, apiVersion } from "../env";
 
 // SanityLive still comes from the library — it's a self-contained client
 // component (its own EventSource connection) that pushes instant updates
@@ -13,18 +13,19 @@ const { SanityLive } = defineLive({
 });
 export { SanityLive };
 
-// sanityFetch itself is NOT the library's version. defineLive's own
-// sanityFetch tags every fetch via cacheTag()/cacheLife() from next/cache —
-// APIs that next.config.ts's cacheComponents flag (off, and a significant
-// app-wide toggle to turn on) is required for. Without it, those fetches
-// still got cached somewhere Next's revalidatePath() couldn't reach:
-// confirmed a webhook-triggered revalidatePath() visibly forced the page to
-// regenerate (Vercel's cache header went STALE -> REVALIDATED), but the
-// regenerated page still served the old Sanity content — a real content
-// edit never showed up even minutes later, with Sanity's CDN propagation
-// window (~60s) long since passed. This is a plain client.fetch() instead,
-// which Next's ordinary, stable caching model governs — no surprise extra
-// cache layer, nothing for revalidatePath()/revalidateTag() to miss.
+// Deliberately NOT client.fetch(). @sanity/client's Node transport
+// (get-it) imports fetch directly from the `undici` package rather than
+// calling globalThis.fetch, which is what Next.js actually patches and
+// tracks for on-demand invalidation. The observed symptom confirmed this
+// precisely: a webhook-triggered revalidatePath() reported success and
+// even flipped Vercel's cache header to REVALIDATED (proving the page
+// really did regenerate), yet the content stayed pinned to whatever value
+// this fetch first returned — unresponsive to every later revalidatePath
+// call. Calling the real, Next-patched fetch() directly against Sanity's
+// HTTP API puts this fetch in the same cache/invalidation graph
+// revalidatePath() actually walks.
+const queryUrl = `https://${projectId}.apicdn.sanity.io/v${apiVersion}/data/query/${dataset}`;
+
 export async function sanityFetch<T = unknown>({
   query,
   params = {},
@@ -32,6 +33,16 @@ export async function sanityFetch<T = unknown>({
   query: string;
   params?: Record<string, unknown>;
 }): Promise<{ data: T }> {
-  const data = await client.fetch<T>(query, params);
-  return { data };
+  const search = new URLSearchParams({ query });
+  for (const [key, value] of Object.entries(params)) {
+    search.set(`$${key}`, JSON.stringify(value));
+  }
+  const res = await fetch(`${queryUrl}?${search.toString()}`, {
+    headers: readToken ? { Authorization: `Bearer ${readToken}` } : undefined,
+  });
+  if (!res.ok) {
+    throw new Error(`[sanity] query failed: ${res.status} ${res.statusText}`);
+  }
+  const { result } = (await res.json()) as { result: T };
+  return { data: result };
 }
