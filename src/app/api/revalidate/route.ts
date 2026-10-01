@@ -1,4 +1,4 @@
-import { revalidatePath, revalidateTag } from "next/cache";
+import { revalidatePath } from "next/cache";
 import { NextResponse, type NextRequest } from "next/server";
 import { parseBody } from "next-sanity/webhook";
 
@@ -40,17 +40,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ message: "Invalid signature" }, { status: 401 });
   }
 
-  // Two separate caches: revalidatePath clears the page shell (Full Route
-  // Cache), revalidateTag clears the Sanity fetch's own cached result
-  // (Data Cache) — confirmed as genuinely separate in practice, not just
-  // in theory: revalidatePath alone visibly forced the page to regenerate
-  // every time, yet it kept re-reading the same stale tagged fetch result.
   revalidatePath("/", "layout");
-  // Next 16 requires a profile as the second argument. A raw { expire: 0 }
-  // object (tried first) left stale/revalidate unset, which may not force
-  // an actual recompute — confirmed via a direct webhook call still
-  // serving stale content afterward. "max" is the named profile Next
-  // itself documents for this exact call shape.
-  revalidateTag("sanity", "max");
   return NextResponse.json({ revalidated: true, now: Date.now() });
 }
