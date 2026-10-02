@@ -712,11 +712,33 @@ const HeroSceneInner = ({ scene, animations, panels }: { scene: Group; animation
           its own clear color doesn't paint over it. */}
       <ModelErrorBoundary label="Featured 3D model">
         {/* No frameloop="demand" here — the animation needs to render every
-            frame regardless of user interaction, unlike the static car. */}
+            frame regardless of user interaction, unlike the static car.
+            That makes this canvas the most expensive one in the project per
+            frame, so unlike Ball/Computers/Earth, it can't afford dead
+            weight in its own render config:
+            - No `shadows` — every material here is KHR_materials_unlit with
+              baked-in lighting (see SceneContent below) and nothing in this
+              file ever sets castShadow/receiveShadow, so the shadow map
+              setup and per-frame shadow pass this prop turns on were
+              costing real time for zero visible effect.
+            - No `preserveDrawingBuffer` — nothing in the codebase ever
+              reads this canvas's buffer back (no screenshot/export
+              feature); it just disables the browser's normal buffer-swap
+              optimization, worst here of all four 3D canvases since this
+              is the one that redraws every single frame regardless of
+              interaction.
+            - `dpr={[1, 2]}` caps rendering at 2x device pixel ratio instead
+              of the uncapped default (a phone at DPR 3 would otherwise
+              render 9x the pixels of DPR 1 for a visually marginal gain
+              over DPR 2). This combination is suspected to be why a
+              PageSpeed Insights / Lighthouse run against the home page
+              crashed its own headless browser tab under throttled mobile
+              CPU conditions rather than just scoring low — confirm by
+              re-running the audit after this ships. */}
         <Canvas
-          shadows
+          dpr={[1, 2]}
           camera={{ fov: FOV_DEG, position: [startPos.x, startPos.y, startPos.z], near: distance / 100, far: distance * 100 }}
-          gl={{ preserveDrawingBuffer: true, toneMapping: NoToneMapping, alpha: true }}
+          gl={{ toneMapping: NoToneMapping, alpha: true }}
           style={{ position: "relative" }}
         >
           <ResponsiveFov baseFov={FOV_DEG} />
