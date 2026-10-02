@@ -34,6 +34,20 @@ export function useSafeGLTF(url: string): SafeGLTFState {
     // decoder registered, GLTFLoader can't decompress the vertex buffers
     // and silently produces garbage/NaN positions instead of erroring,
     // which is what "Featured 3D model unavailable" once traced back to.
+    //
+    // useWorkers() matters as much as registering the decoder itself:
+    // MeshoptDecoder only moves decompression off the main thread when
+    // explicitly told to — decodeGltfBufferAsync checks workers.length
+    // and falls back to a synchronous main-thread decode otherwise.
+    // Confirmed via a direct Lighthouse run against production: Total
+    // Blocking Time was 7,080ms on a model this size, almost entirely
+    // attributable to this. Likely also what was crashing PageSpeed
+    // Insights' remote Lighthouse runner outright (a ~7s unresponsive
+    // main thread can make its own protocol calls time out), not just
+    // scoring the page poorly. Not a React Hook despite the lint rule's
+    // name-pattern match — a plain MeshoptDecoder method.
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    MeshoptDecoder.useWorkers(4);
     const loader = new GLTFLoader();
     loader.setMeshoptDecoder(MeshoptDecoder);
     loader.load(
