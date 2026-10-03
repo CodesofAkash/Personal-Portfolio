@@ -52,3 +52,4 @@ lerna-debug.log*
 *.njsproj
 *.sln
 *.sw?
+deploy-assets/

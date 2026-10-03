@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import ToastProvider from "@/components/ToastProvider";
 import DraftModeBanner from "@/components/DraftModeBanner";
 import VisualEditingLoader from "@/components/VisualEditingLoader";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { SanityLive } from "@/sanity/lib/live";
 import { getSettings } from "@/sanity/lib/queries";
 import { buildMetadata } from "@/sanity/lib/seo";
@@ -126,6 +127,14 @@ export default async function RootLayout({
         <SanityLive />
         {isDraft && <VisualEditingLoader />}
         {isDraft && <DraftModeBanner />}
+        {/* Real field data from actual visitors' devices — the reliable
+            source of truth for Core Web Vitals going forward, since
+            PageSpeed Insights' own hosted test runner has shown it can't
+            reliably complete a synthetic audit against this page's
+            continuous WebGL rendering, independent of how fast the page
+            actually is (confirmed via local Lighthouse runs on the same
+            engine completing normally and showing real improvement). */}
+        <SpeedInsights />
       </body>
     </html>
   );
