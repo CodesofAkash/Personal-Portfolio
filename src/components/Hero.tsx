@@ -74,20 +74,11 @@ const Hero = ({ section }: HeroProps) => {
     // scroll-past in a way that both recreated a gap and bounced scrolling
     // back. Confirmed via a live rect measurement showing the page sitting
     // auto-scrolled by exactly the navbar's height with it enabled.
-    // No overflow-x-hidden here, deliberately — the scroll button below
-    // sits half outside hero's own box, straddling the boundary with the
-    // next section, and ANY non-visible overflow-x forces overflow-y to
-    // compute as 'auto' instead of 'visible' per the CSS overflow spec
-    // (confirmed via DevTools' Computed panel: overflow-y showed 'auto'
-    // despite an explicit overflow-y-visible class declaring otherwise —
-    // the spec converts a declared 'visible' on one axis to 'auto' the
-    // moment the other axis isn't 'visible' or 'clip', with no way to
-    // override it short of making both axes visible). 'auto' still clips
-    // unscrolled content exactly like 'hidden' does, which is what was
-    // silently cutting the button off at this box's edge. Global
-    // horizontal-scrollbar protection still exists — html/body's own
-    // overflow-x:hidden in globals.css — so this element doesn't need its
-    // own local copy; it was redundant and is what caused this.
+    // No overflow set on this outer section — it doesn't need to clip
+    // anything itself (the inner box below does that for the 3D scene),
+    // and it's what lets the scroll button straddle the boundary below.
+    // Global horizontal-scrollbar protection still exists regardless —
+    // html/body's own overflow-x:hidden in globals.css.
     // zIndex:2 — without an explicit stacking level, the next section
     // (later in the DOM, default z-index:auto) would paint over that
     // straddling half by normal DOM-order stacking; this lifts hero above
@@ -102,7 +93,25 @@ const Hero = ({ section }: HeroProps) => {
           background — the model and its reveal points go beyond the
           navbar's max-w-7xl content column too, unlike every other
           section on the site. */}
-      <div className="relative w-full" style={{ height: "calc(100dvh - var(--navbar-height))" }}>
+      <div
+        className="relative w-full overflow-hidden"
+        style={{ height: "calc(100dvh - var(--navbar-height))" }}
+      >
+        {/* overflow-hidden here, deliberately, on both axes — this box
+            holds the 3D scene, and its on-screen markers (projected from
+            3D world positions, so their screen coordinates aren't bounded
+            the way ordinary layout is) must never render past hero's own
+            box into the next section. The scroll button below needs the
+            opposite — it's designed to straddle that same boundary — so
+            it's no longer a child of this clipped box at all; it moved out
+            to be this div's own sibling, positioned against the outer
+            section instead. Splitting it out this way sidesteps the CSS
+            overflow-x/overflow-y spec quirk entirely, rather than fighting
+            it: when one axis is non-visible, the other's declared
+            'visible' computes to 'auto' instead (confirmed via DevTools'
+            Computed panel) — so a single element can't cleanly clip one
+            axis while leaving the other genuinely open regardless of which
+            values are set. */}
         <div
           className="absolute inset-0"
           style={{ background: "radial-gradient(circle at 30% 35%, #7c1d1d 0%, #2a0a0a 45%, #000000 85%)" }}
@@ -112,42 +121,44 @@ const Hero = ({ section }: HeroProps) => {
             <HeroSceneExperience modelUrl={section.model} panels={panels} />
           </Suspense>
         </div>
+      </div>
 
-        {/* Half straddling the boundary with the next section (negative
-            bottom = -height/2) instead of sitting fully inside hero — needs
-            overflow-x-hidden (not overflow-hidden) on the ancestors above,
-            or this half would just get clipped away. Every size here is a
-            multiple of the shared --hero-ui-unit (globals.css) the hero's
-            markers/panel/navigator also use — one calibrated curve grown
-            proportionally everywhere, instead of each element's own
-            independently-tuned clamp() saturating at a different,
-            too-narrow viewport width (the actual cause of the "not
-            responsive, too big on small screens, still small on big
-            screens" report). */}
-        <div
-          className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
-          style={{ bottom: "calc(var(--hero-ui-unit) * -1.7)", zIndex: 10 }}
-        >
-          <a href="#about" aria-label="Scroll to About section" className="cursor-pointer">
-            <div
-              className="rounded-full border-2 flex justify-center items-start shadow-lg"
-              style={{
-                width: "calc(var(--hero-ui-unit) * 1.9)",
-                height: "calc(var(--hero-ui-unit) * 3.4)",
-                padding: "calc(var(--hero-ui-unit) * 0.5)",
-                borderColor: "rgba(226,232,240,0.85)",
-                background: "rgba(5,8,22,0.55)",
-              }}
-            >
-              <motion.div
-                animate={{ y: [0, 26, 0] }}
-                transition={{ duration: 1.5, repeat: Infinity, repeatType: "loop" }}
-                className="rounded-full"
-                style={{ width: "calc(var(--hero-ui-unit) * 0.65)", height: "calc(var(--hero-ui-unit) * 0.65)", background: "#7c3aed" }}
-              />
-            </div>
-          </a>
-        </div>
+      {/* Sibling of the clipped box above, not a child of it — see that
+          box's own comment for why. Half straddling the boundary with the
+          next section (negative bottom = -height/2) is the whole point
+          here, and this position is relative to the outer <section>, whose
+          own bottom edge lines up exactly with the clipped box's (nothing
+          else in the section adds height), so the math is unchanged from
+          when this lived inside it. Every size here is a multiple of the
+          shared --hero-ui-unit (globals.css) the hero's markers/panel/
+          navigator also use — one calibrated curve grown proportionally
+          everywhere, instead of each element's own independently-tuned
+          clamp() saturating at a different, too-narrow viewport width (the
+          actual cause of the "not responsive, too big on small screens,
+          still small on big screens" report). */}
+      <div
+        className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+        style={{ bottom: "calc(var(--hero-ui-unit) * -1.7)", zIndex: 10 }}
+      >
+        <a href="#about" aria-label="Scroll to About section" className="cursor-pointer">
+          <div
+            className="rounded-full border-2 flex justify-center items-start shadow-lg"
+            style={{
+              width: "calc(var(--hero-ui-unit) * 1.9)",
+              height: "calc(var(--hero-ui-unit) * 3.4)",
+              padding: "calc(var(--hero-ui-unit) * 0.5)",
+              borderColor: "rgba(226,232,240,0.85)",
+              background: "rgba(5,8,22,0.55)",
+            }}
+          >
+            <motion.div
+              animate={{ y: [0, 26, 0] }}
+              transition={{ duration: 1.5, repeat: Infinity, repeatType: "loop" }}
+              className="rounded-full"
+              style={{ width: "calc(var(--hero-ui-unit) * 0.65)", height: "calc(var(--hero-ui-unit) * 0.65)", background: "#7c3aed" }}
+            />
+          </div>
+        </a>
       </div>
     </section>
   );
