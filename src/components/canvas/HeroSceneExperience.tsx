@@ -256,6 +256,28 @@ const CameraRig = ({
   return null;
 };
 
+// Drives the canvas's frameloop="demand" at a fixed rate via a plain
+// setInterval — deliberately not requestAnimationFrame — so the render
+// rate is actually capped rather than merely following whatever the
+// display's native refresh rate is. invalidate() asks R3F to render
+// exactly one frame; everything already in the scene (CameraRig's
+// transitions, GlassOrb's reflection, MarkerProjector's tracking, the
+// GLTF animation mixer) keeps working unchanged, since each is still
+// driven by useFrame — they just now fire at this capped rate instead of
+// uncapped. OrbitControls' own drag/zoom interaction still renders
+// responsively on top of this, independent of the interval: drei's
+// OrbitControls calls invalidate() itself on every change under
+// frameloop="demand", which is the standard, supported way it integrates
+// with demand mode.
+const FrameRateCap = ({ fps }: { fps: number }) => {
+  const invalidate = useThree((state) => state.invalidate);
+  useEffect(() => {
+    const id = setInterval(invalidate, 1000 / fps);
+    return () => clearInterval(id);
+  }, [invalidate, fps]);
+  return null;
+};
+
 // A PerspectiveCamera's `fov` is its VERTICAL field of view — the
 // HORIZONTAL fov (what actually determines how much of a wide scene like
 // this one is visible side-to-side) shrinks automatically as the canvas
@@ -711,36 +733,39 @@ const HeroSceneInner = ({ scene, animations, panels }: { scene: Group; animation
           overflow-hidden ancestor) — this Canvas still needs alpha:true so
           its own clear color doesn't paint over it. */}
       <ModelErrorBoundary label="Featured 3D model">
-        {/* No frameloop="demand" here — the animation needs to render every
-            frame regardless of user interaction, unlike the static car.
-            That makes this canvas the most expensive one in the project per
-            frame, so unlike Ball/Computers/Earth, it can't afford dead
-            weight in its own render config:
-            - No `shadows` — every material here is KHR_materials_unlit with
-              baked-in lighting (see SceneContent below) and nothing in this
-              file ever sets castShadow/receiveShadow, so the shadow map
-              setup and per-frame shadow pass this prop turns on were
-              costing real time for zero visible effect.
+        {/* frameloop="demand" + FrameRateCap below, not the implicit
+            "always" loop — the scene does need continuous animation (the
+            glass orb's live reflection, the floating islands it reflects),
+            so frameloop="demand" alone would wrongly freeze it. But
+            "always" renders at the display's full native refresh rate
+            with no ceiling — 60fps on most phones, 120fps+ on newer ones —
+            forever, for an animation whose motion doesn't need anywhere
+            near that. That's sustained, non-trivial CPU/GPU work that
+            never meaningfully idles, which is suspected to be why
+            PageSpeed Insights' Lighthouse run crashes specifically inside
+            its own checkForQuiet step: it's waiting for CPU activity to
+            settle before proceeding, and a scene that's always actively
+            rendering may never cross whatever threshold it needs to see.
+            Capping to a fixed, modest rate keeps the animation visually
+            unchanged while removing that sustained load — confirm against
+            a fresh audit after this ships, this is a strong lead, not a
+            guaranteed fix.
+            Everything below remains from the earlier dead-weight pass:
+            - No `shadows` — every material here is KHR_materials_unlit
+              with baked-in lighting (see SceneContent below) and nothing
+              in this file ever sets castShadow/receiveShadow.
             - No `preserveDrawingBuffer` — nothing in the codebase ever
-              reads this canvas's buffer back (no screenshot/export
-              feature); it just disables the browser's normal buffer-swap
-              optimization, worst here of all four 3D canvases since this
-              is the one that redraws every single frame regardless of
-              interaction.
-            - `dpr={[1, 2]}` caps rendering at 2x device pixel ratio instead
-              of the uncapped default (a phone at DPR 3 would otherwise
-              render 9x the pixels of DPR 1 for a visually marginal gain
-              over DPR 2). This combination is suspected to be why a
-              PageSpeed Insights / Lighthouse run against the home page
-              crashed its own headless browser tab under throttled mobile
-              CPU conditions rather than just scoring low — confirm by
-              re-running the audit after this ships. */}
+              reads this canvas's buffer back.
+            - `dpr={[1, 2]}` caps rendering at 2x device pixel ratio
+              instead of the uncapped default. */}
         <Canvas
+          frameloop="demand"
           dpr={[1, 2]}
           camera={{ fov: FOV_DEG, position: [startPos.x, startPos.y, startPos.z], near: distance / 100, far: distance * 100 }}
           gl={{ toneMapping: NoToneMapping, alpha: true }}
           style={{ position: "relative" }}
         >
+          <FrameRateCap fps={30} />
           <ResponsiveFov baseFov={FOV_DEG} />
           <OrbitControls
             ref={controlsRef}
