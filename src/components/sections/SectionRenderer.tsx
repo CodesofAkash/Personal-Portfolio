@@ -1,5 +1,5 @@
 import type { AboutSection, ContactSection, HomeSection, ProjectsSection, Testimonial } from "@/sanity/lib/types";
-import Hero from "@/components/Hero";
+import dynamic from "next/dynamic";
 import Stats from "./Stats";
 import FeaturedProjects from "./FeaturedProjects";
 import Testimonials from "./Testimonials";
@@ -9,7 +9,20 @@ import TechMarquee from "./TechMarquee";
 import CtaPanel from "./CtaPanel";
 import ProjectsHero from "./ProjectsHero";
 import ProjectsGrid from "./ProjectsGrid";
-import ContactHero from "./ContactHero";
+
+// Dynamic, not a static import like every other section here: both pull in
+// Three.js (~900KB) transitively through their 3D canvases. A static import
+// puts that whole chunk in SectionRenderer's module graph, and since every
+// page (About, Projects, Privacy, Terms) renders through this same
+// SectionRenderer, every page paid to download and parse Three.js even
+// when it has no 3D section at all (confirmed via a production Lighthouse
+// run on /projects — the chunk was a required <script> tag, ~1.4-1.8s of
+// main-thread time, despite neither Hero nor ContactHero ever mounting
+// there). Splitting them here means only Home and Contact's own bundles
+// include it. ssr stays default (true) so the sections that do use these
+// still render in the initial HTML, unchanged from before.
+const Hero = dynamic(() => import("@/components/Hero"));
+const ContactHero = dynamic(() => import("./ContactHero"));
 
 type AnySection = HomeSection | AboutSection | ProjectsSection | ContactSection;
 
