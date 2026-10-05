@@ -8,7 +8,6 @@ import ToastProvider from "@/components/ToastProvider";
 import DraftModeBanner from "@/components/DraftModeBanner";
 import VisualEditingLoader from "@/components/VisualEditingLoader";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import { SanityLive } from "@/sanity/lib/live";
 import { getSettings } from "@/sanity/lib/queries";
 import { buildMetadata } from "@/sanity/lib/seo";
 import { resolveImageUrl } from "@/sanity/lib/image";
@@ -83,7 +82,6 @@ export default async function RootLayout({
               </p>
             )}
           </div>
-          <SanityLive />
         </body>
       </html>
     );
@@ -122,9 +120,6 @@ export default async function RootLayout({
           />
         </div>
         <ToastProvider />
-        {/* Not draft-gated: defineLive only configures revalidation — nothing
-            revalidates until the next deploy unless this is actually rendered. */}
-        <SanityLive />
         {isDraft && <VisualEditingLoader />}
         {isDraft && <DraftModeBanner />}
         {/* Real field data from actual visitors' devices — the reliable

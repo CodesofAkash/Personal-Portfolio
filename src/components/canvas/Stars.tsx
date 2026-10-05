@@ -11,7 +11,16 @@ const Stars = (props: Record<string, unknown>) => {
   const ref = useRef<PointsImpl>(null);
 
   const sphere = useMemo(() => {
-    const positions = new Float32Array(5000);
+    // 5000 * 3, not 5000 — each point is an (x, y, z) triple and stride={3}
+    // below reads this array in groups of 3. Length 5000 isn't a multiple
+    // of 3 (1666.67 points), leaving the last point incomplete; drei's
+    // <Points> reading past that boundary is the likely source of
+    // THREE.BufferGeometry.computeBoundingSphere() computing a NaN radius
+    // (confirmed showing up in production console errors). The existing
+    // per-value NaN guard below is a different, narrower fix — it zeroes
+    // individual NaN coordinates random.inSphere can occasionally produce,
+    // but can't fix a structurally misaligned array.
+    const positions = new Float32Array(5000 * 3);
     random.inSphere(positions, { radius: 1.2 });
     for (let i = 0; i < positions.length; i++) {
       if (isNaN(positions[i])) positions[i] = 0;

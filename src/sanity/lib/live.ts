@@ -1,28 +1,18 @@
-import { defineLive } from "next-sanity/live";
 import { client } from "./client";
-import { readToken } from "../env";
 import { sanitizeIconSvgs } from "./sanitize-svg";
 
-// SanityLive still comes from the library — it's a self-contained client
-// component (its own EventSource connection) that pushes instant updates
-// to a browser tab that's already open, independent of how server-side
-// data gets fetched. That part was never the problem.
-const { SanityLive } = defineLive({
-  client,
-  serverToken: readToken,
-  browserToken: false,
-});
-export { SanityLive };
-
-// Not defineLive's own sanityFetch. Without cacheComponents (off here),
-// Next resolves next-sanity's react-server build, which tags its fetch
-// with { next: { revalidate: false, tags } } — revalidatePath() does
-// clear that correctly, contrary to an earlier (wrong) assumption here.
-// Staying on a plain client.fetch() anyway: it's what's been tested end
-// to end and confirmed working this session; switching back to
-// defineLive's sanityFetch is a reasonable option but unverified by that
-// same standard, and open tabs lose SanityLive's instant push either way
-// since a plain fetch carries no sanity:* tags for it to revalidate.
+// No SanityLive here, deliberately. Its EventSource connection was already
+// non-functional in this architecture — it only has anything to revalidate
+// when paired with defineLive's own sanityFetch (tagged fetches it can
+// invalidate on a live event), and this project uses a plain client.fetch()
+// instead, which carries no sanity:* tags for it to act on. On top of
+// providing no real benefit, a dropped/blocked SSE connection (confirmed
+// happening in PageSpeed Insights' test environment specifically) logs
+// console errors — "<SanityLive> is attempting to reconnect" plus the
+// underlying failed resource load — which directly cost Best Practices
+// points. Webhook-triggered on-demand revalidation (/api/revalidate,
+// AK-SAN-071) is the real, reliable correctness mechanism and is
+// completely independent of this.
 export async function sanityFetch<T = unknown>({
   query,
   params = {},
