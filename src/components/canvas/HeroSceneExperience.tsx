@@ -161,11 +161,19 @@ export function GlassOrb({ scene }: { scene: Group }) {
     const mesh = meshRef.current;
     const cubeCamera = cubeCameraRef.current;
     if (!mesh || !cubeCamera) return;
-    // Throttled — six-face cube renders every frame on top of an already
-    // animated scene is wasteful, and the reflected surroundings (slow
-    // floating islands) don't need per-frame freshness to read correctly.
+    // Throttled hard — a cube camera update re-renders the ENTIRE scene
+    // six times (once per cube face) on top of the normal main-view
+    // render, and this model's ~783K vertices make that genuinely
+    // expensive, confirmed by reproducing PageSpeed Insights' crash
+    // locally under forced software rendering (chrome --use-gl=swiftshader
+    // — standing in for whatever headless/sandboxed environment PSI's
+    // cloud runner actually uses, which almost certainly isn't backed by
+    // a real GPU). The reflected surroundings (slow floating islands)
+    // don't need anywhere near per-frame freshness to read correctly as
+    // ambient motion — every 10th frame instead of every 3rd cuts this
+    // specific cost by roughly 70% on top of that.
     frameCount.current++;
-    if (frameCount.current % 3 !== 0) return;
+    if (frameCount.current % 10 !== 0) return;
     mesh.visible = false;
     cubeCamera.update(gl, r3fScene);
     mesh.visible = true;
