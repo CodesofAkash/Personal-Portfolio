@@ -41,8 +41,17 @@ const EarthCanvas = ({ modelUrl }: { modelUrl?: string }) => {
           model's material is unlit, same reasoning as Hero's), so the
           shadow map renderer it switches on was pure dead weight. No
           `preserveDrawingBuffer` either — nothing in the codebase ever
-          reads this canvas's buffer back. */}
-      <Canvas frameloop="demand" camera={{ fov: 45, near: 0.1, far: 200, position: [-4, 3, 6] }}>
+          reads this canvas's buffer back. dpr={[1,2]} matters even with
+          the frame-rate cap in place — capping *how often* a frame
+          renders doesn't cap *how expensive each one is*, and PSI emulates
+          a Moto G Power (devicePixelRatio up to ~2.6–3.5), so an uncapped
+          canvas rasterizes up to ~9x the pixels of a capped one, every
+          single frame, regardless of how infrequently those frames fire. */}
+      <Canvas
+        frameloop="demand"
+        dpr={[1, 2]}
+        camera={{ fov: 45, near: 0.1, far: 200, position: [-4, 3, 6] }}
+      >
         <FrameRateCap fps={24} />
         {/* enableRotate stays at its default (true) — only the ambient
             autoRotate is gone, not the user's own drag-to-look. A manual
