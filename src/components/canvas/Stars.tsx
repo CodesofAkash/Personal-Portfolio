@@ -6,6 +6,7 @@ import { Points, PointMaterial } from "@react-three/drei";
 // @ts-expect-error - maath ships no type declarations for this subpath
 import * as random from "maath/random/dist/maath-random.esm";
 import type { Points as PointsImpl } from "three";
+import FrameRateCap from "./FrameRateCap";
 
 const Stars = (props: Record<string, unknown>) => {
   const ref = useRef<PointsImpl>(null);
@@ -59,7 +60,15 @@ const Stars = (props: Record<string, unknown>) => {
 const StarsCanvas = () => {
   return (
     <div className="w-full h-auto absolute inset-0 z-[-1]">
-      <Canvas camera={{ position: [0, 0, 1] }}>
+      {/* frameloop="demand" + FrameRateCap — this canvas had neither, so it
+          rendered this purely-ambient, non-interactive background at the
+          display's full uncapped native refresh rate forever. Same pattern
+          already proven on Hero and Earth; Stars' own rotation in useFrame
+          above needs no change since it's driven by `delta`, not frame
+          count, so it keeps the same visual speed regardless of how often
+          it's actually invoked. */}
+      <Canvas frameloop="demand" camera={{ position: [0, 0, 1] }}>
+        <FrameRateCap fps={24} />
         <Suspense fallback={null}>
           <Stars />
         </Suspense>
