@@ -70,7 +70,12 @@ const StarsCanvas = () => {
           frame fires doesn't cap how expensive each one is, and PSI's
           emulated device can report a devicePixelRatio up to ~3.5x. */}
       <Canvas frameloop="demand" dpr={[1, 2]} camera={{ position: [0, 0, 1] }}>
-        <FrameRateCap fps={24} />
+        {/* settleAfterMs — purely decorative background with no
+            interaction at all, so there's no reason for it to keep
+            invalidating forever; see FrameRateCap's own comment for why
+            that perpetual (if capped) ticking was still preventing PSI's
+            quiet-detection from ever concluding the page had settled. */}
+        <FrameRateCap fps={24} settleAfterMs={4000} />
         <Suspense fallback={null}>
           <Stars />
         </Suspense>

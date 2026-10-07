@@ -52,7 +52,12 @@ const EarthCanvas = ({ modelUrl }: { modelUrl?: string }) => {
         dpr={[1, 2]}
         camera={{ fov: 45, near: 0.1, far: 200, position: [-4, 3, 6] }}
       >
-        <FrameRateCap fps={24} />
+        {/* settleAfterMs — this canvas must actually go idle, not just
+            render slowly, or PSI's quiet-detection never concludes the
+            page has settled (see FrameRateCap's own comment). Drag-to-look
+            still works after settling: OrbitControls calls invalidate()
+            itself on real interaction, independent of this timer. */}
+        <FrameRateCap fps={24} settleAfterMs={4000} />
         {/* enableRotate stays at its default (true) — only the ambient
             autoRotate is gone, not the user's own drag-to-look. A manual
             drag still calls invalidate() itself under demand mode, same
