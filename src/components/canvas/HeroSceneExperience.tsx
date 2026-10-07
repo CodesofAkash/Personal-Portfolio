@@ -251,7 +251,7 @@ const CameraRig = ({
   controlsRef: RefObject<ElementRef<typeof OrbitControls> | null>;
   transitioningRef: RefObject<boolean>;
 }) => {
-  useFrame(({ camera }, delta) => {
+  useFrame(({ camera, invalidate }, delta) => {
     if (!transitioningRef.current) return;
     // Slower than the first pass (was 3.5) for a more cinematic "flying to
     // this spot" feel, closer to the ~1.5-2s transitions in the reference.
@@ -264,8 +264,28 @@ const CameraRig = ({
     }
     if (camera.position.distanceTo(targetPos) < 0.01) {
       transitioningRef.current = false;
+    } else {
+      // Self-sustaining: as long as a transition is actually in progress,
+      // each frame requests the next one itself. This decouples
+      // point-navigation from FrameRateCap's own ambient timer, which is
+      // what makes it safe to let that timer settle (stop entirely) once
+      // idle — see FrameRateCap's comment for why a canvas that never
+      // goes idle, even at a capped rate, was still the dominant cost in
+      // real PageSpeed Insights runs.
+      invalidate();
     }
   });
+  return null;
+};
+
+// Exposes invalidate() to goToPoint, which runs outside the Canvas's React
+// tree and so can't call useThree() itself — see invalidateRef's own
+// comment in HeroSceneInner.
+const InvalidateBridge = ({ invalidateRef }: { invalidateRef: RefObject<(() => void) | null> }) => {
+  const invalidate = useThree((state) => state.invalidate);
+  useEffect(() => {
+    invalidateRef.current = invalidate;
+  }, [invalidate, invalidateRef]);
   return null;
 };
 
@@ -608,6 +628,12 @@ const HeroSceneInner = ({ scene, animations, panels }: { scene: Group; animation
   const [panelOpen, setPanelOpen] = useState(true);
   const controlsRef = useRef<ElementRef<typeof OrbitControls>>(null);
   const transitioningRef = useRef(false);
+  // Bridges invalidate() out of the Canvas's React tree — goToPoint below
+  // runs outside it (it's a plain click handler in this component, not
+  // inside <Canvas>), so it can't call useThree() directly. Needed only to
+  // kick off the *first* frame of a transition after FrameRateCap has
+  // settled; CameraRig sustains every frame after that itself.
+  const invalidateRef = useRef<(() => void) | null>(null);
 
   // Screen-space marker positions, reported every frame by MarkerProjector
   // (inside the Canvas) and consumed by MarkerOverlay (outside it, plain
@@ -679,6 +705,7 @@ const HeroSceneInner = ({ scene, animations, panels }: { scene: Group; animation
     setActivePoint(i);
     setPanelOpen(true);
     transitioningRef.current = true;
+    invalidateRef.current?.();
   };
 
   // MARKER_PICK_MODE state — last point clicked directly on the model
@@ -756,7 +783,18 @@ const HeroSceneInner = ({ scene, animations, panels }: { scene: Group; animation
           gl={{ toneMapping: NoToneMapping, alpha: true }}
           style={{ position: "relative" }}
         >
-          <FrameRateCap fps={30} />
+          {/* settleAfterMs — now safe to let this stop entirely once idle:
+              CameraRig sustains its own invalidate() calls while a
+              point-navigation transition is actually in progress (see its
+              comment), and goToPoint kicks off the first frame of a new
+              one itself via invalidateRef, so transitions no longer
+              depend on this timer still running. Without this, the canvas
+              never went idle even at a capped rate, which real PageSpeed
+              Insights runs showed as the dominant cost (28-34s TBT) —
+              Lighthouse's quiet-detection can't conclude the page has
+              settled while something keeps asking for renders. */}
+          <FrameRateCap fps={30} settleAfterMs={6000} />
+          <InvalidateBridge invalidateRef={invalidateRef} />
           <ResponsiveFov baseFov={FOV_DEG} />
           <OrbitControls
             ref={controlsRef}
