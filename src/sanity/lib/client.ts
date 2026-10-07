@@ -8,18 +8,19 @@ export const client = createClient({
   // Public dataset, published content only — the CDN is safe and cheap here.
   useCdn: true,
   perspective: "published",
-  // The studioUrl VisualEditing's click-to-edit overlay needs when stega
-  // *is* turned on — actual activation happens per-fetch in sanityFetch
-  // (live.ts), gated on draft mode. It must not be unconditionally on here:
-  // stega works by injecting invisible zero-width Unicode characters into
-  // every string field so the overlay can map rendered text back to its
-  // source field, and with no gate those characters were going out to every
-  // ordinary visitor on every page — confirmed via PSI showing the About
-  // page's name, split one <span> per character for a stagger animation,
-  // rendering 1028 spans for a 12-character name (AK-SAN-007 was the
-  // intent; this wires it up for real).
+  // enabled deliberately left unset (AK-SAN-007) — a per-call `true` in
+  // sanityFetch (live.ts) is what actually turns stega on, gated on draft
+  // mode, and that alone is enough (verified: a per-call `stega: false`
+  // correctly overrides a client-level `enabled: true`). But leaving
+  // `enabled: true` here anyway would mean a future call site that forgets
+  // the per-call gate silently re-enables stega for every visitor, instead
+  // of just quietly staying off — stega injects invisible zero-width
+  // Unicode characters into every string field for the Studio overlay to
+  // read, and with no gate those characters went out to every ordinary
+  // visitor on every page (confirmed via PSI: the About page's name,
+  // split one <span> per character for a stagger animation, rendered 1028
+  // spans for a 12-character name).
   stega: {
     studioUrl,
-    enabled: true,
   },
 });
