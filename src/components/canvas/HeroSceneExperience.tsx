@@ -22,6 +22,7 @@ import ModelErrorBoundary from "@/components/ModelErrorBoundary";
 import ModelFallback from "@/components/ModelFallback";
 import { useSafeGLTF } from "@/lib/useSafeGLTF";
 import { MODELS } from "@/lib/cdn";
+import FrameRateCap from "./FrameRateCap";
 
 // Camera tuning mode, straight in the real hero container so values found
 // here match production exactly (a separate lab page had a different aspect
@@ -261,28 +262,6 @@ const CameraRig = ({
       transitioningRef.current = false;
     }
   });
-  return null;
-};
-
-// Drives the canvas's frameloop="demand" at a fixed rate via a plain
-// setInterval — deliberately not requestAnimationFrame — so the render
-// rate is actually capped rather than merely following whatever the
-// display's native refresh rate is. invalidate() asks R3F to render
-// exactly one frame; everything already in the scene (CameraRig's
-// transitions, GlassOrb's reflection, MarkerProjector's tracking, the
-// GLTF animation mixer) keeps working unchanged, since each is still
-// driven by useFrame — they just now fire at this capped rate instead of
-// uncapped. OrbitControls' own drag/zoom interaction still renders
-// responsively on top of this, independent of the interval: drei's
-// OrbitControls calls invalidate() itself on every change under
-// frameloop="demand", which is the standard, supported way it integrates
-// with demand mode.
-const FrameRateCap = ({ fps }: { fps: number }) => {
-  const invalidate = useThree((state) => state.invalidate);
-  useEffect(() => {
-    const id = setInterval(invalidate, 1000 / fps);
-    return () => clearInterval(id);
-  }, [invalidate, fps]);
   return null;
 };
 

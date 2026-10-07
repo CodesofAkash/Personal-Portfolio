@@ -1,16 +1,32 @@
 "use client";
 
-import { Canvas } from "@react-three/fiber";
+import { useRef } from "react";
+import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import type { Group } from "three";
 import ModelErrorBoundary from "@/components/ModelErrorBoundary";
 import ModelFallback from "@/components/ModelFallback";
 import { useSafeGLTF } from "@/lib/useSafeGLTF";
 import { MODELS } from "@/lib/cdn";
+import FrameRateCap from "./FrameRateCap";
 
-const Earth = ({ scene }: { scene: Group }) => (
-  <primitive object={scene} scale={2.5} position-y={0} rotation-y={0} />
-);
+// Rotation driven here, not OrbitControls' own autoRotate — autoRotate
+// calls invalidate() internally on every single frame regardless of the
+// Canvas's frameloop setting, which silently made frameloop="demand"
+// below a no-op: this canvas was rendering at the display's full native
+// rate the whole time despite looking capped. Confirmed as the dominant
+// cost on PageSpeed Insights' /contact run — Total Blocking Time 29.78s,
+// with "Minimize main-thread work" showing 40.6s almost entirely
+// unattributed ("Other"), the signature of continuous WebGL rendering.
+// Driving the rotation here instead means it only advances on the frames
+// FrameRateCap actually requests.
+const Earth = ({ scene }: { scene: Group }) => {
+  const ref = useRef<Group>(null);
+  useFrame((_state, delta) => {
+    if (ref.current) ref.current.rotation.y += delta * 0.15;
+  });
+  return <primitive ref={ref} object={scene} scale={2.5} position-y={0} rotation-y={0} />;
+};
 
 const EarthCanvas = ({ modelUrl }: { modelUrl?: string }) => {
   const { scene, progress, failed } = useSafeGLTF(modelUrl || MODELS.planet);
@@ -21,14 +37,18 @@ const EarthCanvas = ({ modelUrl }: { modelUrl?: string }) => {
 
   return (
     <ModelErrorBoundary label="3D Earth">
-      <Canvas
-        shadows
-        frameloop="demand"
-        gl={{ preserveDrawingBuffer: true }}
-        camera={{ fov: 45, near: 0.1, far: 200, position: [-4, 3, 6] }}
-      >
+      {/* No `shadows` — there are no lights in this scene at all (the
+          model's material is unlit, same reasoning as Hero's), so the
+          shadow map renderer it switches on was pure dead weight. No
+          `preserveDrawingBuffer` either — nothing in the codebase ever
+          reads this canvas's buffer back. */}
+      <Canvas frameloop="demand" camera={{ fov: 45, near: 0.1, far: 200, position: [-4, 3, 6] }}>
+        <FrameRateCap fps={24} />
+        {/* enableRotate stays at its default (true) — only the ambient
+            autoRotate is gone, not the user's own drag-to-look. A manual
+            drag still calls invalidate() itself under demand mode, same
+            as Hero's OrbitControls. */}
         <OrbitControls
-          autoRotate
           enableZoom={false}
           maxPolarAngle={Math.PI / 2}
           minPolarAngle={Math.PI / 2}
