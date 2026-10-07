@@ -1,3 +1,4 @@
+import { draftMode } from "next/headers";
 import { client } from "./client";
 import { sanitizeIconSvgs } from "./sanitize-svg";
 
@@ -20,6 +21,9 @@ export async function sanityFetch<T = unknown>({
   query: string;
   params?: Record<string, unknown>;
 }): Promise<{ data: T }> {
-  const data = await client.fetch<T>(query, params);
+  // stega only for draft-mode requests — see client.ts for why an
+  // unconditional stega:true was corrupting every page's text content.
+  const { isEnabled } = await draftMode();
+  const data = await client.fetch<T>(query, params, { stega: isEnabled });
   return { data: sanitizeIconSvgs(data) };
 }
