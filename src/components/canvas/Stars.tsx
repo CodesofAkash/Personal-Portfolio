@@ -66,8 +66,10 @@ const StarsCanvas = () => {
           already proven on Hero and Earth; Stars' own rotation in useFrame
           above needs no change since it's driven by `delta`, not frame
           count, so it keeps the same visual speed regardless of how often
-          it's actually invoked. */}
-      <Canvas frameloop="demand" camera={{ position: [0, 0, 1] }}>
+          it's actually invoked. dpr={[1,2]} too — capping how often a
+          frame fires doesn't cap how expensive each one is, and PSI's
+          emulated device can report a devicePixelRatio up to ~3.5x. */}
+      <Canvas frameloop="demand" dpr={[1, 2]} camera={{ position: [0, 0, 1] }}>
         <FrameRateCap fps={24} />
         <Suspense fallback={null}>
           <Stars />
