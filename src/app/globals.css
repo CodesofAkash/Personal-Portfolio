@@ -123,6 +123,26 @@ body {
   transform: translateZ(0);
 }
 
+/* Hero's static heading (the LCP-fix text — see Hero.tsx's own comment
+   for why it exists) appearing instantly as a hard pop read as a glitch
+   rather than an intentional reveal. A CSS keyframe animation, not a
+   React-state-driven transition, so it runs the instant the element
+   paints with no dependency on hydration — a JS-gated fade-in would
+   delay the first paint until after hydration, undoing the exact LCP
+   fix this heading exists for. The fade-OUT (once the real 3D panel
+   takes over) stays state-driven in Hero.tsx; that one only needs to
+   fire after the scene loads anyway, so JS being involved costs nothing. */
+@keyframes heroHeadingFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* Hero's scroll-down indicator dot — was a <motion.div> animating a
    single y keyframe in a loop, which pulled all of framer-motion
    (~112KB) into Home's bundle for one trivial bounce. Confirmed via a

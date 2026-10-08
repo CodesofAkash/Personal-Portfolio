@@ -44,8 +44,13 @@ const Hero = ({ section }: HeroProps) => {
   // pixel size while everything else on screen grows on bigger displays.
   const panelContents: ReactNode[] = [
     <Fragment key="identity">
+      {/* p, not h1 — the page's one real <h1> is the static heading
+          further down this file. This panel only exists client-side
+          (HeroSceneExperience is ssr:false), so it's never actually in
+          the server-rendered HTML a crawler sees; a second <h1> here
+          would just be a duplicate in the live DOM once the scene loads. */}
       <p className="text-[0.75em] uppercase tracking-widest mb-1" style={{ color: "#0d9488" }}>{section.eyebrow}</p>
-      <h1 className="text-[1.25em] font-bold" style={{ color: "#f8fafc" }}>{section.name}</h1>
+      <p className="text-[1.25em] font-bold" style={{ color: "#f8fafc" }}>{section.name}</p>
     </Fragment>,
     <Fragment key="what">
       <p className="text-[0.75em] uppercase tracking-widest mb-1" style={{ color: "#0d9488" }}>What I build</p>
@@ -137,10 +142,23 @@ const Hero = ({ section }: HeroProps) => {
             onReady), this fades out instead of sitting underneath the real
             panel forever. The real panel opens by default on load
             (panelOpen starts true), not on click, so without this both
-            were visible at once. */}
+            were visible at once.
+            The fade-IN (heroHeadingFadeIn, globals.css) is a separate,
+            pure-CSS animation, not this opacity/transition pair — it runs
+            the instant the element paints, with no dependency on
+            hydration. On a fast connection the whole lifecycle (fade in,
+            then fade out once the real scene is ready) can complete in
+            under a second; without the fade-in it read as an abrupt pop
+            rather than an intentional reveal. `animation` is cleared once
+            sceneReady so it can't fight the fade-out transition below. */}
         <div
           className="absolute inset-0 flex flex-col justify-center px-6 sm:px-16 transition-opacity duration-500"
-          style={{ zIndex: 1, opacity: sceneReady ? 0 : 1, pointerEvents: sceneReady ? "none" : undefined }}
+          style={{
+            zIndex: 1,
+            opacity: sceneReady ? 0 : undefined,
+            animation: sceneReady ? undefined : "heroHeadingFadeIn 0.6s ease-out forwards",
+            pointerEvents: sceneReady ? "none" : undefined,
+          }}
         >
           <div style={{ maxWidth: "28rem" }}>
             <p className="text-sm uppercase tracking-widest mb-2" style={{ color: "#0d9488" }}>{section.eyebrow}</p>
