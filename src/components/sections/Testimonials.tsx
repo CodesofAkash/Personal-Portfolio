@@ -3,30 +3,54 @@
 import { useEffect, useRef } from "react";
 import Image from "next/image";
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type { Testimonial, TestimonialsSection } from "@/sanity/lib/types";
 import Heading from "./Heading";
 import { C } from "./colors";
-
-gsap.registerPlugin(ScrollTrigger);
 
 const Testimonials = ({ section, testimonials }: { section: TestimonialsSection; testimonials: Testimonial[] }) => {
   const ref = useRef<HTMLDivElement>(null);
   const headRef = useRef<HTMLDivElement>(null);
 
+  // IntersectionObserver, not ScrollTrigger — see Stats.tsx for why. Two
+  // independent observers since the heading and the card grid can enter
+  // the viewport at different times.
   useEffect(() => {
     const el = ref.current;
     const head = headRef.current;
     if (!el || !head) return;
-    const ctx = gsap.context(() => {
-      gsap.fromTo(head, { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: "power3.out", scrollTrigger: { trigger: head, start: "top 85%" } });
-      gsap.fromTo(
-        el.querySelectorAll(".t-card"),
-        { y: 50, opacity: 0 },
-        { y: 0, opacity: 1, stagger: 0.15, duration: 0.7, ease: "power3.out", scrollTrigger: { trigger: el, start: "top 80%" } },
-      );
-    });
-    return () => ctx.revert();
+    const tweens: gsap.core.Tween[] = [];
+
+    const headObserver = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        tweens.push(gsap.fromTo(head, { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: "power3.out" }));
+        headObserver.disconnect();
+      },
+      { rootMargin: "0px 0px -15% 0px" },
+    );
+    headObserver.observe(head);
+
+    const cardsObserver = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        tweens.push(
+          gsap.fromTo(
+            el.querySelectorAll(".t-card"),
+            { y: 50, opacity: 0 },
+            { y: 0, opacity: 1, stagger: 0.15, duration: 0.7, ease: "power3.out" },
+          ),
+        );
+        cardsObserver.disconnect();
+      },
+      { rootMargin: "0px 0px -20% 0px" },
+    );
+    cardsObserver.observe(el);
+
+    return () => {
+      headObserver.disconnect();
+      cardsObserver.disconnect();
+      tweens.forEach((t) => t.kill());
+    };
   }, [testimonials.length]);
 
   if (testimonials.length === 0) return null;

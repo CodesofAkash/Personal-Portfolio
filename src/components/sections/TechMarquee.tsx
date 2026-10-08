@@ -3,12 +3,9 @@
 import { useEffect, useRef } from "react";
 import Image from "next/image";
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type { TechSection } from "@/sanity/lib/types";
 import Heading from "./Heading";
 import { C } from "./colors";
-
-gsap.registerPlugin(ScrollTrigger);
 
 const Pill = ({ name, icon }: { name: string; icon?: string }) => (
   <div className="flex-shrink-0 flex items-center gap-3 px-5 py-3 rounded-full mx-2" style={{ background: C.card, border: `1px solid ${C.border}` }}>
@@ -39,7 +36,6 @@ const TechMarquee = ({ section }: { section: TechSection }) => {
     if (!el || !head || !r1 || !r2) return;
 
     const ctx = gsap.context(() => {
-      gsap.fromTo(head, { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, ease: "power3.out", scrollTrigger: { trigger: head, start: "top 80%" } });
       const setupMarquee = (rowEl: HTMLDivElement, dir: number) => {
         const w = rowEl.scrollWidth / 2;
         tweens.current.push(gsap.fromTo(rowEl, { x: dir > 0 ? 0 : -w }, { x: dir > 0 ? -w : 0, duration: 28, ease: "none", repeat: -1 }));
@@ -48,7 +44,22 @@ const TechMarquee = ({ section }: { section: TechSection }) => {
       setupMarquee(r2, -1);
     });
 
+    // IntersectionObserver, not GSAP's ScrollTrigger — see
+    // sections/Stats.tsx for why. The marquee rows above aren't
+    // scroll-triggered at all (they run continuously from mount), only
+    // the heading's entrance needs to know once it's in view.
+    const headObserver = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        tweens.current.push(gsap.fromTo(head, { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, ease: "power3.out" }));
+        headObserver.disconnect();
+      },
+      { rootMargin: "0px 0px -10% 0px" },
+    );
+    headObserver.observe(head);
+
     return () => {
+      headObserver.disconnect();
       tweens.current.forEach((t) => t.kill());
       tweens.current = [];
       ctx.revert();

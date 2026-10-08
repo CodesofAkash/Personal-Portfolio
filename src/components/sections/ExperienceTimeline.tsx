@@ -3,12 +3,9 @@
 import { useEffect, useRef } from "react";
 import Image from "next/image";
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type { ExperienceSection } from "@/sanity/lib/types";
 import Heading from "./Heading";
 import { C, textSafe } from "./colors";
-
-gsap.registerPlugin(ScrollTrigger);
 
 const ACCENTS = [C.violet, C.teal, C.amber, C.violet, C.rose, C.teal, C.amber];
 
@@ -17,20 +14,48 @@ const ExperienceTimeline = ({ section }: { section: ExperienceSection }) => {
   const ref = useRef<HTMLElement>(null);
   const headRef = useRef<HTMLHeadingElement>(null);
 
+  // IntersectionObserver, not GSAP's ScrollTrigger — see
+  // sections/Stats.tsx for why: ScrollTrigger's setup forces a
+  // synchronous layout read per trigger, which is expensive if anything
+  // on the page is still settling, and these animations only ever need
+  // to know once whether an element has entered the viewport.
   useEffect(() => {
     const el = ref.current;
     const head = headRef.current;
     if (!el || !head) return;
-    const cards = el.querySelectorAll(".exp-card");
+    const cards = Array.from(el.querySelectorAll<HTMLElement>(".exp-card"));
     if (!cards.length) return;
+    const tweens: gsap.core.Tween[] = [];
 
-    const ctx = gsap.context(() => {
-      gsap.fromTo(head, { x: -50, opacity: 0 }, { x: 0, opacity: 1, duration: 0.8, ease: "power3.out", scrollTrigger: { trigger: head, start: "top 85%" } });
-      cards.forEach((card, i) => {
-        gsap.fromTo(card, { x: i % 2 === 0 ? -60 : 60, opacity: 0 }, { x: 0, opacity: 1, duration: 0.7, ease: "power3.out", scrollTrigger: { trigger: card, start: "top 88%" } });
-      });
-    });
-    return () => ctx.revert();
+    const headObserver = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        tweens.push(gsap.fromTo(head, { x: -50, opacity: 0 }, { x: 0, opacity: 1, duration: 0.8, ease: "power3.out" }));
+        headObserver.disconnect();
+      },
+      { rootMargin: "0px 0px -15% 0px" },
+    );
+    headObserver.observe(head);
+
+    const cardObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          const card = entry.target as HTMLElement;
+          const i = cards.indexOf(card);
+          tweens.push(gsap.fromTo(card, { x: i % 2 === 0 ? -60 : 60, opacity: 0 }, { x: 0, opacity: 1, duration: 0.7, ease: "power3.out" }));
+          cardObserver.unobserve(card);
+        });
+      },
+      { rootMargin: "0px 0px -12% 0px" },
+    );
+    cards.forEach((card) => cardObserver.observe(card));
+
+    return () => {
+      headObserver.disconnect();
+      cardObserver.disconnect();
+      tweens.forEach((t) => t.kill());
+    };
   }, [experiences.length]);
 
   if (experiences.length === 0) return null;

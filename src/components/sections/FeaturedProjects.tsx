@@ -4,12 +4,9 @@ import { useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type { FeaturedProjectsSection, Project } from "@/sanity/lib/types";
 import Heading from "./Heading";
 import { C, textSafe } from "./colors";
-
-gsap.registerPlugin(ScrollTrigger);
 
 const ACCENTS = [C.violet, C.teal, C.amber];
 
@@ -25,24 +22,24 @@ const ProjectCard = ({
   const ref = useRef<HTMLDivElement>(null);
   const accent = ACCENTS[index % ACCENTS.length];
 
+  // IntersectionObserver, not ScrollTrigger — see Stats.tsx for why.
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    const ctx = gsap.context(() => {
-      gsap.fromTo(
-        el,
-        { y: 60, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.8,
-          ease: "power3.out",
-          scrollTrigger: { trigger: el, start: "top 88%" },
-          delay: index * 0.1,
-        },
-      );
-    });
-    return () => ctx.revert();
+    let tween: gsap.core.Tween | null = null;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        tween = gsap.fromTo(el, { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, ease: "power3.out", delay: index * 0.1 });
+        observer.disconnect();
+      },
+      { rootMargin: "0px 0px -12% 0px" },
+    );
+    observer.observe(el);
+    return () => {
+      observer.disconnect();
+      tween?.kill();
+    };
   }, [index]);
 
   return (
@@ -109,10 +106,20 @@ const FeaturedProjects = ({ section }: { section: FeaturedProjectsSection }) => 
   useEffect(() => {
     const el = headRef.current;
     if (!el) return;
-    const ctx = gsap.context(() => {
-      gsap.fromTo(el, { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: "power3.out", scrollTrigger: { trigger: el, start: "top 85%" } });
-    });
-    return () => ctx.revert();
+    let tween: gsap.core.Tween | null = null;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        tween = gsap.fromTo(el, { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: "power3.out" });
+        observer.disconnect();
+      },
+      { rootMargin: "0px 0px -15% 0px" },
+    );
+    observer.observe(el);
+    return () => {
+      observer.disconnect();
+      tween?.kill();
+    };
   }, []);
 
   if (featured.length === 0) return null;
