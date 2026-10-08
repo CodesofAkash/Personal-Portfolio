@@ -606,8 +606,25 @@ const HoldButton = ({ onTrigger, ariaLabel, children }: { onTrigger: () => void;
   );
 };
 
-const HeroSceneExperience = ({ modelUrl, panels }: { modelUrl?: string; panels: HeroRevealPanel[] }) => {
+const HeroSceneExperience = ({
+  modelUrl,
+  panels,
+  onReady,
+}: {
+  modelUrl?: string;
+  panels: HeroRevealPanel[];
+  // Fires once the scene has actually loaded, so Hero.tsx can retire its
+  // own static heading right as the interactive panel (which shows the
+  // same text) takes over — without this, both stayed visible at once,
+  // since the interactive panel opens by default on load rather than
+  // needing a click.
+  onReady?: () => void;
+}) => {
   const { scene, animations, progress, failed } = useSafeGLTF(modelUrl || MODELS.desktopPc);
+
+  useEffect(() => {
+    if (scene) onReady?.();
+  }, [scene, onReady]);
 
   if (!scene) {
     return <ModelFallback label="Featured 3D model" loading={!failed} progress={progress} />;

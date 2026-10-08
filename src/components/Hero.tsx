@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, Suspense, type ReactNode } from "react";
+import { Fragment, Suspense, useState, type ReactNode } from "react";
 import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 import CanvasLoader from "@/components/Loader";
@@ -31,6 +31,8 @@ interface HeroProps {
 const PANEL_POSITIONS: PanelPosition[] = ["top-left", "center-right", "bottom-left", "top-right", "bottom-right", "center-left"];
 
 const Hero = ({ section }: HeroProps) => {
+  const [sceneReady, setSceneReady] = useState(false);
+
   if (!section) return null;
 
   // Everything the hero says lives in the reveal panels — there's no
@@ -132,8 +134,15 @@ const Hero = ({ section }: HeroProps) => {
             copy so there's always something real to paint immediately;
             once the interactive scene is ready, its own panel naturally
             takes over the same information in its proper 3D-projected
-            position. */}
-        <div className="absolute inset-0 flex flex-col justify-center px-6 sm:px-16" style={{ zIndex: 1 }}>
+            position — once `sceneReady` fires (via HeroSceneExperience's
+            onReady), this fades out instead of sitting underneath the real
+            panel forever. The real panel opens by default on load
+            (panelOpen starts true), not on click, so without this both
+            were visible at once. */}
+        <div
+          className="absolute inset-0 flex flex-col justify-center px-6 sm:px-16 transition-opacity duration-500"
+          style={{ zIndex: 1, opacity: sceneReady ? 0 : 1, pointerEvents: sceneReady ? "none" : undefined }}
+        >
           <div style={{ maxWidth: "28rem" }}>
             <p className="text-sm uppercase tracking-widest mb-2" style={{ color: "#0d9488" }}>{section.eyebrow}</p>
             <h1 className="text-3xl sm:text-4xl font-bold" style={{ color: "#f8fafc" }}>{section.name}</h1>
@@ -141,7 +150,7 @@ const Hero = ({ section }: HeroProps) => {
         </div>
         <div className="absolute inset-0" style={{ zIndex: 2 }}>
           <Suspense fallback={<CanvasLoader />}>
-            <HeroSceneExperience modelUrl={section.model} panels={panels} />
+            <HeroSceneExperience modelUrl={section.model} panels={panels} onReady={() => setSceneReady(true)} />
           </Suspense>
         </div>
       </div>
