@@ -44,8 +44,13 @@ const Hero = ({ section }: HeroProps) => {
   // pixel size while everything else on screen grows on bigger displays.
   const panelContents: ReactNode[] = [
     <Fragment key="identity">
+      {/* p, not h1 — the page's one real <h1> is the static heading
+          further down this file. This panel only exists client-side
+          (HeroSceneExperience is ssr:false), so it's never actually in
+          the server-rendered HTML a crawler sees; a second <h1> here
+          would just be a duplicate in the live DOM once the scene loads. */}
       <p className="text-[0.75em] uppercase tracking-widest mb-1" style={{ color: "#0d9488" }}>{section.eyebrow}</p>
-      <h1 className="text-[1.25em] font-bold" style={{ color: "#f8fafc" }}>{section.name}</h1>
+      <p className="text-[1.25em] font-bold" style={{ color: "#f8fafc" }}>{section.name}</p>
     </Fragment>,
     <Fragment key="what">
       <p className="text-[0.75em] uppercase tracking-widest mb-1" style={{ color: "#0d9488" }}>What I build</p>
