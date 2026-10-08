@@ -137,10 +137,23 @@ const Hero = ({ section }: HeroProps) => {
             onReady), this fades out instead of sitting underneath the real
             panel forever. The real panel opens by default on load
             (panelOpen starts true), not on click, so without this both
-            were visible at once. */}
+            were visible at once.
+            The fade-IN (heroHeadingFadeIn, globals.css) is a separate,
+            pure-CSS animation, not this opacity/transition pair — it runs
+            the instant the element paints, with no dependency on
+            hydration. On a fast connection the whole lifecycle (fade in,
+            then fade out once the real scene is ready) can complete in
+            under a second; without the fade-in it read as an abrupt pop
+            rather than an intentional reveal. `animation` is cleared once
+            sceneReady so it can't fight the fade-out transition below. */}
         <div
           className="absolute inset-0 flex flex-col justify-center px-6 sm:px-16 transition-opacity duration-500"
-          style={{ zIndex: 1, opacity: sceneReady ? 0 : 1, pointerEvents: sceneReady ? "none" : undefined }}
+          style={{
+            zIndex: 1,
+            opacity: sceneReady ? 0 : undefined,
+            animation: sceneReady ? undefined : "heroHeadingFadeIn 0.6s ease-out forwards",
+            pointerEvents: sceneReady ? "none" : undefined,
+          }}
         >
           <div style={{ maxWidth: "28rem" }}>
             <p className="text-sm uppercase tracking-widest mb-2" style={{ color: "#0d9488" }}>{section.eyebrow}</p>
