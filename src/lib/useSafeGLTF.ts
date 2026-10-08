@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { AnimationClip, Group } from "three";
+import { ImageBitmapLoader, LoadingManager, type AnimationClip, type Group } from "three";
 import { GLTFLoader, type GLTF } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { MeshoptDecoder } from "three/examples/jsm/libs/meshopt_decoder.module.js";
 
@@ -48,7 +48,21 @@ export function useSafeGLTF(url: string): SafeGLTFState {
     // name-pattern match — a plain MeshoptDecoder method.
     // eslint-disable-next-line react-hooks/rules-of-hooks
     MeshoptDecoder.useWorkers(4);
-    const loader = new GLTFLoader();
+
+    // useWorkers() above only covers vertex decompression — texture decode
+    // is a separate cost GLTFLoader doesn't move off the main thread by
+    // default, and it turned out to be the dominant one: a production
+    // trace showed the model's own network download finishing at ~10.8s
+    // (ending ~20.9s), then ~12 MORE seconds of pure main-thread work
+    // before the page settled, well past when the data was actually
+    // available. ImageBitmapLoader decodes images via the browser's
+    // native createImageBitmap() instead of the default <img>-element
+    // path, which runs off the main thread — the standard Three.js fix
+    // for exactly this symptom. Registered on the loading manager so
+    // GLTFLoader uses it for every texture this model references.
+    const manager = new LoadingManager();
+    manager.addHandler(/\.(jpe?g|png|webp|ktx2?)$/i, new ImageBitmapLoader(manager).setOptions({ imageOrientation: "flipY" }));
+    const loader = new GLTFLoader(manager);
     loader.setMeshoptDecoder(MeshoptDecoder);
     loader.load(
       url,
