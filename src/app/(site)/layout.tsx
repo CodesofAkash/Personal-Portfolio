@@ -6,6 +6,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ToastProvider from "@/components/ToastProvider";
 import DraftModeBanner from "@/components/DraftModeBanner";
+import JsonLd from "@/components/JsonLd";
 import VisualEditingLoader from "@/components/VisualEditingLoader";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { getSettings } from "@/sanity/lib/queries";
@@ -90,10 +91,7 @@ export default async function RootLayout({
   return (
     <html lang="en" className={poppins.variable}>
       <body>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(personStructuredData) }}
-        />
+        <JsonLd data={personStructuredData} />
         {/* min-h-dvh, not min-h-screen (100vh) — Hero.tsx sizes itself off
             100dvh, and if vh/dvh ever resolve even a few px apart in a given
             browser, that mismatch alone shows up as a gap at the bottom of
