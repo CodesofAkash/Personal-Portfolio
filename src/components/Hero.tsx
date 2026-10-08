@@ -116,7 +116,30 @@ const Hero = ({ section }: HeroProps) => {
           className="absolute inset-0"
           style={{ background: "radial-gradient(circle at 30% 35%, #7c1d1d 0%, #2a0a0a 45%, #000000 85%)" }}
         />
-        <div className="absolute inset-0" style={{ zIndex: 1 }}>
+        {/* Real content, rendered unconditionally — not gated behind the 3D
+            scene the way the identical text inside `panels` is. That
+            gating turned out to be the actual cause of the hero's
+            catastrophic LCP: `panels` only reaches the DOM once
+            HeroSceneExperience has a loaded model (it's used by
+            MarkerOverlay, which doesn't exist until then), so there was
+            genuinely no text content anywhere on the page for the browser
+            to paint until the ~1.7MB model had fetched, decoded and
+            parsed — confirmed via a PSI LCP breakdown showing the "element
+            render delay" phase alone accounting for the full multi-second
+            gap, with no separate resource-load phase, the signature of an
+            LCP candidate that simply isn't in the DOM yet rather than one
+            still downloading. This duplicates the identity panel's own
+            copy so there's always something real to paint immediately;
+            once the interactive scene is ready, its own panel naturally
+            takes over the same information in its proper 3D-projected
+            position. */}
+        <div className="absolute inset-0 flex flex-col justify-center px-6 sm:px-16" style={{ zIndex: 1 }}>
+          <div style={{ maxWidth: "28rem" }}>
+            <p className="text-sm uppercase tracking-widest mb-2" style={{ color: "#0d9488" }}>{section.eyebrow}</p>
+            <h1 className="text-3xl sm:text-4xl font-bold" style={{ color: "#f8fafc" }}>{section.name}</h1>
+          </div>
+        </div>
+        <div className="absolute inset-0" style={{ zIndex: 2 }}>
           <Suspense fallback={<CanvasLoader />}>
             <HeroSceneExperience modelUrl={section.model} panels={panels} />
           </Suspense>
