@@ -3,11 +3,8 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import Image from "next/image";
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type { Project } from "@/sanity/lib/types";
 import { C, textSafe } from "./colors";
-
-gsap.registerPlugin(ScrollTrigger);
 
 const ACCENTS = [C.violet, C.teal, C.amber, C.rose];
 type EnrichedProject = Project & { accent: string };
@@ -206,13 +203,25 @@ const CompactCard = ({ project, isActive, onClick, index }: { project: EnrichedP
   const [hovering, setHovering] = useState(false);
   const { accent } = project;
 
+  // IntersectionObserver, not GSAP's ScrollTrigger — see
+  // sections/Stats.tsx for why.
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    const ctx = gsap.context(() => {
-      gsap.fromTo(el, { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: "power3.out", scrollTrigger: { trigger: el, start: "top 88%" }, delay: (index % 3) * 0.1 });
-    });
-    return () => ctx.revert();
+    let tween: gsap.core.Tween | null = null;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        tween = gsap.fromTo(el, { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: "power3.out", delay: (index % 3) * 0.1 });
+        observer.disconnect();
+      },
+      { rootMargin: "0px 0px -12% 0px" },
+    );
+    observer.observe(el);
+    return () => {
+      observer.disconnect();
+      tween?.kill();
+    };
   }, [index]);
 
   useEffect(() => {

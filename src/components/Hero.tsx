@@ -2,7 +2,6 @@
 
 import { Fragment, Suspense, useState, type ReactNode } from "react";
 import dynamic from "next/dynamic";
-import { motion } from "framer-motion";
 import CanvasLoader from "@/components/Loader";
 import type { PanelPosition } from "@/components/canvas/HeroSceneExperience";
 import type { HeroSection } from "@/sanity/lib/types";
@@ -183,11 +182,14 @@ const Hero = ({ section }: HeroProps) => {
               background: "rgba(5,8,22,0.55)",
             }}
           >
-            <motion.div
-              animate={{ y: [0, 26, 0] }}
-              transition={{ duration: 1.5, repeat: Infinity, repeatType: "loop" }}
+            <div
               className="rounded-full"
-              style={{ width: "calc(var(--hero-ui-unit) * 0.65)", height: "calc(var(--hero-ui-unit) * 0.65)", background: "#7c3aed" }}
+              style={{
+                width: "calc(var(--hero-ui-unit) * 0.65)",
+                height: "calc(var(--hero-ui-unit) * 0.65)",
+                background: "#7c3aed",
+                animation: "heroScrollDotBounce 1.5s infinite",
+              }}
             />
           </div>
         </a>

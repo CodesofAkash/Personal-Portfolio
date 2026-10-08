@@ -2,13 +2,10 @@
 
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type { StatsSection } from "@/sanity/lib/types";
 import Heading from "./Heading";
 import Cta from "./Cta";
 import { C } from "./colors";
-
-gsap.registerPlugin(ScrollTrigger);
 
 const VARIANT_COLOR: Record<string, string> = { violet: C.violet, teal: C.teal, amber: C.amber, rose: C.rose };
 const statColor = (variant?: string) => VARIANT_COLOR[variant ?? "violet"] ?? C.violet;
@@ -20,26 +17,35 @@ const Stats = ({ section }: { section: StatsSection }) => {
   const ref = useRef<HTMLDivElement>(null);
   const hasHeader = Boolean(section.sectionHeader?.heading?.length);
 
+  // IntersectionObserver, not GSAP's ScrollTrigger — this animation only
+  // ever needs to know once whether the section has entered the
+  // viewport, never a continuous scroll position, and ScrollTrigger's
+  // setup forces a synchronous getBoundingClientRect() to find that out.
+  // Confirmed via a production trace: a 2.3s+ single main-thread task on
+  // Home, landing right as the hero's 3D model is also settling its own
+  // layout — the browser has to fully recompute layout for the forced
+  // read while everything's still in flux. IntersectionObserver answers
+  // the same "has this entered view" question via the compositor, not a
+  // forced synchronous layout pass.
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
     const items = el.querySelectorAll(".stat-item");
     if (!items.length) return;
-    const ctx = gsap.context(() => {
-      gsap.fromTo(
-        items,
-        { y: 40, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          stagger: 0.15,
-          duration: 0.7,
-          ease: "power2.out",
-          scrollTrigger: { trigger: el, start: "top 80%" },
-        },
-      );
-    });
-    return () => ctx.revert();
+    let tween: gsap.core.Tween | null = null;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        tween = gsap.fromTo(items, { y: 40, opacity: 0 }, { y: 0, opacity: 1, stagger: 0.15, duration: 0.7, ease: "power2.out" });
+        observer.disconnect();
+      },
+      { rootMargin: "0px 0px -20% 0px" },
+    );
+    observer.observe(el);
+    return () => {
+      observer.disconnect();
+      tween?.kill();
+    };
   }, [section.stats.length]);
 
   if (hasHeader) {

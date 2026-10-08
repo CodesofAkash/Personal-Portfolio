@@ -123,6 +123,22 @@ body {
   transform: translateZ(0);
 }
 
+/* Hero's scroll-down indicator dot — was a <motion.div> animating a
+   single y keyframe in a loop, which pulled all of framer-motion
+   (~112KB) into Home's bundle for one trivial bounce. Confirmed via a
+   production trace as a 3.5s+ single main-thread task, landing at the
+   same late-stage pile-up as every other library on this page. Plain
+   CSS does the identical motion for zero JS cost. */
+@keyframes heroScrollDotBounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(26px);
+  }
+}
+
 @keyframes mulShdSpin {
   0%,
   100% {

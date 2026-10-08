@@ -1,28 +1,34 @@
 import type { AboutSection, ContactSection, HomeSection, ProjectsSection, Testimonial } from "@/sanity/lib/types";
 import dynamic from "next/dynamic";
-import Stats from "./Stats";
-import FeaturedProjects from "./FeaturedProjects";
-import Testimonials from "./Testimonials";
-import AboutHero from "./AboutHero";
-import ExperienceTimeline from "./ExperienceTimeline";
-import TechMarquee from "./TechMarquee";
-import CtaPanel from "./CtaPanel";
-import ProjectsHero from "./ProjectsHero";
-import ProjectsGrid from "./ProjectsGrid";
 
-// Dynamic, not a static import like every other section here: both pull in
-// Three.js (~900KB) transitively through their 3D canvases. A static import
-// puts that whole chunk in SectionRenderer's module graph, and since every
-// page (About, Projects, Privacy, Terms) renders through this same
-// SectionRenderer, every page paid to download and parse Three.js even
-// when it has no 3D section at all (confirmed via a production Lighthouse
-// run on /projects — the chunk was a required <script> tag, ~1.4-1.8s of
-// main-thread time, despite neither Hero nor ContactHero ever mounting
-// there). Splitting them here means only Home and Contact's own bundles
-// include it. ssr stays default (true) so the sections that do use these
-// still render in the initial HTML, unchanged from before.
+// Every section dynamic, not a static import — a static import puts the
+// whole chunk in SectionRenderer's module graph, and since every page
+// (Home, About, Projects, Contact, Privacy, Terms) renders through this
+// same SectionRenderer, every page paid to download and parse every
+// section's dependencies, even sections it never renders a single
+// instance of. First caught with Hero/ContactHero and Three.js
+// (confirmed via a production Lighthouse run on /projects — the ~900KB
+// chunk was a required <script> tag despite neither ever mounting
+// there), but the same bug applied to every other section too: Home
+// doesn't render ExperienceTimeline, ProjectsGrid or TechMarquee, but
+// all three statically imported GSAP's ScrollTrigger plugin, so Home
+// paid for it anyway — confirmed via a production trace showing
+// ScrollTrigger as a required async chunk on Home's own page despite
+// none of its own sections using it anymore (AK-PERF-019: a page-builder
+// dispatcher must defer *every* heavy branch, not just the one that
+// happened to get noticed first). ssr stays default (true) so every
+// section still renders in the initial HTML, unchanged from before.
 const Hero = dynamic(() => import("@/components/Hero"));
 const ContactHero = dynamic(() => import("./ContactHero"));
+const Stats = dynamic(() => import("./Stats"));
+const FeaturedProjects = dynamic(() => import("./FeaturedProjects"));
+const Testimonials = dynamic(() => import("./Testimonials"));
+const AboutHero = dynamic(() => import("./AboutHero"));
+const ExperienceTimeline = dynamic(() => import("./ExperienceTimeline"));
+const TechMarquee = dynamic(() => import("./TechMarquee"));
+const CtaPanel = dynamic(() => import("./CtaPanel"));
+const ProjectsHero = dynamic(() => import("./ProjectsHero"));
+const ProjectsGrid = dynamic(() => import("./ProjectsGrid"));
 
 type AnySection = HomeSection | AboutSection | ProjectsSection | ContactSection;
 

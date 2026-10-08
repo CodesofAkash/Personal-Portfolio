@@ -2,25 +2,33 @@
 
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type { CtaSection } from "@/sanity/lib/types";
 import Cta from "./Cta";
 import Heading from "./Heading";
 import { C } from "./colors";
 
-gsap.registerPlugin(ScrollTrigger);
-
 // Shared by About and Projects' closing CTA panel.
 const CtaPanel = ({ section }: { section: CtaSection }) => {
   const ref = useRef<HTMLDivElement>(null);
 
+  // IntersectionObserver, not ScrollTrigger — see Stats.tsx for why.
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    const ctx = gsap.context(() => {
-      gsap.fromTo(el, { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: 0.9, ease: "power3.out", scrollTrigger: { trigger: el, start: "top 80%" } });
-    });
-    return () => ctx.revert();
+    let tween: gsap.core.Tween | null = null;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        tween = gsap.fromTo(el, { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: 0.9, ease: "power3.out" });
+        observer.disconnect();
+      },
+      { rootMargin: "0px 0px -20% 0px" },
+    );
+    observer.observe(el);
+    return () => {
+      observer.disconnect();
+      tween?.kill();
+    };
   }, []);
 
   const h = section.sectionHeader;
